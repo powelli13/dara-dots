@@ -22,11 +22,23 @@ var boardSpacing = 100;
 
 var dotGroup;
 
+/*
+TODO list
+- research best practices for sprites or game object
+    I imagine that there is a better way than images for everything
+    look for sprite class or some game object I could extend (see flood-fill.js example)
+- see if extending a scene makes sense for this game or for menus (see flood-fill.js example)
+- find best built in way for mouse click detection and have piece classes interact well with that
+    ideally there will be some global handler for these to click and move the pieces
+    rather than adhoc position changes for each individual piece
+*/
+
 function preload ()
 {
     this.load.image('background', 'assets/images/background.jpg');
     this.load.image('dot', 'assets/images/dot.png');
     this.load.image('boardDot', 'assets/images/board_dot.png');
+    this.load.image('star', 'assets/images/star.png');
 }
 
 function create ()
