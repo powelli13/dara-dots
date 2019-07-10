@@ -1,3 +1,5 @@
+import StarPiece from './starpiece.js';
+
 var config = {
     type: Phaser.AUTO,
     width: 800,
@@ -62,6 +64,8 @@ function create ()
         }
     }
      
+    this.add.existing(new StarPiece(this, 50, 50, 'star'));
+
     this.input.mouse.disableContextMenu();
 
     this.input.on('pointerup', function(p){
