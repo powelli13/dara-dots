@@ -63,8 +63,30 @@ function create ()
             boardDotGroup.add(boardDotImage);
         }
     }
-     
-    this.add.existing(new StarPiece(this, 50, 50, 'star'));
+    
+    // TODO how to reference a sprite later
+    let starPieceSprite = new StarPiece(this, 50, 50, 'star').setInteractive();
+    
+    starPieceSprite.on('pointerdown', function (pointer) {
+
+        this.setTint(0xff0000);
+        // TODO move a sprite and design class structure
+
+    });
+
+    starPieceSprite.on('pointerout', function (pointer) {
+
+        this.clearTint();
+
+    });
+
+    starPieceSprite.on('pointerup', function (pointer) {
+
+        this.clearTint();
+
+    });
+
+    this.add.existing(starPieceSprite);
 
     this.input.mouse.disableContextMenu();
 
@@ -79,11 +101,5 @@ function create ()
 
 function update ()
 {
-    // var pointer = this.input.activePointer;
 
-    // if (pointer.leftButtonReleased())
-    // {
-    //     // this.add.image(pointer.worldX, pointer.worldY, 'dot');
-    //     Phaser.Actions.SetXY(dotGroup.getChildren(), pointer.worldX, pointer.worldY);
-    // }
 }

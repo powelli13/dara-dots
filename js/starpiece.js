@@ -1,5 +1,7 @@
 export default class StarPiece extends Phaser.GameObjects.Sprite {
 
+    // selected = false;
+
     constructor (scene, x, y, texture)
     {
         super(scene, x, y);
@@ -11,9 +13,14 @@ export default class StarPiece extends Phaser.GameObjects.Sprite {
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
-
-        this.rotation += 0.01;
     }
 
+
+
     // TODO add mouse click reactivity
+
+    // pointerDown (pointer)
+    // {
+
+    // }
 }
