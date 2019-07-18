@@ -23,6 +23,7 @@ var boardDotGroup;
 var boardSpacing = 100;
 
 var dotGroup;
+var selectedPiece = true;
 
 /*
 TODO list
@@ -46,10 +47,36 @@ function preload ()
 function create ()
 {
     this.add.image(400, 300, 'background');
-    var dotImage = this.add.image(0, 0, 'dot');
+    // var dotImage = this.add.image(0, 0, 'dot');
     
+    // TODO how to reference a sprite later once it is added to the game sprites
+    let starPieceSprite = new StarPiece(this, 50, 50, 'star').setInteractive();
+    
+    starPieceSprite.on('pointerdown', function (pointer)
+    {
+
+        this.setTint(0xff0000);
+        // TODO move a sprite and design class structure
+    });
+
+    starPieceSprite.on('pointerout', function (pointer)
+    {
+
+        this.clearTint();
+
+    });
+
+    starPieceSprite.on('pointerup', function (pointer)
+    {
+
+        this.clearTint();
+
+    });
+
+    this.add.existing(starPieceSprite);
+
+
     dotGroup = this.add.group();
-    dotGroup.add(dotImage);
 
     // Setup the board
     boardDotGroup = this.add.group();
@@ -58,36 +85,23 @@ function create ()
     {
         for (let y = 0; y < 5; y++)
         {
-            let boardDotImage = this.add.image((x+1) * boardSpacing, (y+1) * boardSpacing, 'boardDot');
+            let boardDotImage = this.add
+                .sprite((x+1) * boardSpacing, (y+1) * boardSpacing, 'boardDot')
+                .setInteractive();
+            boardDotImage.on('pointerdown', function (pointer)
+            {
+                // TODO add more logic around this to check for a not null selected piece?f
+                if (selectedPiece)
+                {
+                    starPieceSprite.x = pointer.worldX;
+                    starPieceSprite.y = pointer.worldY;
+                }
+            });
             boardDotImage.setAlpha(1);
             boardDotGroup.add(boardDotImage);
         }
     }
     
-    // TODO how to reference a sprite later
-    let starPieceSprite = new StarPiece(this, 50, 50, 'star').setInteractive();
-    
-    starPieceSprite.on('pointerdown', function (pointer) {
-
-        this.setTint(0xff0000);
-        // TODO move a sprite and design class structure
-
-    });
-
-    starPieceSprite.on('pointerout', function (pointer) {
-
-        this.clearTint();
-
-    });
-
-    starPieceSprite.on('pointerup', function (pointer) {
-
-        this.clearTint();
-
-    });
-
-    this.add.existing(starPieceSprite);
-
     this.input.mouse.disableContextMenu();
 
     this.input.on('pointerup', function(p){
