@@ -34,6 +34,21 @@ TODO list
 - find best built in way for mouse click detection and have piece classes interact well with that
     ideally there will be some global handler for these to click and move the pieces
     rather than adhoc position changes for each individual piece
+
+
+Notes
+Some design considerations:
+should the representation of the game state be independent of
+the sprite objects?
+    - this would mean have one object to hold all the game state
+    and when it is told to animate
+    it places the sprites where they should go
+another route is having pieces and or board nodes as objects which
+have their own methods to move themselves and change their state.
+
+important events in game play to keep in mind:
+    - click piece once it is themn selected, click on another square it will attempt to move
+    - 
 */
 
 function preload ()
@@ -52,27 +67,6 @@ function create ()
     // TODO how to reference a sprite later once it is added to the game sprites
     let starPieceSprite = new StarPiece(this, 50, 50, 'star').setInteractive();
     
-    starPieceSprite.on('pointerdown', function (pointer)
-    {
-
-        this.setTint(0xff0000);
-        // TODO move a sprite and design class structure
-    });
-
-    starPieceSprite.on('pointerout', function (pointer)
-    {
-
-        this.clearTint();
-
-    });
-
-    starPieceSprite.on('pointerup', function (pointer)
-    {
-
-        this.clearTint();
-
-    });
-
     this.add.existing(starPieceSprite);
 
 
@@ -95,6 +89,8 @@ function create ()
                 {
                     starPieceSprite.x = pointer.worldX;
                     starPieceSprite.y = pointer.worldY;
+                    
+                    starPieceSprite.selectPiece();
                 }
             });
             boardDotImage.setAlpha(1);
