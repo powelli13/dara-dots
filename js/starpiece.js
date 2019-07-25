@@ -8,19 +8,31 @@ export default class StarPiece extends Piece {
     {
         super(scene, x, y, texture);
 
-        // this.setTexture(texture);
+        this.setTexture(texture);
         this.setPosition(x, y);
     }
 
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
+
     }
 
-    // selectPiece()
-    // {
-    //     super.selectPiece();
-    // }
+    selectPiece()
+    {
+        super.selectPiece();
+
+        // TODO find best way to do this within phaser
+        
+        this.setTexture('altStar');
+    }
+
+    deselectPiece()
+    {
+        super.deselectPiece();
+
+        this.setTexture('star');
+    }
 
     // TODO add mouse click reactivity
 

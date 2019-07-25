@@ -18,12 +18,13 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-var boardDotGroup;
-// var boardXSpacing = 100;
+var masterGroup;
 var boardSpacing = 100;
+var dotDepth = 5;
+var pieceDepth = 10;
 
-var dotGroup;
-var selectedPiece = true;
+// var dotGroup;
+var selectedPiece = null;
 
 /*
 TODO list
@@ -56,25 +57,36 @@ function preload ()
     this.load.image('background', 'assets/images/background.jpg');
     this.load.image('dot', 'assets/images/dot.png');
     this.load.image('boardDot', 'assets/images/board_dot.png');
+    this.load.image('offBoardDot', 'assets/images/offboard_dot.png');
     this.load.image('star', 'assets/images/star.png');
+    this.load.image('altStar', 'assets/images/alt_star.png');
 }
 
 function create ()
 {
     this.add.image(400, 300, 'background');
-    // var dotImage = this.add.image(0, 0, 'dot');
+
+    masterGroup = this.add.group();
     
     // TODO how to reference a sprite later once it is added to the game sprites
     let starPieceSprite = new StarPiece(this, 50, 50, 'star').setInteractive();
-    
+    starPieceSprite.z = pieceDepth;
+    starPieceSprite.on('pointerdown', function (pointer)
+    {
+        if (selectedPiece == null)
+        {
+            this.selectPiece();
+            selectedPiece = this;
+        }
+    });
+
+    masterGroup.add(starPieceSprite);
+
     this.add.existing(starPieceSprite);
 
-
-    dotGroup = this.add.group();
+    // dotGroup = this.add.group();
 
     // Setup the board
-    boardDotGroup = this.add.group();
-
     for (let x = 0; x < 5; x++)
     {
         for (let y = 0; y < 5; y++)
@@ -82,31 +94,32 @@ function create ()
             let boardDotImage = this.add
                 .sprite((x+1) * boardSpacing, (y+1) * boardSpacing, 'boardDot')
                 .setInteractive();
+            boardDotImage.z = dotDepth;
             boardDotImage.on('pointerdown', function (pointer)
             {
                 // TODO add more logic around this to check for a not null selected piece?f
-                if (selectedPiece)
+                if (selectedPiece != null)
                 {
-                    starPieceSprite.x = pointer.worldX;
-                    starPieceSprite.y = pointer.worldY;
-                    
-                    starPieceSprite.selectPiece();
+                    // TODO ensure the piece can move here 
+                    selectedPiece.x = this.x;
+                    selectedPiece.y = this.y;
+
+                    selectedPiece.deselectPiece();
+                    selectedPiece = null;
                 }
             });
             boardDotImage.setAlpha(1);
-            boardDotGroup.add(boardDotImage);
+            masterGroup.add(boardDotImage);
         }
     }
     
-    this.input.mouse.disableContextMenu();
+    let greenDot = this.add.sprite(6 * boardSpacing, 4 * boardSpacing, 'offBoardDot').setInteractive();
+    greenDot.z = dotDepth;
+    masterGroup.add(greenDot);
+    starPieceSprite.x = 6 * boardSpacing;
+    starPieceSprite.y = 4 * boardSpacing;
 
-    this.input.on('pointerup', function(p){
-        if (p.leftButtonReleased())
-        {
-            console.info('left pressed at ' + p.worldX + ' '+ p.worldY);
-            Phaser.Actions.SetXY(dotGroup.getChildren(), p.worldX, p.worldY);
-        }
-    });
+    this.input.mouse.disableContextMenu();
 }
 
 function update ()

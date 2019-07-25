@@ -1,6 +1,5 @@
 export default class Piece extends Phaser.GameObjects.Sprite
 {
-
     selected;
 
     constructor (scene, x, y, texture)
@@ -15,6 +14,11 @@ export default class Piece extends Phaser.GameObjects.Sprite
 
     selectPiece()
     {
-        console.info(this.selected);
+        this.selected = true;
+    }
+
+    deselectPiece()
+    {
+        this.selected = false;
     }
 }
