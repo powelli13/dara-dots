@@ -1,4 +1,5 @@
 import StarPiece from './starpiece.js';
+import BoardNode from './boardNode.js';
 
 var config = {
     type: Phaser.AUTO,
@@ -57,6 +58,7 @@ function preload ()
     this.load.image('background', 'assets/images/background.jpg');
     this.load.image('dot', 'assets/images/dot.png');
     this.load.image('boardDot', 'assets/images/board_dot.png');
+    this.load.image('altBoardDot', 'assets/images/alt_board_dot.png');
     this.load.image('offBoardDot', 'assets/images/offboard_dot.png');
     this.load.image('star', 'assets/images/star.png');
     this.load.image('altStar', 'assets/images/alt_star.png');
@@ -66,11 +68,12 @@ function create ()
 {
     this.add.image(400, 300, 'background');
 
+    // TODO make it so that pieces render on top of nodes
     masterGroup = this.add.group();
     
     // TODO how to reference a sprite later once it is added to the game sprites
-    let starPieceSprite = new StarPiece(this, 50, 50, 'star').setInteractive();
-    starPieceSprite.z = pieceDepth;
+    let starPieceSprite = new StarPiece(this, 50, 50, 'star', 'altStar').setInteractive();
+    // starPieceSprite.z = pieceDepth;
     starPieceSprite.on('pointerdown', function (pointer)
     {
         if (selectedPiece == null)
@@ -84,20 +87,24 @@ function create ()
 
     this.add.existing(starPieceSprite);
 
-    // dotGroup = this.add.group();
-
     // Setup the board
     for (let x = 0; x < 5; x++)
     {
         for (let y = 0; y < 5; y++)
         {
-            let boardDotImage = this.add
-                .sprite((x+1) * boardSpacing, (y+1) * boardSpacing, 'boardDot')
-                .setInteractive();
-            boardDotImage.z = dotDepth;
+            let boardDotImage = new BoardNode(this, 
+                (x+1) * boardSpacing, 
+                (y+1) * boardSpacing,
+                x,
+                y,
+                'boardDot',
+                'altBoardDot').setInteractive(); 
+            this.add.existing(boardDotImage);
+
+            // boardDotImage.z = dotDepth;
             boardDotImage.on('pointerdown', function (pointer)
             {
-                // TODO add more logic around this to check for a not null selected piece?f
+                // TODO add more logic around this to check for a not null selected piece?
                 if (selectedPiece != null)
                 {
                     // TODO ensure the piece can move here 
@@ -113,9 +120,11 @@ function create ()
         }
     }
     
+    // Setup offboard positions
     let greenDot = this.add.sprite(6 * boardSpacing, 4 * boardSpacing, 'offBoardDot').setInteractive();
     greenDot.z = dotDepth;
     masterGroup.add(greenDot);
+
     starPieceSprite.x = 6 * boardSpacing;
     starPieceSprite.y = 4 * boardSpacing;
 

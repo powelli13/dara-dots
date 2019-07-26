@@ -2,11 +2,9 @@ import Piece from "./piece";
 
 export default class StarPiece extends Piece {
 
-    // selected = false;
-
-    constructor (scene, x, y, texture)
+    constructor (scene, x, y, texture, altTexture)
     {
-        super(scene, x, y, texture);
+        super(scene, x, y, texture, altTexture);
 
         this.setTexture(texture);
         this.setPosition(x, y);
@@ -18,26 +16,28 @@ export default class StarPiece extends Piece {
 
     }
 
-    selectPiece()
-    {
-        super.selectPiece();
+    // TODO movement differs from pieces but two different textures and selection does not
 
-        // TODO find best way to do this within phaser
-        
-        this.setTexture('altStar');
-    }
-
-    deselectPiece()
-    {
-        super.deselectPiece();
-
-        this.setTexture('star');
-    }
-
-    // TODO add mouse click reactivity
-
-    // pointerDown (pointer)
+    // selectPiece()
     // {
+    //     super.selectPiece();
 
+    //     // TODO find best way to do this within phaser
+        
+    //     this.setTexture(altTexture);
     // }
+
+    // deselectPiece()
+    // {
+    //     super.deselectPiece();
+
+    //     this.setTexture(texture);
+    // }
+
+    // // TODO add mouse click reactivity
+
+    // // pointerDown (pointer)
+    // // {
+
+    // // }
 }

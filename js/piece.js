@@ -1,24 +1,31 @@
 export default class Piece extends Phaser.GameObjects.Sprite
 {
-    selected;
+    Selected;
+    Texture;
+    AltTexture;
 
-    constructor (scene, x, y, texture)
+    constructor (scene, x, y, texture, altTexture)
     {
         super(scene, x, y);
+
+        this.Texture = texture;
+        this.AltTexture = altTexture;
 
         this.setTexture(texture);
         this.setPosition(x, y);
 
-        this.selected = 'hi there test selected';
+        this.Selected = false;
     }
 
     selectPiece()
     {
-        this.selected = true;
+        this.Selected = true;
+        this.setTexture(this.AltTexture);
     }
 
     deselectPiece()
     {
-        this.selected = false;
+        this.Selected = false;
+        this.setTexture(this.Texture);
     }
 }
