@@ -1,10 +1,11 @@
 export default class Piece extends Phaser.GameObjects.Sprite
 {
+    Team;
     Selected;
     Texture;
     AltTexture;
 
-    constructor (scene, x, y, texture, altTexture)
+    constructor (scene, x, y, texture, altTexture, team)
     {
         super(scene, x, y);
 
@@ -15,6 +16,7 @@ export default class Piece extends Phaser.GameObjects.Sprite
         this.setPosition(x, y);
 
         this.Selected = false;
+        this.Team = team;
     }
 
     selectPiece()

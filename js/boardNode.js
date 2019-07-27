@@ -1,20 +1,14 @@
 export default class BoardNode extends Phaser.GameObjects.Sprite
 {
-    BoardX;
-    BoardY;
-
     Texture;
     AltTexture;
 
-    constructor(scene, x, y, boardXIndex, boardYIndex, texture, altTexture)
+    constructor(scene, x, y, texture, altTexture)
     {
         super(scene, x, y);
 
         this.setTexture(texture);
         this.setPosition(x, y);
-
-        this.BoardX = boardXIndex;
-        this.BoardY = boardYIndex;
 
         this.Texture = texture;
         this.AltTexture = altTexture;

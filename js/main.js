@@ -20,9 +20,16 @@ var config = {
 
 var game = new Phaser.Game(config);
 var masterGroup;
-var boardSpacing = 100;
-var dotDepth = 5;
-var pieceDepth = 10;
+var board;
+
+const boardSpacing = 100;
+const dotDepth = 5;
+const pieceDepth = 10;
+
+// Blue moves first
+const blueTeam = 0;
+const redTeam = 1;
+var turn = blueTeam;
 
 // var dotGroup;
 var selectedPiece = null;
@@ -62,6 +69,7 @@ function preload ()
     this.load.image('offBoardDot', 'assets/images/offboard_dot.png');
     this.load.image('star', 'assets/images/star.png');
     this.load.image('altStar', 'assets/images/alt_star.png');
+
 }
 
 function create ()
@@ -70,9 +78,10 @@ function create ()
 
     // TODO make it so that pieces render on top of nodes
     masterGroup = this.add.group();
+    board = [];
     
     // TODO how to reference a sprite later once it is added to the game sprites
-    let starPieceSprite = new StarPiece(this, 50, 50, 'star', 'altStar').setInteractive();
+    let starPieceSprite = new StarPiece(this, 50, 50, 'star', 'altStar', blueTeam).setInteractive();
     // starPieceSprite.z = pieceDepth;
     starPieceSprite.on('pointerdown', function (pointer)
     {
@@ -88,35 +97,56 @@ function create ()
     this.add.existing(starPieceSprite);
 
     // Setup the board
-    for (let x = 0; x < 5; x++)
+    // 0,0 is top left node
+    for (let row = 0; row < 5; row++)
     {
-        for (let y = 0; y < 5; y++)
+        board[row] = [];
+        for (let col = 0; col < 5; col++)
         {
-            let boardDotImage = new BoardNode(this, 
-                (x+1) * boardSpacing, 
-                (y+1) * boardSpacing,
-                x,
-                y,
+
+            let boardDotSprite = new BoardNode(this, 
+                (col + 1) * boardSpacing, 
+                (row + 1) * boardSpacing,
                 'boardDot',
                 'altBoardDot').setInteractive(); 
-            this.add.existing(boardDotImage);
+            this.add.existing(boardDotSprite);
+            board[row][col] = boardDotSprite;
 
             // boardDotImage.z = dotDepth;
-            boardDotImage.on('pointerdown', function (pointer)
+            boardDotSprite.on('pointerdown', function (pointer)
             {
                 // TODO add more logic around this to check for a not null selected piece?
                 if (selectedPiece != null)
                 {
-                    // TODO ensure the piece can move here 
                     selectedPiece.x = this.x;
                     selectedPiece.y = this.y;
+
+                    // TODO ensure the piece can move here 
+                    /* thoughts on an algorithm for checking legal moves:
+                    is spot open
+                    is friendly block
+                    are we triangle is opposing star
+                    are we star is opposing circle's disc
+
+                    */
+                    // if (turn == selectedPiece.Team)
+                    // {
+
+                    // }
+
+                    // TODO left off 
+                    // having conceptual trouble deciding if this should be
+                    // piece or node centric
+                    // the fact that sprite objects are being used
+                    // rather than a single board object makes this tricky
+                    // i need to plan this out more before finalizing movement logic
 
                     selectedPiece.deselectPiece();
                     selectedPiece = null;
                 }
             });
-            boardDotImage.setAlpha(1);
-            masterGroup.add(boardDotImage);
+            // boardDotSprite.setAlpha(1);
+            // masterGroup.add(boardDotSprite);
         }
     }
     
