@@ -1,9 +1,10 @@
 export default class BoardNode extends Phaser.GameObjects.Sprite
 {
+    Id;
     Texture;
     AltTexture;
 
-    constructor(scene, x, y, texture, altTexture)
+    constructor(scene, x, y, texture, altTexture, id)
     {
         super(scene, x, y);
 
@@ -12,12 +13,12 @@ export default class BoardNode extends Phaser.GameObjects.Sprite
 
         this.Texture = texture;
         this.AltTexture = altTexture;
+        this.Id = id;
     }
 
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
-
     }
 
     selectNode()
