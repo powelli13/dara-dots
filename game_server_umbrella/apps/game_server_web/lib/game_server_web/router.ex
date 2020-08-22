@@ -17,6 +17,8 @@ defmodule GameServerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    get "/lobby", LobbyController, :index
   end
 
   # Other scopes may use custom stacks.
