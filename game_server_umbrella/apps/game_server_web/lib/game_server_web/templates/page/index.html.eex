@@ -5,9 +5,29 @@
 
 <section class="row">
   <article class="column">
-    <%= link "Lobby", to: Routes.lobby_path(@conn, :index) %>
+    <input id="lobby-username-input" type="text" placeholder="Enter username" />
+    <%= link "Lobby", to: Routes.lobby_path(@conn, :index), onclick: "storeUsername()" %>
   </article>
   <article class="column">
     Hello, World!
   </article>
 </section>
+
+<script>
+window.addEventListener("load", function () {
+  let usernameInput = document.getElementById("lobby-username-input");
+  let username = window.localStorage.getItem("dara-username");
+
+  if (username != null) {
+    usernameInput.value = username;
+  }
+});
+
+function storeUsername() {
+  let usernameInput = document.getElementById("lobby-username-input");
+
+  if (usernameInput.value) {
+    window.localStorage.setItem("dara-username", usernameInput.value);
+  }
+}
+</script>

@@ -15,7 +15,10 @@ let LobbyChat = {
     let chatInput = document.getElementById("lobby-chat-input");
     let postButton = document.getElementById("lobby-chat-submit");
     let lobbyChannel = socket.channel("lobby:1", () => {
-      return {random_id:  Math.floor((Math.random() * 1000))};
+      let username = window.localStorage.getItem("dara-username");
+      return username 
+        ? {username: username}
+        : {username: "anon" + Math.floor(Math.random() * 1000)};
     });
 
     // Send message to the server.
@@ -49,10 +52,10 @@ let LobbyChat = {
   },
 
   // Display a new message in the chat container.
-  renderAnnotation(chatContainer, {user_id, message}) {
+  renderAnnotation(chatContainer, {username, message}) {
     let template = document.createElement("div");
     template.innerHTML = `
-      <b>anon-${user_id}</b>: ${this.esc(message)}
+      <b>${username}</b>: ${this.esc(message)}
     `;
 
     chatContainer.appendChild(template);
