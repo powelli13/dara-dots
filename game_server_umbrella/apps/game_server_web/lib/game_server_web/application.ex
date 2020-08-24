@@ -9,6 +9,8 @@ defmodule GameServerWeb.Application do
     children = [
       # Start the Telemetry supervisor
       GameServerWeb.Telemetry,
+      # Add channel presence
+      GameServerWeb.Presence,
       # Start the Endpoint (http/https)
       GameServerWeb.Endpoint
       # Start a worker by calling: GameServerWeb.Worker.start_link(arg)

@@ -1,5 +1,8 @@
 <h4>Welcome to the Lobby!</h4>
 
+<div id="user-list">
+</div>
+
 <div id="lobby-chat-container">
 </div>
 

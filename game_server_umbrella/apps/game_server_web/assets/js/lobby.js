@@ -1,3 +1,5 @@
+import {Presence} from "phoenix";
+
 // Object used to connect to a lobby channel using
 // a socket and facilitate chatting messages.
 let LobbyChat = {
@@ -14,11 +16,20 @@ let LobbyChat = {
     let chatContainer = document.getElementById("lobby-chat-container");
     let chatInput = document.getElementById("lobby-chat-input");
     let postButton = document.getElementById("lobby-chat-submit");
+    let userList = document.getElementById("user-list");
     let lobbyChannel = socket.channel("lobby:1", () => {
       let username = window.localStorage.getItem("dara-username");
       return username 
         ? {username: username}
         : {username: "anon" + Math.floor(Math.random() * 1000)};
+    });
+
+    let presence = new Presence(lobbyChannel);
+
+    presence.onSync(() => {
+      userList.innerHTML = presence.list((id, metas) => {
+          return `<li>${id}</li>`;
+        }).join("");
     });
 
     // Send message to the server.
