@@ -1,3 +1,6 @@
+@moduledoc """
+Channel used to facilitate the chatting in the game Lobby.
+"""
 defmodule GameServerWeb.LobbyChannel do
   use GameServerWeb, :channel
   alias GameServerWeb.Presence
@@ -10,6 +13,9 @@ defmodule GameServerWeb.LobbyChannel do
   # Used to setup channel presence after a user joins.
   def handle_info(:after_join, socket) do
     {:ok, _} = Presence.track(socket, socket.assigns.username, %{})
+
+    # TODO put the score board info on the presence?
+    # also add some way to trivially generate wins from the front end to test
 
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}

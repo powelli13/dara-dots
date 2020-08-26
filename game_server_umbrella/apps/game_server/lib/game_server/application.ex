@@ -10,9 +10,11 @@ defmodule GameServer.Application do
       # Start the Ecto repository
       GameServer.Repo,
       # Start the PubSub system
-      {Phoenix.PubSub, name: GameServer.PubSub}
+      {Phoenix.PubSub, name: GameServer.PubSub},
       # Start a worker by calling: GameServer.Worker.start_link(arg)
       # {GameServer.Worker, arg}
+      # Start the server scoreboard
+      GameServer.Scoreboard
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: GameServer.Supervisor)

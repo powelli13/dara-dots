@@ -17,3 +17,7 @@
     Send
   </button>
 </div>
+
+<button id="win-test">
+Win a game
+</button>

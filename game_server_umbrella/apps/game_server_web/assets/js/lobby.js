@@ -28,7 +28,7 @@ let LobbyChat = {
 
     presence.onSync(() => {
       userList.innerHTML = presence.list((id, metas) => {
-          return `<li>${id}</li>`;
+          return `<li>${esc(id)}</li>`;
         }).join("");
     });
 
