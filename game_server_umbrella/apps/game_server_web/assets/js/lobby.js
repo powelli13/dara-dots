@@ -26,25 +26,37 @@ let LobbyChat = {
 
     let presence = new Presence(lobbyChannel);
 
+    
     presence.onSync(() => {
       userList.innerHTML = presence.list((id, metas) => {
-          return `<li>${esc(id)}</li>`;
-        }).join("");
+        return `<li>${this.esc(id)}</li>`;
+      }).join("");
     });
-
+    
     // Send message to the server.
     postButton.addEventListener("click", e => {
       let payload = {message: chatInput.value};
       lobbyChannel.push("new_msg", payload)
-        .receive("error", e => e.console.log(e));
+      .receive("error", e => e.console.log(e));
       chatInput.value = "";
+    });
+    
+    // TODO testing
+    let winTest = document.getElementById("win-test-button");
+    winTest.addEventListener("click", e => {
+      let payload = {winner: "Chicken dinner!"};
+      lobbyChannel.push("win_test", payload)
+      .receive("error", e => e.console.log(e));
+    });
+    lobbyChannel.on("win_test", (resp) => {
+      this.renderAnnotation(chatContainer, resp);
     });
 
     // Receive and render a new chat message.
     lobbyChannel.on("new_msg", (resp) => {
       this.renderAnnotation(chatContainer, resp);
     });
-    
+
     // Join the lobby chat channel.
     lobbyChannel.join()
       .receive("ok", () => {

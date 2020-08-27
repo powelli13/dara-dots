@@ -1,9 +1,10 @@
-@moduledoc """
-Channel used to facilitate the chatting in the game Lobby.
-"""
 defmodule GameServerWeb.LobbyChannel do
+  @moduledoc """
+  Channel used to facilitate the chatting in the game Lobby.
+  """
   use GameServerWeb, :channel
   alias GameServerWeb.Presence
+  alias GameServer.Scoreboard
 
   def join("lobby:" <> lobby_id, %{"username" => username}, socket) do
     send(self(), :after_join)
@@ -23,6 +24,26 @@ defmodule GameServerWeb.LobbyChannel do
 
   def handle_in("new_msg", %{"message" => message}, socket) do
     broadcast!(socket, "new_msg", %{username: socket.assigns.username, message: message})
+    {:noreply, socket}
+  end
+
+  # TODO just testing things
+  def handle_in("win_test", %{"winner" => phrase}, socket) do
+    Scoreboard.report_win(socket.assigns.username)
+    score_message = Scoreboard.get_scores()
+      |> Enum.into([], fn {name, score} -> "#{name} has #{score} wins" end)
+      |> Enum.join(", ")
+
+    broadcast!(
+      socket, 
+      "win_test", 
+      %{username: "Admin", message: "#{socket.assigns.username} has won!"})
+
+    broadcast!(
+      socket,
+      "win_test",
+      %{username: "Admin", message: "Current scores: #{score_message}"}
+    )
     {:noreply, socket}
   end
 end

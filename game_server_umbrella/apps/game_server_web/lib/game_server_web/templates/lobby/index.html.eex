@@ -18,6 +18,6 @@
   </button>
 </div>
 
-<button id="win-test">
-Win a game
+<button id="win-test-button">
+  Win a game
 </button>

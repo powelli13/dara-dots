@@ -1,12 +1,13 @@
-@moduledoc """
-GenServer used to hold the state of current players
-on the server's wins, losses and draws.
-"""
 defmodule GameServer.Scoreboard do
+  @moduledoc """
+  GenServer used to hold the state of current players
+  on the server's wins, losses and draws.
+  """
   use GenServer
 
-  def start_link(default) do
-    GenServer.start_link(__MODULE__, default)
+  def start_link(opts) do
+    opts = Keyword.put_new(opts, :name, __MODULE__)
+    GenServer.start_link(__MODULE__, opts, name: opts[:name])
   end
 
   # Client methods
