@@ -46,10 +46,18 @@ let LobbyChat = {
     winTest.addEventListener("click", e => {
       let payload = {winner: "Chicken dinner!"};
       lobbyChannel.push("win_test", payload)
-      .receive("error", e => e.console.log(e));
+        .receive("error", e => e.console.log(e));
     });
     lobbyChannel.on("win_test", (resp) => {
       this.renderAnnotation(chatContainer, resp);
+    });
+
+    // TODO also testing
+    let joinQueue = document.getElementById("join-queue-button");
+    joinQueue.addEventListener("click", e => {
+      let payload = {discarded: "needed?"};
+      lobbyChannel.push("join_queue", payload)
+        .receive("error", e => e.console.log(e));
     });
 
     // Receive and render a new chat message.

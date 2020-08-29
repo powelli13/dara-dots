@@ -7,7 +7,7 @@ defmodule GameServer.PlayerQueue do
 
   # adds the player to the queue
   def add_player(player_name) do
-    GenServer.cast(__MODULE__, {:add_player, player_name})
+    GenServer.call(__MODULE__, {:add_player, player_name})
   end
 
   @impl true
@@ -22,21 +22,22 @@ defmodule GameServer.PlayerQueue do
   end
 
   @impl true
-  def handle_cast({:add_player, player_name}, queue) do
+  def handle_call({:add_player, player_name}, _from, queue) do
     new_queue = :queue.in(player_name, queue)
 
     if :queue.len(new_queue) >= 2 do
       {{:value, first_player}, new_queue} = :queue.out(new_queue)
       {{:value, second_player}, new_queue} = :queue.out(new_queue)
-      # TODO send top two player names into a new game
+      # TODO not sure if this setup is optimal but I'm trying it for now
 
-      # i'm not sure if i can or should send events (such as game ready)
-      # to the LobbyChannel
-      # it may make sense to have game:#id channels for each game
-      # the id could be passed in the route and then the page could 
-      # join the channel which would act as the stateful game
+      # TODO this may work but I don't know how to structure the receiving in the lobby channel process
+      #send(from, {:start_game, first_player, second_player})
+
+      # send reply letting caller know the players ready for the game
+      {:reply, {:start_game, first_player, second_player}, new_queue}
+    else
+      # tell caller there is no game to start
+      {:reply, {:no_game, :queue.len(new_queue)}, new_queue}
     end
-
-    {:noreply, :queue.in(player_name, new_queue)}
   end
 end

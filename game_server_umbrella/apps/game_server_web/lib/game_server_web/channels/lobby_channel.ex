@@ -5,6 +5,7 @@ defmodule GameServerWeb.LobbyChannel do
   use GameServerWeb, :channel
   alias GameServerWeb.Presence
   alias GameServer.Scoreboard
+  alias GameServer.PlayerQueue
 
   def join("lobby:" <> lobby_id, %{"username" => username}, socket) do
     send(self(), :after_join)
@@ -22,10 +23,23 @@ defmodule GameServerWeb.LobbyChannel do
     {:noreply, socket}
   end
 
-  # Receive updates from the game state?
-  def handle_info() do
-    
-    {}
+  # Invoked when the queue sends that people are ready to play
+  def handle_in("join_queue", _, socket) do
+    case PlayerQueue.add_player(socket.assigns.username) do
+      {:start_game, first_player, second_player} ->
+        # TODO may want to put socket ids in queue to?
+        # really I think this should be pushed just to the sockets concerned
+        # with their game starting
+        broadcast!(
+          socket,
+          "new_msg",
+          %{username: "Admin", message: "Game started between #{first_player} and #{second_player}"})
+
+      :no_game ->
+        nil
+    end
+
+    {:noreply, socket}
   end
 
   def handle_in("new_msg", %{"message" => message}, socket) do
