@@ -14,7 +14,9 @@ defmodule GameServer.Application do
       # Start a worker by calling: GameServer.Worker.start_link(arg)
       # {GameServer.Worker, arg}
       # Start the server scoreboard
-      GameServer.Scoreboard
+      GameServer.Scoreboard,
+      # Start the player queue
+      GameServer.PlayerQueue
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: GameServer.Supervisor)

@@ -22,6 +22,12 @@ defmodule GameServerWeb.LobbyChannel do
     {:noreply, socket}
   end
 
+  # Receive updates from the game state?
+  def handle_info() do
+    
+    {}
+  end
+
   def handle_in("new_msg", %{"message" => message}, socket) do
     broadcast!(socket, "new_msg", %{username: socket.assigns.username, message: message})
     {:noreply, socket}
