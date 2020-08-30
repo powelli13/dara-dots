@@ -5,6 +5,7 @@ defmodule GameServer.RockPaperScissors do
   after the game.
   """
   use GenServer
+  alias GameServer.Scoreboard
 
   @defeats %{
     :rock => :scissors,
@@ -18,29 +19,30 @@ defmodule GameServer.RockPaperScissors do
   Receives the move for the given player_name.
   move should be either :rock, :paper or :scissors.
   """
-  def enter_move(game_name, player_name, move) when is_atom(move) do
+  def enter_move(game_id, player_name, move) when is_atom(move) do
     # TODO error or guard clause to find illegal moves?
-    GenServer.call(game_name, {:player_move, player_name, move})
+    GenServer.call(game_id, {:player_move, player_name, move})
   end
 
-  def start_link(name, init_arg) do
+  def start_link(game_id, init_arg) do
     GenServer.start_link(
       __MODULE__,
       init_arg,
-      name: via_tuple(name))# TODO via_tuple here
+      name: via_tuple(game_id)
+    )
   end
 
-  def via_tuple(name) do
-    GameServer.ProcessRegistry.via_tuple({__MODULE__, name})
+  def via_tuple(game_id) do
+    GameServer.ProcessRegistry.via_tuple({__MODULE__, game_id})
   end
 
   @impl true
-  def init([first_player: first_player, second_player: second_player]) do
+  def init([player_one: player_one, player_two: player_two]) do
     # data structure to record player names and move inputs
     # when both players move calculate win/loss/draw and
     # send to scoreboard
     # TODO pull player names from opts for state initialization
-    {:ok, %{first_player => nil, second_player => nil}}
+    {:ok, %{player_one => nil, player_two => nil}}
   end
 
   @impl true
@@ -50,15 +52,15 @@ defmodule GameServer.RockPaperScissors do
     game_state = Map.put(game_state, player_name, move)
 
     # TODO should store more info int he game state struct
-    # have some way to kill this process after it reports the
-    # game being over.
     # Check for any winner
     case check_victory(game_state) do
       # TODO report win or draw
       {:winner, winner_name} ->
-        {:reply, "#{winner_name} wins!", game_state}
+        Scoreboard.report_win(winner_name)
+        # TODO report loss and draw
+        {:stop, :normal, "#{winner_name} wins!", game_state}
       :draw ->
-        {:reply, "Game drawn.", game_state}
+        {:stop, :normal, "Game drawn.", game_state}
       :not_over ->
         {:reply, "Not over, all players must move.", game_state}
     end

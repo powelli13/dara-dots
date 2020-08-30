@@ -9,6 +9,14 @@ defmodule GameServer.ProcessRegistry do
   end
 
   @doc """
+  Client function used to retrieve the PID of a running
+  game given the string game_id.
+  """
+  def get_RPS_game(game_id) when is_binary(game_id) do
+    Registry.whereis_name({__MODULE__, {GameServer.RockPaperScissors, game_id}})
+  end
+
+  @doc """
   Entry point that clients should use.
   key should be of the form {module, name}
   """

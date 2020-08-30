@@ -15,5 +15,10 @@ import socket from "./socket";
 import "phoenix_html";
 
 import LobbyChat from "./lobby";
+import Game from "./game";
+
+// TODO These need to be made conditional based on the page route
 // TODO improve second param, that simply indicates that the lobby chat should be active
 LobbyChat.init(socket, document.getElementById("lobby-chat-container"));
+// TODO update
+Game.init(socket, "game_id");

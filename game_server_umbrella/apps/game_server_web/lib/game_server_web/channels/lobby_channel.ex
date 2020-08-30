@@ -26,14 +26,26 @@ defmodule GameServerWeb.LobbyChannel do
   # Invoked when the queue sends that people are ready to play
   def handle_in("join_queue", _, socket) do
     case PlayerQueue.add_player(socket.assigns.username) do
-      {:start_game, first_player, second_player} ->
+      {:start_game, player_one, player_two} ->
         # TODO may want to put socket ids in queue to?
         # really I think this should be pushed just to the sockets concerned
         # with their game starting
+        # broadcast!(
+        #   socket,
+        #   "new_msg",
+        #   %{username: "Admin", message: "Game started between #{first_player} and #{second_player}"})
+
         broadcast!(
           socket,
-          "new_msg",
-          %{username: "Admin", message: "Game started between #{first_player} and #{second_player}"})
+          "game_started",
+          %{username: player_one, game_id: "game_id"}
+        )
+
+        broadcast!(
+          socket,
+          "game_started",
+          %{username: player_two, game_id: "game_id"}
+        )
 
       :no_game ->
         nil

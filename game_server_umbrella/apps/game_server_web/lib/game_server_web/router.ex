@@ -19,6 +19,8 @@ defmodule GameServerWeb.Router do
     get "/", PageController, :index
 
     get "/lobby", LobbyController, :index
+
+    get "/game", GameController, :index
   end
 
   # Other scopes may use custom stacks.
