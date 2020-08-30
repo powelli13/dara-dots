@@ -11,8 +11,8 @@ defmodule GameServer.Application do
       GameServer.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
-      # Start a worker by calling: GameServer.Worker.start_link(arg)
-      # {GameServer.Worker, arg}
+      # Start the ProcessRegistry
+      GameServer.ProcessRegistry,
       # Start the server scoreboard
       GameServer.Scoreboard,
       # Start the player queue
