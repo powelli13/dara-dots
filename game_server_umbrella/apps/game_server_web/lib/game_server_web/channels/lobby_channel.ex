@@ -35,16 +35,18 @@ defmodule GameServerWeb.LobbyChannel do
         #   "new_msg",
         #   %{username: "Admin", message: "Game started between #{first_player} and #{second_player}"})
 
+        new_game_id = Ecto.UUID.generate()
+
         broadcast!(
           socket,
           "game_started",
-          %{username: player_one, game_id: "game_id"}
+          %{username: player_one, game_id: new_game_id}
         )
 
         broadcast!(
           socket,
           "game_started",
-          %{username: player_two, game_id: "game_id"}
+          %{username: player_two, game_id: new_game_id}
         )
 
       :no_game ->

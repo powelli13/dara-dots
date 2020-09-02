@@ -2,8 +2,8 @@ defmodule GameServerWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", GameServerWeb.RoomChannel
   channel "lobby:*", GameServerWeb.LobbyChannel
+  channel "game:*", GameServerWeb.GameChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

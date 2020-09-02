@@ -1,3 +1,8 @@
-<div>
-  Hi welcome to the game!
+<div id="game-message-container">
 </div>
+
+<button id="submit-move" 
+  class="button column"
+  type="submit">
+  Submit Move
+</button>
