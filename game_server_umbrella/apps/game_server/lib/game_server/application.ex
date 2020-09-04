@@ -11,8 +11,11 @@ defmodule GameServer.Application do
       GameServer.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
+      #TODO do I need both a registry and dynamic supervisor?
       # Start the ProcessRegistry
       GameServer.ProcessRegistry,
+      # Start the dynamic supervisor for running games
+      GameServer.GameSupervisor,
       # Start the server scoreboard
       GameServer.Scoreboard,
       # Start the player queue

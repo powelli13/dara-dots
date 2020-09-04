@@ -4,37 +4,36 @@ defmodule GameServer.GameSupervisor do
   of running games given the ID generated when
   the game process was started.
   """
-  alias GameServer.ProcessRegistry
-  
-  def start_link do
+  use DynamicSupervisor
+
+  def start_link(init_arg) do
     DynamicSupervisor.start_link(
-      name: __MODULE__,
-      strategy: :one_for_one
+      __MODULE__,
+      init_arg,
+      name: __MODULE__
     )
   end
 
+  @impl true
+  def init(_init_arg) do
+    DynamicSupervisor.init(strategy: :one_for_one)
+  end
+
+  @doc """
+  Used to retrieve the process for an existing
+  game based on the ID or start a new game.
+  """
   def find_game(game_id) do
-    # TODO this may not be exactly what we want because
-    # a non-started game needs to start with players
-    # maybe registry is better?
     case start_child(game_id) do
       {:ok, pid} -> pid
       {:error, {:already_started, pid}} -> pid
     end
   end
 
-  defp start_child(game_id) do
+  def start_child(game_id) do
     DynamicSupervisor.start_child(
       __MODULE__,
       {GameServer.RockPaperScissors, game_id}
     )
-  end
-
-  def child_spec(_arg) do
-    %{
-      id: __MODULE__,
-      start: {__MODULE__, :start_link, []},
-      type: :supervisor
-    }
   end
 end
