@@ -19,15 +19,26 @@ defmodule GameServer.RockPaperScissors do
   Receives the move for the given player_name.
   move should be either :rock, :paper or :scissors.
   """
-  def enter_move(game_id, player_name, move) when is_atom(move) do
+  def enter_move(game_pid, player_name, move) when is_atom(move) do
     # TODO error or guard clause to find illegal moves?
-    GenServer.call(game_id, {:player_move, player_name, move})
+    GenServer.call(game_pid, {:player_move, player_name, move})
   end
 
-  def start_link(game_id, init_arg) do
+  @doc """
+  Attempts to add a new player to the game.
+  """
+  def add_player(game_pid, player_name) when is_binary(player_name) do
+    GenServer.cast(game_pid, {:add_player, player_name})
+  end
+
+  # TODO left off
+  # if we want to start this using the dynamic supervisor 
+  # we should probably change it to add players
+  # after it has been started
+  def start_link(game_id) do
     GenServer.start_link(
       __MODULE__,
-      init_arg,
+      game_id,
       name: via_tuple(game_id)
     )
   end
@@ -36,20 +47,55 @@ defmodule GameServer.RockPaperScissors do
     GameServer.ProcessRegistry.via_tuple({__MODULE__, game_id})
   end
 
+  # @impl true
+  # def init([player_one: player_one, player_two: player_two]) do
+  #   # data structure to record player names and move inputs
+  #   # when both players move calculate win/loss/draw and
+  #   # send to scoreboard
+  #   # TODO pull player names from opts for state initialization
+  #   {:ok, %{player_one => nil, player_two => nil}}
+  # end
   @impl true
-  def init([player_one: player_one, player_two: player_two]) do
-    # data structure to record player names and move inputs
-    # when both players move calculate win/loss/draw and
-    # send to scoreboard
-    # TODO pull player names from opts for state initialization
-    {:ok, %{player_one => nil, player_two => nil}}
+  def init(_) do
+    # TODO make a struct for this?
+    initial_state = %{
+      :player_one_name => nil,
+      :player_two_name => nil,
+      :player_one_move => nil,
+      :player_two_move => nil
+    }
+    {:ok, initial_state}
+  end
+
+  @impl true
+  def handle_cast({:add_player, player_name}, game_state) do
+    new_state = cond do
+      is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
+        Map.put(game_state, :player_one_name, player_name)
+      !is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
+        Map.put(game_state, :player_two_name, player_name)
+      # if both names nil then game is full cannot add player
+      true ->
+        game_state
+    end
+
+    {:noreply, new_state}
   end
 
   @impl true
   def handle_call({:player_move, player_name, move}, _from, game_state) do
     # TODO validate attempted player name and move
     # should probably handle that using a separate game state struct
-    game_state = Map.put(game_state, player_name, move)
+    game_state = cond do
+      game_state[:player_one_name] == player_name ->
+        Map.put(game_state, :player_one_move, move)
+      game_state[:player_two_name] == player_name ->
+        Map.put(game_state, :player_two_move, move)
+      # Not a valid player name
+      true ->
+        game_state
+    end
+    #game_state = Map.put(game_state, player_name, move)
 
     # TODO should store more info int he game state struct
     # Check for any winner
@@ -67,10 +113,12 @@ defmodule GameServer.RockPaperScissors do
   end
 
   defp check_victory(game_state) when is_map(game_state) do
-    [player_one, player_two] = Map.keys(game_state)
+    #[player_one, player_two] = Map.keys(game_state)
     %{
-      ^player_one => move_one,
-      ^player_two => move_two
+      :player_one_name => player_one,
+      :player_two_name => player_two,
+      :player_one_move => move_one,
+      :player_two_move => move_two
     } = game_state
 
     cond do

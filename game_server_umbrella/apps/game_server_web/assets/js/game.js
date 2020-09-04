@@ -24,8 +24,20 @@ let Game = {
         : {username: "anon" + Math.floor(Math.random() * 1000)};
     });
 
+    // Submit the players move to the server
     submitMove.addEventListener("click", e => {
-      let payload = {move: "the move!"};
+      let move = "";
+      let moveOptions = document.getElementsByName("move");
+
+      for (let i = 0; i < moveOptions.length; i++) {
+        if (moveOptions[i].checked) {
+          move = moveOptions[i].value;
+        }
+      }
+
+      // TODO also need to send game id and player name here
+      // Or should the game Id be on the socket?
+      let payload = {move: move};
       gameChannel.push("player_move", payload)
         .receive("error", e => e.console.log(e));
     });

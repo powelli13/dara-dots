@@ -6,8 +6,10 @@ defmodule GameServerWeb.LobbyChannel do
   alias GameServerWeb.Presence
   alias GameServer.Scoreboard
   alias GameServer.PlayerQueue
+  alias GameServer.GameSupervisor
+  alias GameServer.RockPaperScissors
 
-  def join("lobby:" <> lobby_id, %{"username" => username}, socket) do
+  def join("lobby:" <> _lobby_id, %{"username" => username}, socket) do
     send(self(), :after_join)
     {:ok, assign(socket, :username, username)}
   end
@@ -37,6 +39,13 @@ defmodule GameServerWeb.LobbyChannel do
 
         new_game_id = Ecto.UUID.generate()
 
+        # TODO maybe this should happen in the game channel?
+        # Start the game and add players
+        start_game_pid = GameSupervisor.find_game(new_game_id)
+
+        RockPaperScissors.add_player(start_game_pid, player_one)
+        RockPaperScissors.add_player(start_game_pid, player_two)
+
         broadcast!(
           socket,
           "game_started",
@@ -62,7 +71,7 @@ defmodule GameServerWeb.LobbyChannel do
   end
 
   # TODO just testing things
-  def handle_in("win_test", %{"winner" => phrase}, socket) do
+  def handle_in("win_test", %{"winner" => _phrase}, socket) do
     Scoreboard.report_win(socket.assigns.username)
     score_message = Scoreboard.get_scores()
       |> Enum.into([], fn {name, score} -> "#{name} has #{score} wins" end)
