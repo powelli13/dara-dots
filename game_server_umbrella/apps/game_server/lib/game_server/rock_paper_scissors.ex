@@ -47,15 +47,7 @@ defmodule GameServer.RockPaperScissors do
     GameServer.ProcessRegistry.via_tuple({__MODULE__, game_id})
   end
 
-  # @impl true
-  # def init([player_one: player_one, player_two: player_two]) do
-  #   # data structure to record player names and move inputs
-  #   # when both players move calculate win/loss/draw and
-  #   # send to scoreboard
-  #   # TODO pull player names from opts for state initialization
-  #   {:ok, %{player_one => nil, player_two => nil}}
-  # end
-  @impl true
+  @impl GenServer
   def init(_) do
     # TODO make a struct for this?
     initial_state = %{
@@ -67,7 +59,7 @@ defmodule GameServer.RockPaperScissors do
     {:ok, initial_state}
   end
 
-  @impl true
+  @impl GenServer
   def handle_cast({:add_player, player_name}, game_state) do
     new_state = cond do
       is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
@@ -82,7 +74,7 @@ defmodule GameServer.RockPaperScissors do
     {:noreply, new_state}
   end
 
-  @impl true
+  @impl GenServer
   def handle_call({:player_move, player_name, move}, _from, game_state) do
     # TODO validate attempted player name and move
     # should probably handle that using a separate game state struct
@@ -95,7 +87,6 @@ defmodule GameServer.RockPaperScissors do
       true ->
         game_state
     end
-    #game_state = Map.put(game_state, player_name, move)
 
     # TODO should store more info int he game state struct
     # Check for any winner
@@ -113,7 +104,6 @@ defmodule GameServer.RockPaperScissors do
   end
 
   defp check_victory(game_state) when is_map(game_state) do
-    #[player_one, player_two] = Map.keys(game_state)
     %{
       :player_one_name => player_one,
       :player_two_name => player_two,

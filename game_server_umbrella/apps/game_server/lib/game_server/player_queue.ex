@@ -7,10 +7,10 @@ defmodule GameServer.PlayerQueue do
 
   # adds the player to the queue
   def add_player(player_name) do
-    GenServer.call(__MODULE__, {:add_player, player_name})
+    GenServer.cast(__MODULE__, {:add_player, player_name})
   end
 
-  @impl true
+  @impl GenServer
   def init(_) do
     # Erlang language queue is used here
     {:ok, :queue.new()}
@@ -21,23 +21,27 @@ defmodule GameServer.PlayerQueue do
     GenServer.start_link(__MODULE__, opts, name: opts[:name])
   end
 
-  @impl true
-  def handle_call({:add_player, player_name}, _from, queue) do
+  @impl GenServer
+  def handle_cast({:add_player, player_name}, queue) do
+    IO.puts "adding player to queue!!"
+
     new_queue = :queue.in(player_name, queue)
 
     if :queue.len(new_queue) >= 2 do
       {{:value, first_player}, new_queue} = :queue.out(new_queue)
       {{:value, second_player}, new_queue} = :queue.out(new_queue)
-      # TODO not sure if this setup is optimal but I'm trying it for now
 
-      # TODO this may work but I don't know how to structure the receiving in the lobby channel process
-      #send(from, {:start_game, first_player, second_player})
+      # Inform the lobby channel that the players are in a game together
+      Registry.dispatch(GameServerWebRegistry, "lobby_channel", fn entries ->
+        for {pid, _} <- entries do
+          send(pid, {:start_game, first_player, second_player})
+        end
+      end)
 
-      # send reply letting caller know the players ready for the game
-      {:reply, {:start_game, first_player, second_player}, new_queue}
+      {:noreply, new_queue}
     else
       # tell caller there is no game to start
-      {:reply, {:no_game, :queue.len(new_queue)}, new_queue}
+      {:noreply, new_queue}
     end
   end
 end

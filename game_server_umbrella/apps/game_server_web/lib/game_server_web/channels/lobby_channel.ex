@@ -9,7 +9,22 @@ defmodule GameServerWeb.LobbyChannel do
   alias GameServer.GameSupervisor
   alias GameServer.RockPaperScissors
 
+  # Register the Channel process so that it
+  # can receive updates from the player queue
+  def start_link(opts) do
+    IO.puts "HI THERE FROM start_link!!!"
+    Registry.register(GameServerWebRegistry, "lobby_channel", nil)
+
+    GenServer.start_link(
+      __MODULE__,
+      opts
+    )
+  end
+
   def join("lobby:" <> _lobby_id, %{"username" => username}, socket) do
+    #TODO probably bad practice just trying to make things work
+    Registry.register(GameServerWebRegistry, "lobby_channel", nil)
+
     send(self(), :after_join)
     {:ok, assign(socket, :username, username)}
   end
@@ -25,42 +40,50 @@ defmodule GameServerWeb.LobbyChannel do
     {:noreply, socket}
   end
 
+  # def handle_in("start_game", _, socket) do
+  #   IO.puts "HI from start game!!!"
+  #   {:noreply, socket}
+  # end
+
+  # def handle_info("start_game", socket) do
+  #   IO.puts "HI from start game info!!!"
+  #   {:noreply, socket}
+  # end
+
+  # Handle messages from the queue indicating that a game is ready
+  def handle_info({:start_game, player_one, player_two}, socket) do
+    IO.puts "HI THERE FROM handling a game start!!!"
+    IO.inspect socket
+    
+    new_game_id = Ecto.UUID.generate()
+
+    # TODO maybe this should happen in the game channel?
+    # Start the game and add players
+    start_game_pid = GameSupervisor.find_game(new_game_id)
+
+    RockPaperScissors.add_player(start_game_pid, player_one)
+    RockPaperScissors.add_player(start_game_pid, player_two)
+
+    # TODO ideally these should push to player specific sockets
+    # and not broadcast
+    broadcast!(
+      socket,
+      "game_started",
+      %{username: player_one, game_id: new_game_id}
+    )
+
+    broadcast!(
+      socket,
+      "game_started",
+      %{username: player_two, game_id: new_game_id}
+    )
+
+    {:noreply, socket}
+  end
+
   # Invoked when the queue sends that people are ready to play
   def handle_in("join_queue", _, socket) do
-    case PlayerQueue.add_player(socket.assigns.username) do
-      {:start_game, player_one, player_two} ->
-        # TODO may want to put socket ids in queue to?
-        # really I think this should be pushed just to the sockets concerned
-        # with their game starting
-        # broadcast!(
-        #   socket,
-        #   "new_msg",
-        #   %{username: "Admin", message: "Game started between #{first_player} and #{second_player}"})
-
-        new_game_id = Ecto.UUID.generate()
-
-        # TODO maybe this should happen in the game channel?
-        # Start the game and add players
-        start_game_pid = GameSupervisor.find_game(new_game_id)
-
-        RockPaperScissors.add_player(start_game_pid, player_one)
-        RockPaperScissors.add_player(start_game_pid, player_two)
-
-        broadcast!(
-          socket,
-          "game_started",
-          %{username: player_one, game_id: new_game_id}
-        )
-
-        broadcast!(
-          socket,
-          "game_started",
-          %{username: player_two, game_id: new_game_id}
-        )
-
-      :no_game ->
-        nil
-    end
+    PlayerQueue.add_player(socket.assigns.username)
 
     {:noreply, socket}
   end

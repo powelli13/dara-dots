@@ -39,5 +39,7 @@ defmodule GameServerWeb.GameChannel do
       "player_move",
       %{message: game_state}
     )
+
+    {:noreply, socket}
   end
 end

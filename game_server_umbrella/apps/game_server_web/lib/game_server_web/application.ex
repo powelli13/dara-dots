@@ -12,9 +12,10 @@ defmodule GameServerWeb.Application do
       # Add channel presence
       GameServerWeb.Presence,
       # Start the Endpoint (http/https)
-      GameServerWeb.Endpoint
-      # Start a worker by calling: GameServerWeb.Worker.start_link(arg)
-      # {GameServerWeb.Worker, arg}
+      GameServerWeb.Endpoint,
+      # Start the Registry so that process can use
+      # it for PubSub
+      {Registry, keys: :unique, name: GameServerWebRegistry},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
