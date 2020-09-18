@@ -154,7 +154,7 @@ function create ()
 
                     // }
 
-                    // TODO left off 
+                    // TODO 
                     // having conceptual trouble deciding if this should be
                     // piece or node centric
                     // the fact that sprite objects are being used

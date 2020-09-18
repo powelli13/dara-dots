@@ -40,43 +40,18 @@ defmodule GameServerWeb.LobbyChannel do
     {:noreply, socket}
   end
 
-  # def handle_in("start_game", _, socket) do
-  #   IO.puts "HI from start game!!!"
-  #   {:noreply, socket}
-  # end
-
-  # def handle_info("start_game", socket) do
-  #   IO.puts "HI from start game info!!!"
-  #   {:noreply, socket}
-  # end
-
   # Handle messages from the queue indicating that a game is ready
-  def handle_info({:start_game, player_one, player_two}, socket) do
-    IO.puts "HI THERE FROM handling a game start!!!"
-    IO.inspect socket
-    
-    new_game_id = Ecto.UUID.generate()
-
-    # TODO maybe this should happen in the game channel?
+  def handle_info({:start_game, player_one, player_two, new_game_id}, socket) do
     # Start the game and add players
     start_game_pid = GameSupervisor.find_game(new_game_id)
 
-    RockPaperScissors.add_player(start_game_pid, player_one)
-    RockPaperScissors.add_player(start_game_pid, player_two)
+    # TODO this can be improved
+    if socket.assigns.username == player_one ||
+      socket.assigns.username == player_two do
 
-    # TODO ideally these should push to player specific sockets
-    # and not broadcast
-    broadcast!(
-      socket,
-      "game_started",
-      %{username: player_one, game_id: new_game_id}
-    )
-
-    broadcast!(
-      socket,
-      "game_started",
-      %{username: player_two, game_id: new_game_id}
-    )
+      RockPaperScissors.add_player(start_game_pid, socket.assigns.username)
+      push(socket, "game_started", %{username: socket.assigns.username, game_id: new_game_id})
+    end
 
     {:noreply, socket}
   end
