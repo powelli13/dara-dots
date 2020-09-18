@@ -9,7 +9,8 @@ defmodule GameServerWeb.GameChannel do
   alias GameServer.RockPaperScissors
 
   def join("game:" <> game_id, %{"username" => username}, socket) do
-    updated_socket = socket
+    updated_socket =
+      socket
       |> assign(:game_id, game_id)
       |> assign(:username, username)
 
@@ -18,22 +19,26 @@ defmodule GameServerWeb.GameChannel do
 
   def handle_in("player_move", %{"move" => move_string}, socket) do
     # TODO move this to appropriate module
-    move = move_string
-      |> String.downcase
-      |> String.to_atom
+    move =
+      move_string
+      |> String.downcase()
+      |> String.to_atom()
 
     game_pid = GameSupervisor.find_game(socket.assigns.game_id)
 
-    game_state = RockPaperScissors.enter_move(
-      game_pid,
-      socket.assigns.username,
-      move
-    )
+    game_state =
+      RockPaperScissors.enter_move(
+        game_pid,
+        socket.assigns.username,
+        move
+      )
 
     broadcast!(
       socket,
       "player_move",
-      %{message: "Player #{socket.assigns.username} has played #{move}!"})
+      %{message: "Player #{socket.assigns.username} has played #{move}!"}
+    )
+
     broadcast!(
       socket,
       "player_move",

@@ -11,7 +11,7 @@ defmodule GameServer.Application do
       GameServer.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
-      #TODO do I need both a registry and dynamic supervisor?
+      # TODO do I need both a registry and dynamic supervisor?
       # Start the ProcessRegistry
       GameServer.ProcessRegistry,
       # Start the dynamic supervisor for running games

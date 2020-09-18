@@ -56,20 +56,24 @@ defmodule GameServer.RockPaperScissors do
       :player_one_move => nil,
       :player_two_move => nil
     }
+
     {:ok, initial_state}
   end
 
   @impl GenServer
   def handle_cast({:add_player, player_name}, game_state) do
-    new_state = cond do
-      is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
-        Map.put(game_state, :player_one_name, player_name)
-      !is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
-        Map.put(game_state, :player_two_name, player_name)
-      # if both names nil then game is full cannot add player
-      true ->
-        game_state
-    end
+    new_state =
+      cond do
+        is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
+          Map.put(game_state, :player_one_name, player_name)
+
+        !is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
+          Map.put(game_state, :player_two_name, player_name)
+
+        # if both names nil then game is full cannot add player
+        true ->
+          game_state
+      end
 
     {:noreply, new_state}
   end
@@ -78,15 +82,18 @@ defmodule GameServer.RockPaperScissors do
   def handle_call({:player_move, player_name, move}, _from, game_state) do
     # TODO validate attempted player name and move
     # should probably handle that using a separate game state struct
-    game_state = cond do
-      game_state[:player_one_name] == player_name ->
-        Map.put(game_state, :player_one_move, move)
-      game_state[:player_two_name] == player_name ->
-        Map.put(game_state, :player_two_move, move)
-      # Not a valid player name
-      true ->
-        game_state
-    end
+    game_state =
+      cond do
+        game_state[:player_one_name] == player_name ->
+          Map.put(game_state, :player_one_move, move)
+
+        game_state[:player_two_name] == player_name ->
+          Map.put(game_state, :player_two_move, move)
+
+        # Not a valid player name
+        true ->
+          game_state
+      end
 
     # TODO should store more info int he game state struct
     # Check for any winner
@@ -96,8 +103,10 @@ defmodule GameServer.RockPaperScissors do
         Scoreboard.report_win(winner_name)
         # TODO report loss and draw
         {:stop, :normal, "#{winner_name} wins!", game_state}
+
       :draw ->
         {:stop, :normal, "Game drawn.", game_state}
+
       :not_over ->
         {:reply, "Not over, all players must move.", game_state}
     end
@@ -114,10 +123,13 @@ defmodule GameServer.RockPaperScissors do
     cond do
       is_nil(move_one) || is_nil(move_two) ->
         :not_over
+
       move_one == move_two ->
         :draw
+
       @defeats[move_one] == move_two ->
         {:winner, player_one}
+
       true ->
         {:winner, player_two}
     end

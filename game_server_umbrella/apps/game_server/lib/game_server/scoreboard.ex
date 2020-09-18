@@ -18,7 +18,7 @@ defmodule GameServer.Scoreboard do
   def get_scores() do
     GenServer.call(__MODULE__, :get_scores)
   end
-  
+
   # Callback implementations
   @impl true
   def init(_) do
@@ -30,14 +30,16 @@ defmodule GameServer.Scoreboard do
 
   @impl true
   def handle_cast({:report_win, player_name}, player_scores) do
-    updated_scores = case Map.get(player_scores, player_name) do
-      # First report win for that player
-      nil ->
-        Map.put(player_scores, player_name, 1)
-      # Increment existing player's score
-      score ->
-        Map.put(player_scores, player_name, score + 1)
-    end
+    updated_scores =
+      case Map.get(player_scores, player_name) do
+        # First report win for that player
+        nil ->
+          Map.put(player_scores, player_name, 1)
+
+        # Increment existing player's score
+        score ->
+          Map.put(player_scores, player_name, score + 1)
+      end
 
     {:noreply, updated_scores}
   end
@@ -46,9 +48,12 @@ defmodule GameServer.Scoreboard do
   def handle_call(:get_scores, _from, player_scores) do
     # Transform the scores map into a list of {name, score} tuples.
     # Seems unnecessary but some transformation may be necessary here.
-    scores_list = Enum.map(
-      player_scores, 
-      fn {k, v} -> {k, v} end)
+    scores_list =
+      Enum.map(
+        player_scores,
+        fn {k, v} -> {k, v} end
+      )
+
     {:reply, scores_list, player_scores}
   end
 end

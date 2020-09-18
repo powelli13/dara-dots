@@ -12,7 +12,7 @@ defmodule GameServerWeb.LobbyChannel do
   # Register the Channel process so that it
   # can receive updates from the player queue
   def start_link(opts) do
-    IO.puts "HI THERE FROM start_link!!!"
+    IO.puts("HI THERE FROM start_link!!!")
     Registry.register(GameServerWebRegistry, "lobby_channel", nil)
 
     GenServer.start_link(
@@ -22,7 +22,7 @@ defmodule GameServerWeb.LobbyChannel do
   end
 
   def join("lobby:" <> _lobby_id, %{"username" => username}, socket) do
-    #TODO probably bad practice just trying to make things work
+    # TODO probably bad practice just trying to make things work
     Registry.register(GameServerWebRegistry, "lobby_channel", nil)
 
     send(self(), :after_join)
@@ -47,8 +47,7 @@ defmodule GameServerWeb.LobbyChannel do
 
     # TODO this can be improved
     if socket.assigns.username == player_one ||
-      socket.assigns.username == player_two do
-
+         socket.assigns.username == player_two do
       RockPaperScissors.add_player(start_game_pid, socket.assigns.username)
       push(socket, "game_started", %{username: socket.assigns.username, game_id: new_game_id})
     end
@@ -71,20 +70,24 @@ defmodule GameServerWeb.LobbyChannel do
   # TODO just testing things
   def handle_in("win_test", %{"winner" => _phrase}, socket) do
     Scoreboard.report_win(socket.assigns.username)
-    score_message = Scoreboard.get_scores()
+
+    score_message =
+      Scoreboard.get_scores()
       |> Enum.into([], fn {name, score} -> "#{name} has #{score} wins" end)
       |> Enum.join(", ")
 
     broadcast!(
-      socket, 
-      "win_test", 
-      %{username: "Admin", message: "#{socket.assigns.username} has won!"})
+      socket,
+      "win_test",
+      %{username: "Admin", message: "#{socket.assigns.username} has won!"}
+    )
 
     broadcast!(
       socket,
       "win_test",
       %{username: "Admin", message: "Current scores: #{score_message}"}
     )
+
     {:noreply, socket}
   end
 end

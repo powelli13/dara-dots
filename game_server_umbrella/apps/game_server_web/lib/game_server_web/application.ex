@@ -15,7 +15,7 @@ defmodule GameServerWeb.Application do
       GameServerWeb.Endpoint,
       # Start the Registry so that process can use
       # it for PubSub
-      {Registry, keys: :duplicate, name: GameServerWebRegistry},
+      {Registry, keys: :duplicate, name: GameServerWebRegistry}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
