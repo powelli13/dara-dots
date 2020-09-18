@@ -12,7 +12,6 @@ defmodule GameServerWeb.LobbyChannel do
   # Register the Channel process so that it
   # can receive updates from the player queue
   def start_link(opts) do
-    IO.puts("HI THERE FROM start_link!!!")
     Registry.register(GameServerWebRegistry, "lobby_channel", nil)
 
     GenServer.start_link(
@@ -64,30 +63,6 @@ defmodule GameServerWeb.LobbyChannel do
 
   def handle_in("new_msg", %{"message" => message}, socket) do
     broadcast!(socket, "new_msg", %{username: socket.assigns.username, message: message})
-    {:noreply, socket}
-  end
-
-  # TODO just testing things
-  def handle_in("win_test", %{"winner" => _phrase}, socket) do
-    Scoreboard.report_win(socket.assigns.username)
-
-    score_message =
-      Scoreboard.get_scores()
-      |> Enum.into([], fn {name, score} -> "#{name} has #{score} wins" end)
-      |> Enum.join(", ")
-
-    broadcast!(
-      socket,
-      "win_test",
-      %{username: "Admin", message: "#{socket.assigns.username} has won!"}
-    )
-
-    broadcast!(
-      socket,
-      "win_test",
-      %{username: "Admin", message: "Current scores: #{score_message}"}
-    )
-
     {:noreply, socket}
   end
 end

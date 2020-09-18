@@ -18,10 +18,6 @@
   </button>
 </div>
 
-<button id="win-test-button">
-  Win a Game
-</button>
-
 <button id="join-queue-button">
   Join the Queue
 </button>

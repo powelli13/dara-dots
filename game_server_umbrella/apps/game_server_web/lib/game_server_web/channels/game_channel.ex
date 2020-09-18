@@ -36,12 +36,6 @@ defmodule GameServerWeb.GameChannel do
     broadcast!(
       socket,
       "player_move",
-      %{message: "Player #{socket.assigns.username} has played #{move}!"}
-    )
-
-    broadcast!(
-      socket,
-      "player_move",
       %{message: game_state}
     )
 
