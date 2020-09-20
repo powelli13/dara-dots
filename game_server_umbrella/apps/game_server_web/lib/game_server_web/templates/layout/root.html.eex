@@ -29,5 +29,7 @@
       Made with &hearts; by Isaac Powell.
       </div>
     </main>
+    <script type="text/javascript"
+      src="<%= Routes.static_url(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

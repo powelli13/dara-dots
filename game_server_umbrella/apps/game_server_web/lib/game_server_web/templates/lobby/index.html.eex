@@ -18,9 +18,11 @@
   </button>
 </div>
 
-<button id="join-queue-button">
-  Join the Queue
-</button>
+<div>
+  <button id="join-queue-button">
+    Join the Queue
+  </button>
 
-<%= link "Play Tic Tac Toe", to: "/tictactoe" %>
-<%= link "Join the Lip Sync Fun!", to: "/lipsync" %>
+  <div><%= link "Play Tic Tac Toe", to: "/tictactoe" %></div>
+  <div><%= link "Join the Lip Sync Fun!", to: "/lipsync" %></div>
+</div>
