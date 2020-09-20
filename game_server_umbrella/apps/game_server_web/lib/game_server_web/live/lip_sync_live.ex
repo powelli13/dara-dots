@@ -1,4 +1,4 @@
-defmodule GameServerWeb.TicTacToeLive do
+defmodule GameServerWeb.LipSyncLive do
   use Phoenix.LiveView
 
   @impl Phoenix.LiveView
@@ -9,7 +9,7 @@ defmodule GameServerWeb.TicTacToeLive do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~L"""
-    <div>hi there!</div>
+    <div>Welcome to Lip Sync battle!</div>
     """
   end
 end

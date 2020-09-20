@@ -23,3 +23,4 @@
 </button>
 
 <%= link "Play Tic Tac Toe", to: "/tictactoe" %>
+<%= link "Join the Lip Sync Fun!", to: "/lipsync" %>
