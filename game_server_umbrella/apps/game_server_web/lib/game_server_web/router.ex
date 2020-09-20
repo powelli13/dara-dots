@@ -1,5 +1,6 @@
 defmodule GameServerWeb.Router do
   use GameServerWeb, :router
+  import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -7,6 +8,7 @@ defmodule GameServerWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_root_layout, {GameServerWeb.LayoutView, :root}
   end
 
   pipeline :api do
@@ -41,6 +43,7 @@ defmodule GameServerWeb.Router do
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: GameServerWeb.Telemetry
+      live "/tictactoe", TicTacToeLive
     end
   end
 end

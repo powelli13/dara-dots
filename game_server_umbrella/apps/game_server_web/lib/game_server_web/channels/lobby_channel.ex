@@ -9,17 +9,6 @@ defmodule GameServerWeb.LobbyChannel do
   alias GameServer.GameSupervisor
   alias GameServer.RockPaperScissors
 
-  # Register the Channel process so that it
-  # can receive updates from the player queue
-  def start_link(opts) do
-    Registry.register(GameServerWebRegistry, "lobby_channel", nil)
-
-    GenServer.start_link(
-      __MODULE__,
-      opts
-    )
-  end
-
   def join("lobby:" <> _lobby_id, %{"username" => username}, socket) do
     # TODO probably bad practice just trying to make things work
     Registry.register(GameServerWebRegistry, "lobby_channel", nil)

@@ -21,3 +21,5 @@
 <button id="join-queue-button">
   Join the Queue
 </button>
+
+<%= link "Play Tic Tac Toe", to: "/tictactoe" %>
