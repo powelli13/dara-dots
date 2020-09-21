@@ -17,8 +17,6 @@ import LobbyChat from "./lobby";
 import Game from "./game";
 
 import socket from "./socket";
-import LiveSocket from "phoenix_live_view";
-import {Socket} from "phoenix";
 
 // Initialize the Lobby chat object using the lobby chat container
 // if it is found on the page.
@@ -27,6 +25,9 @@ LobbyChat.init(socket, document.getElementById("lobby-chat-container"));
 // Initialize the Game facilitating object.
 // TODO consider changing the initializing state
 Game.init(socket, "id");
+
+import LiveSocket from "phoenix_live_view";
+import {Socket} from "phoenix";
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}});
