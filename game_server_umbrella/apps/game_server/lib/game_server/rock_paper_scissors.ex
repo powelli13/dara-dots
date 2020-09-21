@@ -6,6 +6,7 @@ defmodule GameServer.RockPaperScissors do
   """
   use GenServer
   alias GameServer.Scoreboard
+  alias Phoenix.PubSub
 
   @defeats %{
     :rock => :scissors,
@@ -21,7 +22,7 @@ defmodule GameServer.RockPaperScissors do
   """
   def enter_move(game_pid, player_name, move) when is_atom(move) do
     # TODO error or guard clause to find illegal moves?
-    GenServer.call(game_pid, {:player_move, player_name, move})
+    GenServer.cast(game_pid, {:player_move, player_name, move})
   end
 
   @doc """
@@ -48,9 +49,10 @@ defmodule GameServer.RockPaperScissors do
   end
 
   @impl GenServer
-  def init(_) do
+  def init(game_id) do
     # TODO make a struct for this?
     initial_state = %{
+      :game_id => game_id,
       :player_one_name => nil,
       :player_two_name => nil,
       :player_one_move => nil,
@@ -79,7 +81,7 @@ defmodule GameServer.RockPaperScissors do
   end
 
   @impl GenServer
-  def handle_call({:player_move, player_name, move}, _from, game_state) do
+  def handle_cast({:player_move, player_name, move}, game_state) do
     # TODO validate attempted player name and move
     # should probably handle that using a separate game state struct
     game_state =
@@ -101,14 +103,17 @@ defmodule GameServer.RockPaperScissors do
       # TODO report win or draw
       {:winner, winner_name} ->
         Scoreboard.report_win(winner_name)
+        broadcast_game_update(game_state[:game_id], {:game_over, winner_name})
         # TODO report loss and draw
-        {:stop, :normal, "#{winner_name} wins!", game_state}
+        {:stop, :normal, game_state}
 
       :draw ->
-        {:stop, :normal, "Game drawn.", game_state}
+        broadcast_game_update(game_state[:game_id], :game_drawn)
+        {:stop, :normal, game_state}
 
       :not_over ->
-        {:reply, "Not over, all players must move.", game_state}
+        broadcast_game_update(game_state[:game_id], :game_continue)
+        {:noreply, game_state}
     end
   end
 
@@ -133,5 +138,9 @@ defmodule GameServer.RockPaperScissors do
       true ->
         {:winner, player_two}
     end
+  end
+
+  defp broadcast_game_update(game_id, update_term) do
+    PubSub.broadcast(GameServer.PubSub, "game:" <> game_id, update_term)
   end
 end

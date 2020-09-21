@@ -7,14 +7,37 @@ defmodule GameServerWeb.GameChannel do
   use GameServerWeb, :channel
   alias GameServer.GameSupervisor
   alias GameServer.RockPaperScissors
+  alias Phoenix.PubSub
 
   def join("game:" <> game_id, %{"username" => username}, socket) do
+    PubSub.subscribe(GameServer.PubSub, "game:" <> game_id)
+
     updated_socket =
       socket
       |> assign(:game_id, game_id)
       |> assign(:username, username)
 
     {:ok, updated_socket}
+  end
+
+  # Handlers to take care of game state updates from the
+  # rock_paper_scissors server that was subscribed to on join
+  def handle_info(:game_drawn, socket) do
+    push(socket, "player_move", %{message: "Game drawn. Thanks for playing!"})
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:game_continue, socket) do
+    push(socket, "player_move", %{message: "Game not over, all players must move."})
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:game_over, winner_name}, socket) do
+    push(socket, "player_move", %{message: "Game over! #{winner_name} has won."})
+
+    {:noreply, socket}
   end
 
   def handle_in("player_move", %{"move" => move_string}, socket) do
@@ -26,18 +49,17 @@ defmodule GameServerWeb.GameChannel do
 
     game_pid = GameSupervisor.find_game(socket.assigns.game_id)
 
-    game_state =
-      RockPaperScissors.enter_move(
-        game_pid,
-        socket.assigns.username,
-        move
-      )
-
-    broadcast!(
-      socket,
-      "player_move",
-      %{message: game_state}
+    RockPaperScissors.enter_move(
+      game_pid,
+      socket.assigns.username,
+      move
     )
+
+    #broadcast!(
+    #  socket,
+    #  "player_move",
+    #  %{message: game_state}
+    #)
 
     {:noreply, socket}
   end
