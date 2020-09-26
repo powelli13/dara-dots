@@ -1,5 +1,9 @@
 <h4>Welcome to the Lobby!</h4>
 
+<%= content_tag :div, id: "video-player-id",
+  data: [video_id: "8jTjNMkWOzM"] do %>
+<% end %>
+
 <div id="user-list">
 </div>
 
