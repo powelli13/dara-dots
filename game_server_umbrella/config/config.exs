@@ -10,11 +10,7 @@
 use Mix.Config
 
 # Configure Mix tasks and generators
-config :game_server,
-  ecto_repos: [GameServer.Repo]
-
 config :game_server_web,
-  ecto_repos: [GameServer.Repo],
   generators: [context_app: :game_server]
 
 # Configures the endpoint

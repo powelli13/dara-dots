@@ -7,8 +7,6 @@ defmodule GameServer.Application do
 
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      GameServer.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
       # TODO do I need both a registry and dynamic supervisor?
