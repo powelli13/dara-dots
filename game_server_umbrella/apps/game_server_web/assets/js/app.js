@@ -31,8 +31,6 @@ LobbyChat.init(socket, document.getElementById("lobby-chat-container"));
 // Initialize the Game facilitating script
 Game.init(socket, "id");
 
-Player.init("video-player-id", "8jTjNMkWOzM", () => console.log("video player ready!"));
-
 let Hooks = {};
 Hooks.VideoPlayer = {
   mount() {

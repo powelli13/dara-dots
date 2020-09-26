@@ -1,4 +1,5 @@
 import {Presence} from "phoenix";
+import Player from "./player";
 
 // Object used to connect to a lobby channel using
 // a socket and facilitate chatting messages.
@@ -7,6 +8,8 @@ let LobbyChat = {
     if (!element) { return; }
 
     socket.connect();
+
+    Player.init("video-player-id", "8jTjNMkWOzM", () => console.log("video player ready!"));
 
     this.onReady(socket);
   },
@@ -39,7 +42,6 @@ let LobbyChat = {
       .receive("error", e => e.console.log(e));
       chatInput.value = "";
     });
-    
 
     // Join the queue for rock paper scissors
     let joinQueue = document.getElementById("join-queue-button");
@@ -47,6 +49,21 @@ let LobbyChat = {
       joinQueue.setAttribute("disabled", "disabled");
       lobbyChannel.push("join_queue", {})
         .receive("error", e => e.console.log(e));
+    });
+
+    // Test to send a new video ID for the player and update it
+    let updateVideoId = document.getElementById("update-video-button");
+    let videoIdInput = document.getElementById("video-id-input");
+
+    updateVideoId.addEventListener("click", e => {
+      lobbyChannel.push("update_video", {new_id: videoIdInput.value})
+        .receive("error", e => e.console.log(e));
+    });
+
+    lobbyChannel.on("update_video", (resp) => {
+      if (Player.player != null) {
+        Player.player.loadVideoById(resp.new_id);
+      }
     });
 
     lobbyChannel.on("game_started", (resp) => {

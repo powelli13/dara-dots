@@ -4,6 +4,11 @@
   data: [video_id: "8jTjNMkWOzM"] do %>
 <% end %>
 
+<input id="video-id-input" type="text" placeholder="YouTube Video Id" />
+<button id="update-video-button">
+  Change Video
+</button>
+
 <div id="user-list">
 </div>
 

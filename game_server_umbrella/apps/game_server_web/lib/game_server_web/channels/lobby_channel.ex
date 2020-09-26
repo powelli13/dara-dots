@@ -54,4 +54,10 @@ defmodule GameServerWeb.LobbyChannel do
     broadcast!(socket, "new_msg", %{username: socket.assigns.username, message: message})
     {:noreply, socket}
   end
+
+  # Handle event that updates the video id that should play
+  def handle_in("update_video", %{"new_id" => new_id}, socket) do
+    broadcast!(socket, "update_video", %{new_id: new_id})
+    {:noreply, socket}
+  end
 end
