@@ -55,12 +55,6 @@ defmodule GameServerWeb.GameChannel do
       move
     )
 
-    #broadcast!(
-    #  socket,
-    #  "player_move",
-    #  %{message: game_state}
-    #)
-
     {:noreply, socket}
   end
 end
