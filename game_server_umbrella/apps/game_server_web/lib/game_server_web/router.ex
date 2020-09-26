@@ -47,7 +47,6 @@ defmodule GameServerWeb.Router do
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: GameServerWeb.Telemetry
-      live "/tictactoe", TicTacToeLive
     end
   end
 end
