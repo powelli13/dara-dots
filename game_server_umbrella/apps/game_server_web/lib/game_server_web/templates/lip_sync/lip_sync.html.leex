@@ -1,0 +1,12 @@
+<div>Welcome to Lip Sync battle!</div>
+<div>Messages</div>
+<%= for message <- @messages do %>
+<div><%= message %></div>
+<% end %>
+<form phx-submit="send_message">
+  <textarea rows="2" placeholder="Chat" name="message" value="<%= @draft_message %>">
+  </textarea>
+  <button type="submit">
+    Send
+  </buton>
+</form>

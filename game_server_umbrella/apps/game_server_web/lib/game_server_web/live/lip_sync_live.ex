@@ -1,40 +1,24 @@
 defmodule GameServerWeb.LipSyncLive do
   use Phoenix.LiveView
   alias Phoenix.PubSub
+  alias GameServerWeb.LipSyncView
   alias GameServerWeb.Presence
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    connected = connected?(socket)
-
-    if connected do
+    if connected?(socket) do
       PubSub.subscribe(GameServer.PubSub, "lipsync:test")
     end
 
     {:ok,
      socket
-     |> assign(:connected, connected)
      |> assign(:draft_message, "")
      |> assign(:messages, [])}
   end
 
   @impl Phoenix.LiveView
   def render(assigns) do
-    ~L"""
-    <div>Welcome to Lip Sync battle!</div>
-    <div>We are <%= @connected %> connected!</div>
-    <div>Messages</div>
-    <%= for message <- @messages do %>
-    <div><%= message %></div>
-    <% end %>
-    <form phx-submit="send_message">
-      <textarea rows="2" placeholder="Chat" name="message" value="<%= @draft_message %>">
-      </textarea>
-      <button type="submit">
-        Send
-      </buton>
-    </form>
-    """
+    LipSyncView.render("lip_sync.html", assigns)
   end
 
   @impl Phoenix.LiveView
