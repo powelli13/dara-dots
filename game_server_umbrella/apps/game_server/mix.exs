@@ -37,7 +37,8 @@ defmodule GameServer.MixProject do
   defp deps do
     [
       {:phoenix_pubsub, "~> 2.0"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:uuid, "~> 1.1"}
     ]
   end
 
