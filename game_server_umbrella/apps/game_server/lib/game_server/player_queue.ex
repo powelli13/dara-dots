@@ -30,7 +30,7 @@ defmodule GameServer.PlayerQueue do
       {{:value, second_player}, new_queue} = :queue.out(new_queue)
 
       # Generate the new random unique game id
-      new_game_id = UUID.uuid4 |> String.split("-") |> hd
+      new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Inform the lobby channel that the players are in a game together
       Registry.dispatch(GameServerWebRegistry, "lobby_channel", fn entries ->

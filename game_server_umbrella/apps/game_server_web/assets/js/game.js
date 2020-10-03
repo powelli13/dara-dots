@@ -26,6 +26,7 @@ let Game = {
 
     // Submit the players move to the server
     submitMove.addEventListener("click", e => {
+      submitMove.setAttribute("disabled", "disabled");
       let move = "";
       let moveOptions = document.getElementsByName("move");
 
@@ -35,8 +36,8 @@ let Game = {
         }
       }
 
-      // TODO also need to send game id and player name here
-      // Or should the game Id be on the socket?
+      // The game id is already on the serverside socket
+      // so we don't need to send it here.
       let payload = {move: move};
       gameChannel.push("player_move", payload)
         .receive("error", e => e.console.log(e));

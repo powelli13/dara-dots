@@ -141,6 +141,7 @@ defmodule GameServer.RockPaperScissors do
   end
 
   defp broadcast_game_update(game_id, update_term) do
+    IO.puts("RPC broadcasting! Sending game update")
     PubSub.broadcast(GameServer.PubSub, "game:" <> game_id, update_term)
   end
 end

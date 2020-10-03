@@ -21,9 +21,6 @@ defmodule GameServerWeb.LobbyChannel do
   def handle_info(:after_join, socket) do
     {:ok, _} = Presence.track(socket, socket.assigns.username, %{})
 
-    # TODO put the score board info on the presence?
-    # also add some way to trivially generate wins from the front end to test
-
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
   end
@@ -33,7 +30,7 @@ defmodule GameServerWeb.LobbyChannel do
     # Start the game and add players
     start_game_pid = GameSupervisor.find_game(new_game_id)
 
-    # TODO this can be improved
+    # TODO this can be improved, maybe these can be socket_ref s instead?
     if socket.assigns.username == player_one ||
          socket.assigns.username == player_two do
       RockPaperScissors.add_player(start_game_pid, socket.assigns.username)
