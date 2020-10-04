@@ -1,7 +1,17 @@
 defmodule GameServerWeb.LobbyController do
   use GameServerWeb, :controller
 
-  def index(conn, _params) do
+  def index(conn, params) do
+    # TODO navigate back to the root page
+    # if the lobby code doesn't exist
+    # I think this means we'll need to register lobbys
+    # Valid lobby IDs are required to join
+    unless params["id"] do
+      conn
+        |> put_flash(:info, "Invalid lobby ID")
+        |> redirect(to: Routes.page_path(conn, :index))
+    end
+
     render(conn, "index.html")
   end
 
