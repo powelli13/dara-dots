@@ -10,8 +10,6 @@ defmodule GameServerWeb.GameChannel do
   alias Phoenix.PubSub
 
   def join("game:" <> game_id, %{"username" => username}, socket) do
-    PubSub.subscribe(GameServer.PubSub, "game:" <> game_id)
-
     updated_socket =
       socket
       |> assign(:game_id, game_id)
