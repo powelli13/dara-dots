@@ -3,7 +3,7 @@
 // and receive updates using a websocket.
 let Game = {
   init(socket, urlParam) {
-    var params = new URLSearchParams(document.location.search);
+    let params = new URLSearchParams(document.location.search);
     if (!params.has(urlParam)) { return; }
     if (!document.getElementById("game-message-container")) { return; }
 

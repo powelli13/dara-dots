@@ -10,17 +10,19 @@ let LobbyChat = {
     socket.connect();
 
     Player.init("video-player-id", "8jTjNMkWOzM", () => console.log("video player ready!"));
+    // Expecting the location to be of the form /lobby/{id}
+    const lobbyId = new URL(document.location).pathname.split("/")[2];
 
-    this.onReady(socket);
+    this.onReady(socket, lobbyId);
   },
 
   // Prepare resources and event listeners for lobby chat.
-  onReady(socket) {
+  onReady(socket, lobbyId) {
     let chatContainer = document.getElementById("lobby-chat-container");
     let chatInput = document.getElementById("lobby-chat-input");
     let postButton = document.getElementById("lobby-chat-submit");
     let userList = document.getElementById("user-list");
-    let lobbyChannel = socket.channel("lobby:1", () => {
+    let lobbyChannel = socket.channel(`lobby:${lobbyId}`, () => {
       let username = window.localStorage.getItem("dara-username");
       return username 
         ? {username: username}
@@ -44,12 +46,12 @@ let LobbyChat = {
     });
 
     // Join the queue for rock paper scissors
-    let joinQueue = document.getElementById("join-queue-button");
-    joinQueue.addEventListener("click", e => {
-      joinQueue.setAttribute("disabled", "disabled");
-      lobbyChannel.push("join_queue", {})
-        .receive("error", e => e.console.log(e));
-    });
+    // let joinQueue = document.getElementById("join-queue-button");
+    // joinQueue.addEventListener("click", e => {
+    //   joinQueue.setAttribute("disabled", "disabled");
+    //   lobbyChannel.push("join_queue", {})
+    //     .receive("error", e => e.console.log(e));
+    // });
 
     // Test to send a new video ID for the player and update it
     let updateVideoId = document.getElementById("update-video-button");
