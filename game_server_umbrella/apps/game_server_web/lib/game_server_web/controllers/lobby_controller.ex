@@ -8,8 +8,8 @@ defmodule GameServerWeb.LobbyController do
     # Valid lobby IDs are required to join
     unless params["id"] do
       conn
-        |> put_flash(:info, "Invalid lobby ID")
-        |> redirect(to: Routes.page_path(conn, :index))
+      |> put_flash(:info, "Invalid lobby ID")
+      |> redirect(to: Routes.page_path(conn, :index))
     end
 
     render(conn, "index.html")
@@ -21,7 +21,7 @@ defmodule GameServerWeb.LobbyController do
   """
   # TODO set the creators name to admin
   def create(conn, _params) do
-    id = UUID.uuid4 |> String.split("-") |> hd
+    id = UUID.uuid4() |> String.split("-") |> hd
 
     redirect(conn, to: "/lobby/#{id}")
   end

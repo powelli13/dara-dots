@@ -38,6 +38,11 @@ defmodule GameServerWeb.LobbyChannel do
     {:noreply, socket}
   end
 
+  # Handle updated Lip Sync queue state showing new participants
+  def handle_info({:updated_participant_list, updated_list}, socket) do
+    {:noreply, socket}
+  end
+
   # Invoked when the queue sends that people are ready to play
   def handle_in("join_queue", _, socket) do
     PlayerQueue.add_player(socket.assigns.username)
