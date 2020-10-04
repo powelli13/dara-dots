@@ -32,10 +32,6 @@ defmodule GameServer.RockPaperScissors do
     GenServer.cast(game_pid, {:add_player, player_name})
   end
 
-  # TODO left off
-  # if we want to start this using the dynamic supervisor 
-  # we should probably change it to add players
-  # after it has been started
   def start_link(game_id) do
     GenServer.start_link(
       __MODULE__,

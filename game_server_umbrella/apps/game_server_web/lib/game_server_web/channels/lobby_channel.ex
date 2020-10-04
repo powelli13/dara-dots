@@ -9,11 +9,9 @@ defmodule GameServerWeb.LobbyChannel do
   alias GameServer.GameSupervisor
   alias GameServer.RockPaperScissors
 
-  def join("lobby:" <> _lobby_id, %{"username" => username}, socket) do
-    # TODO probably bad practice just trying to make things work
-    Registry.register(GameServerWebRegistry, "lobby_channel", nil)
-
+  def join("lobby:" <> lobby_id, %{"username" => username}, socket) do
     send(self(), :after_join)
+
     {:ok, assign(socket, :username, username)}
   end
 

@@ -4,10 +4,21 @@
 
 <section class="row">
   <article class="column">
-    <input id="lobby-username-input" type="text" placeholder="Enter username" />
-    <%= link "Join Lobby", to: Routes.lobby_path(@conn, :index), onclick: "storeUsername()" %>
+    <div>
+      Create a Lib Sync lobby to start grooving with your friends.
+    </div>
+    <%= form_for @conn, Routes.lobby_path(@conn, :create) %>
+      <!-- TODO add name input -->
+      <button type="submit">
+        Create Lobby
+      </button>
+    </form>
   </article>
 </section>
+
+<div class="fixed-footer">
+  Made with &hearts; by Isaac Powell.
+</div>
 
 <script>
 window.addEventListener("load", function () {

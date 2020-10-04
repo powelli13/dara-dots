@@ -33,6 +33,8 @@ defmodule GameServer.PlayerQueue do
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Inform the lobby channel that the players are in a game together
+      # TODO this can be updated to simply use PubSub since the channels
+      # automatically subscribe, see RPC game channel and game GenServer
       Registry.dispatch(GameServerWebRegistry, "lobby_channel", fn entries ->
         for {pid, _} <- entries do
           send(pid, {:start_game, first_player, second_player, new_game_id})
