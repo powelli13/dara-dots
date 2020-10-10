@@ -10,7 +10,12 @@
   Change Video
 </button>
 
+<div>Lobby Users</div>
 <div id="user-list">
+</div>
+
+<div>Registered Teams</div>
+<div id="lobby-participant-list">
 </div>
 
 <div id="lobby-chat-container">
@@ -25,5 +30,19 @@
     class="button column"
     type="submit">
     Send
+  </button>
+</div>
+
+<div>
+  <label for="ls-team-name">Team Name</label>
+  <input id="ls-team-name" type="text" />
+  <!-- TODO can this be a url input? -->
+  <label for="ls-video-url">Video URL</label>
+  <input id="ls-video-url" type="text" />
+
+  <button id="ls-register-team"
+    class="button column"
+    type="submit">
+    Register Team
   </button>
 </div>

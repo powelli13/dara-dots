@@ -18,10 +18,21 @@ let LobbyChat = {
 
   // Prepare resources and event listeners for lobby chat.
   onReady(socket, lobbyId) {
+    // Controls used for the lobby chatting
     let chatContainer = document.getElementById("lobby-chat-container");
     let chatInput = document.getElementById("lobby-chat-input");
     let postButton = document.getElementById("lobby-chat-submit");
+
+    // Elements used to display users in lobby and
+    // the participant list
     let userList = document.getElementById("user-list");
+    let participantListContainer = document.getElementById("lobby-participant-list");
+
+    // Controls needed for the Lip Sync registration
+    let teamNameInput = document.getElementById("ls-team-name");
+    let videoUrlInput = document.getElementById("ls-video-url");
+    let registerTeamButton = document.getElementById("ls-register-team");
+
     let lobbyChannel = socket.channel(`lobby:${lobbyId}`, () => {
       let username = window.localStorage.getItem("dara-username");
       return username 
@@ -68,13 +79,33 @@ let LobbyChat = {
       }
     });
 
-    lobbyChannel.on("game_started", (resp) => {
-      this.navigateToGame(resp);
+    // Send the registered team to the server
+    // TODO should this just be a form?
+    // if it does then the lobby id is needed for redirect
+    // TODO add validation
+    registerTeamButton.addEventListener("click", e => {
+      lobbyChannel.push("register_team", {
+        team_name: teamNameInput.value,
+        video_url: videoUrlInput.value
+      }).receive("error", e => e.console.log(e));
+
+      // TODO error handling?
+      teamNameInput.value = "";
+      videoUrlInput.value = "";
     });
+
+    //lobbyChannel.on("game_started", (resp) => {
+    //  this.navigateToGame(resp);
+    //});
 
     // Receive and render a new chat message.
     lobbyChannel.on("new_msg", (resp) => {
       this.renderAnnotation(chatContainer, resp);
+    });
+
+    // Receive updated list of Lip Sync participants
+    lobbyChannel.on("participant_list", (resp) => {
+      this.renderParticipantList(participantListContainer, resp);
     });
 
     // Join the lobby chat channel.
@@ -111,6 +142,20 @@ let LobbyChat = {
 
     chatContainer.appendChild(template);
     chatContainer.scrollTop = chatContainer.scrollHeight;
+  },
+
+  // Display the updated list of participants currently waiting
+  // in the Lip Sync queue.
+  // The updated_list is a JSON object of name -> videoId
+  renderParticipantList(participantListContainer, {updated_list}) {
+    participantListContainer.innerHTML = "";
+
+    for (const name in updated_list) {
+      let template = document.createElement("div");
+      template.innerHTML = `<b>${name}</b>`;
+
+      participantListContainer.appendChild(template);
+    }
   }
 };
 

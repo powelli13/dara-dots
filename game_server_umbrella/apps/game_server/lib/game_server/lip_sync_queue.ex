@@ -10,21 +10,21 @@ defmodule GameServer.LipSyncQueue do
   Add a new participant to the Lip Sync queue with the given
   player name and YouTube URL.
   """
-  def add_participant(queue_pid, player_name, youtube_url) do
-    GenServer.cast(queue_pid, {:add_participant, player_name, youtube_url})
+  def add_team(queue_pid, team_name, youtube_url) do
+    GenServer.cast(queue_pid, {:add_team, team_name, youtube_url})
   end
 
   def start_link(queue_id) do
     GenServer.start_link(
       __MODULE__,
       queue_id,
-      name: via_tuple(queue_id)
+      name: __MODULE__
     )
   end
 
-  def via_tuple(queue_id) do
-    GameServer.ProcessRegistry.via_tuple({__MODULE__, queue_id})
-  end
+  # def via_tuple(queue_id) do
+  #  GameServer.ProcessRegistry.via_tuple({__MODULE__, queue_id})
+  # end
 
   @doc """
   Initializes a new Lip Sync queue process,
@@ -33,15 +33,19 @@ defmodule GameServer.LipSyncQueue do
   """
   @impl GenServer
   def init(queue_id) do
+    # TODO read up more on registry best practices
+    # I think there is a simpler way to retrieve a GenServer
+    # Registry.register(GameServer.Register, {__MODULE__, queue_id}, queue_id)
+
     {:ok,
      %{
        :id => queue_id,
-       :participants => []
+       :teams => %{}
      }}
   end
 
   @impl GenServer
-  def handle_cast({:add_participant, player_name, youtube_url}, queue_state) do
+  def handle_cast({:add_team, team_name, youtube_url}, queue_state) do
     # Retrieve the youtube video ID from the submitted URL
     # TODO error case here? maybe this should move to the web side
     video_id =
@@ -49,17 +53,17 @@ defmodule GameServer.LipSyncQueue do
       |> Regex.named_captures(youtube_url)
 
     # TODO probably want a more sophisticated struct to maintain participants
-    updated_participants = [{player_name, video_id} | queue_state[:participants]]
+    updated_teams = Map.put(queue_state[:teams], team_name, video_id)
 
     # Broadcast the new participant list to the topic
     PubSub.broadcast(
       GameServer.PubSub,
       "lobby:" <> queue_state[:id],
-      {:updated_participant_list, updated_participants}
+      {:updated_participant_list, updated_teams}
     )
 
     {:noreply,
      queue_state
-     |> Map.put(:participants, updated_participants)}
+     |> Map.put(:teams, updated_teams)}
   end
 end

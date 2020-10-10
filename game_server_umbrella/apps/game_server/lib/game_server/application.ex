@@ -10,10 +10,15 @@ defmodule GameServer.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
       # TODO do I need both a registry and dynamic supervisor?
+      # I don't think I need a custom registry
       # Start the ProcessRegistry
-      GameServer.ProcessRegistry,
+      # GameServer.ProcessRegistry,
+      # Start the Registry
+      {Registry, keys: :unique, name: GameServer.Registry},
       # Start the dynamic supervisor for running games
       GameServer.GameSupervisor,
+      # Start the dynamic supervisor for Lip Sync queues
+      GameServer.LipSyncQueueSupervisor,
       # Start the server scoreboard
       GameServer.Scoreboard,
       # Start the player queue
