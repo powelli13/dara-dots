@@ -2,7 +2,7 @@
 # LipSync
 Lip Sync is a competition in which performing teams dance and lip sync along to a playing song. The Lip Sync lobby is used to facilitate Lip Sync competitions. It allows for friendly chatting, registering your team with a YouTube video link and then starting the performance and enjoying the fun!
 
-# DataDots
+# DaraDots
 DaraDots is a concept for a game that is still in development. The current working draft of the rules can be found [here](https://github.com/powelli13/dara-dots/blob/master/DaraDots_Rules.md).
 
 ## Getting Started
