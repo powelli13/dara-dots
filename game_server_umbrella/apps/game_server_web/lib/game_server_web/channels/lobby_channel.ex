@@ -25,6 +25,19 @@ defmodule GameServerWeb.LobbyChannel do
   def handle_info(:after_join, socket) do
     {:ok, _} = Presence.track(socket, socket.assigns.username, %{})
 
+    # Send the currently registered teams to the lobby
+    # entrant when they join.
+    # TODO when this fails or they navigate to the page without a valid
+    # lobby ID the channel process will continue to die and try to rejoin,
+    # should navigate them away or something
+    [{queue_pid, _}] =
+      Registry.lookup(
+        GameServer.Registry,
+        {GameServer.LipSyncQueue, socket.assigns[:lobby_id]}
+      )
+
+    push(socket, "participant_list", %{updated_list: LipSyncQueue.get_teams(queue_pid)})
+
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
   end

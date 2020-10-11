@@ -2,16 +2,11 @@ defmodule GameServerWeb.LobbyController do
   use GameServerWeb, :controller
 
   def index(conn, params) do
-    # TODO navigate back to the root page
-    # if the lobby code doesn't exist
-    # I think this means we'll need to register lobbys
-    # Valid lobby IDs are required to join
     unless params["id"] do
       redirect_invalid_lobby_id(conn)
     end
 
-    # Ensure that they are trying to join a valid lobby that has
-    # been created
+    # Ensure that they are trying to join a valid lobby that has been created
     case Registry.lookup(GameServer.Registry, {GameServer.LipSyncQueue, params["id"]}) do
       [] ->
         redirect_invalid_lobby_id(conn)
@@ -26,7 +21,7 @@ defmodule GameServerWeb.LobbyController do
 
   defp redirect_invalid_lobby_id(conn) do
     conn
-    |> put_flash(:info, "Invalid lobby ID")
+    |> put_flash(:info, "Invalid Lip Sync Share Code")
     |> redirect(to: Routes.page_path(conn, :index))
   end
 

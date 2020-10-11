@@ -14,6 +14,13 @@ defmodule GameServer.LipSyncQueue do
     GenServer.cast(queue_pid, {:add_team, team_name, youtube_url})
   end
 
+  @doc """
+  Retrieves the current list of registered teams in the Lip Sync queue.
+  """
+  def get_teams(queue_pid) do
+    GenServer.call(queue_pid, :get_teams)
+  end
+
   def start_link(queue_id) do
     GenServer.start_link(
       __MODULE__,
@@ -65,5 +72,10 @@ defmodule GameServer.LipSyncQueue do
     {:noreply,
      queue_state
      |> Map.put(:teams, updated_teams)}
+  end
+
+  @impl GenServer
+  def handle_call(:get_teams, _caller, queue_state) do
+    {:reply, queue_state[:teams], queue_state}
   end
 end

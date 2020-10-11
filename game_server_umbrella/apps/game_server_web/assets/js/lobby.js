@@ -9,7 +9,7 @@ let LobbyChat = {
 
     socket.connect();
 
-    Player.init("video-player-id", "8jTjNMkWOzM", () => console.log("video player ready!"));
+    Player.init("video-player-id", "jHefeA-hyMA", () => console.log("video player ready!"));
     // The location may be of the form /lobby/{id}
     // or /lobby?id={id} depending on how the player joined
     // both are supported
