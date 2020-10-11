@@ -18,6 +18,16 @@
 <div id="lobby-participant-list">
 </div>
 
+<div>
+  <!-- TODO disable these as appropriate or make them admin/lobby owner only -->
+  <button id="start-performance-button">
+    Start Performance
+  </button>
+  <button id="next-performer-button">
+    Next Performer
+  </button>
+</div>
+
 <div id="lobby-chat-container">
 </div>
 

@@ -31,19 +31,23 @@ let LobbyChat = {
   // Prepare resources and event listeners for lobby chat.
   onReady(socket, lobbyId) {
     // Controls used for the lobby chatting
-    let chatContainer = document.getElementById("lobby-chat-container");
-    let chatInput = document.getElementById("lobby-chat-input");
-    let postButton = document.getElementById("lobby-chat-submit");
+    const chatContainer = document.getElementById("lobby-chat-container");
+    const chatInput = document.getElementById("lobby-chat-input");
+    const postButton = document.getElementById("lobby-chat-submit");
 
     // Elements used to display users in lobby and
     // the participant list
-    let userList = document.getElementById("user-list");
-    let participantListContainer = document.getElementById("lobby-participant-list");
+    const userList = document.getElementById("user-list");
+    const participantListContainer = document.getElementById("lobby-participant-list");
 
     // Controls needed for the Lip Sync registration
-    let teamNameInput = document.getElementById("ls-team-name");
-    let videoUrlInput = document.getElementById("ls-video-url");
-    let registerTeamButton = document.getElementById("ls-register-team");
+    const teamNameInput = document.getElementById("ls-team-name");
+    const videoUrlInput = document.getElementById("ls-video-url");
+    const registerTeamButton = document.getElementById("ls-register-team");
+
+    // Controls to control starting and advancing the Lip Sync performance
+    const startPerformanceButton = document.getElementById("start-performance-button");
+    const nextPerformerButton = document.getElementById("next-performer-button");
 
     let lobbyChannel = socket.channel(`lobby:${lobbyId}`, () => {
       let username = window.localStorage.getItem("dara-username");
@@ -60,7 +64,7 @@ let LobbyChat = {
       }).join("");
     });
     
-    // Send message to the server.
+    // Send chat message to the server.
     postButton.addEventListener("click", e => {
       let payload = {message: chatInput.value};
       lobbyChannel.push("new_msg", payload)
@@ -87,6 +91,7 @@ let LobbyChat = {
 
     lobbyChannel.on("update_video", (resp) => {
       if (Player.player != null) {
+        console.log(resp.new_id);
         Player.player.loadVideoById(resp.new_id);
       }
     });
@@ -104,6 +109,20 @@ let LobbyChat = {
       // TODO error handling?
       teamNameInput.value = "";
       videoUrlInput.value = "";
+    });
+
+    // Start the Lip Sync performance
+    startPerformanceButton.addEventListener("click", e => {
+      lobbyChannel.push("start_performance", {})
+        .receive("error", e => e.console.log(e));
+
+      startPerformanceButton.setAttribute("disabled", "disabled");
+    });
+
+    // Advance the Lip Sync queue to the next performing team
+    nextPerformerButton.addEventListener("click", e => {
+      lobbyChannel.push("next_performer", {})
+        .receive("error", e => e.console.log(e));
     });
 
     //lobbyChannel.on("game_started", (resp) => {

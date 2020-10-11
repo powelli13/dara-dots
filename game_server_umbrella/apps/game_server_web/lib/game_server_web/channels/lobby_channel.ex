@@ -6,7 +6,6 @@ defmodule GameServerWeb.LobbyChannel do
   alias GameServerWeb.Presence
   alias GameServer.LipSyncQueue
   alias GameServer.GameSupervisor
-  alias GameServer.LipSyncQueueSupervisor
   alias GameServer.LipSyncQueue
   alias GameServer.RockPaperScissors
 
@@ -60,6 +59,44 @@ defmodule GameServerWeb.LobbyChannel do
   # Handle updated Lip Sync queue state showing new participants
   def handle_info({:updated_participant_list, updated_list}, socket) do
     broadcast!(socket, "participant_list", %{updated_list: updated_list})
+
+    {:noreply, socket}
+  end
+
+  # Handle an update to which team is performing
+  def handle_info({:next_performer, _team_name, video_id}, socket) do
+    # TODO add performing team name to this
+    # also I think this should be a push
+    IO.inspect video_id
+    broadcast!(socket, "update_video", %{new_id: video_id})
+
+    {:noreply, socket}
+  end
+
+
+  # Handle message from the client to start the performance
+  def handle_in("start_performance", _, socket) do
+    [{queue_pid, _}] =
+      Registry.lookup(
+        GameServer.Registry,
+        {GameServer.LipSyncQueue, socket.assigns[:lobby_id]}
+      )
+
+    LipSyncQueue.start_performance(queue_pid)
+
+    {:noreply, socket}
+  end
+
+  # Handle message from the client to advance 
+  # the queue to the next performer
+  def handle_in("next_performer", _, socket) do
+    [{queue_pid, _}] =
+      Registry.lookup(
+        GameServer.Registry,
+        {GameServer.LipSyncQueue, socket.assigns[:lobby_id]}
+      )
+
+    LipSyncQueue.next_performer(queue_pid)
 
     {:noreply, socket}
   end
