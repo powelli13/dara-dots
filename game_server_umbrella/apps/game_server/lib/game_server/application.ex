@@ -9,10 +9,6 @@ defmodule GameServer.Application do
     children = [
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
-      # TODO do I need both a registry and dynamic supervisor?
-      # I don't think I need a custom registry
-      # Start the ProcessRegistry
-      # GameServer.ProcessRegistry,
       # Start the Registry
       {Registry, keys: :unique, name: GameServer.Registry},
       # Start the dynamic supervisor for running games

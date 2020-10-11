@@ -10,8 +10,20 @@ let LobbyChat = {
     socket.connect();
 
     Player.init("video-player-id", "8jTjNMkWOzM", () => console.log("video player ready!"));
-    // Expecting the location to be of the form /lobby/{id}
-    const lobbyId = new URL(document.location).pathname.split("/")[2];
+    // The location may be of the form /lobby/{id}
+    // or /lobby?id={id} depending on how the player joined
+    // both are supported
+    let lobbyId = new URL(document.location).pathname.split("/")[2];
+
+    if (lobbyId === undefined) {
+      const searchParams = new URLSearchParams(document.location.search);
+      lobbyId = searchParams.get("id");
+    }
+
+    // TODO maybe navigate away here and let them know it's a problem
+    if (lobbyId === undefined) {
+      return;
+    }
 
     this.onReady(socket, lobbyId);
   },

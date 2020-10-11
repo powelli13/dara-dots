@@ -26,6 +26,7 @@ defmodule GameServer.LipSyncQueueSupervisor do
   def find_queue(queue_id) do
     case start_child(queue_id) do
       {:ok, pid} -> pid
+      # TODO may want to update this to ensure that duplicate IDs aren't started
       {:error, {:already_started, pid}} -> pid
     end
   end

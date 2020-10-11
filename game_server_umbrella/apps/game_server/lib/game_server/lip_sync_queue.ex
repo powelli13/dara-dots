@@ -33,9 +33,9 @@ defmodule GameServer.LipSyncQueue do
   """
   @impl GenServer
   def init(queue_id) do
-    # TODO read up more on registry best practices
-    # I think there is a simpler way to retrieve a GenServer
-    # Registry.register(GameServer.Register, {__MODULE__, queue_id}, queue_id)
+    # Register the LipSyncQueue upon creation in order to verify 
+    # queue_ids when navigation is attempted from the web side
+    Registry.register(GameServer.Registry, {__MODULE__, queue_id}, queue_id)
 
     {:ok,
      %{

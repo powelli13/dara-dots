@@ -7,10 +7,19 @@
     <div>
       Create a Lib Sync lobby to start grooving with your friends.
     </div>
-    <%= form_for @conn, Routes.lobby_path(@conn, :create) %>
+    <%= form_for @conn, Routes.lobby_path(@conn, :create), method: :post %>
       <!-- TODO add name input -->
       <button type="submit">
         Create Lobby
+      </button>
+    </form>
+    <div>
+      Enter a share code to join an existing Lip Sync lobby.
+    </div>
+    <%= form_for @conn, Routes.lobby_path(@conn, :index), method: :get %>
+      <input name="id" type="text" placeholder="Share Code" required="required" />
+      <button type="submit">
+        Join Lobby
       </button>
     </form>
   </article>

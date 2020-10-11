@@ -66,26 +66,15 @@ defmodule GameServerWeb.LobbyChannel do
   # Handles teams registering for the lip sync queue
   def handle_in("register_team", %{"team_name" => team_name, "video_url" => video_url}, socket) do
     # Find the Lip Sync queue for this lobby
-    # case Registry.lookup(
-    #       GameServer.Registry,
-    #       {LipSyncQueue, socket.assigns[:lobby_id]}
-    #     ) do
-    #  [{pid, queue_id}] ->
-    #    LipSyncQueue.add_team(pid, team_name, video_url)
-    #
-    #      [] ->
-    #        # TODO problem here since the queue isn't running, start a new one?
-    #        nil
-    #    end
-
-    # lip_sync_queue_pid = ProcessRegistry.where_is(socket.assigns[:lobby_id])
-
-    # TODO parse the video ID here, return errors as needed
-    # and send just the ID
-    # LipSyncQueue.add_team(lip_sync_queue_pid, team_name, video_url)
+    # This will fail if there is no queue for this lobby
+    [{queue_pid, _}] =
+      Registry.lookup(
+        GameServer.Registry,
+        {GameServer.LipSyncQueue, socket.assigns[:lobby_id]}
+      )
 
     LipSyncQueue.add_team(
-      LipSyncQueueSupervisor.find_queue(socket.assigns[:lobby_id]),
+      queue_pid,
       team_name,
       video_url
     )
