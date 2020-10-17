@@ -45,3 +45,20 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks});
 
 liveSocket.connect();
+
+// Sets up the onclick listeners for collapsible lists
+let coll = document.getElementsByClassName("collapsible");
+
+for (let i = 0; i < coll.length; i++)
+{
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    let content = this.nextElementSibling;
+
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}

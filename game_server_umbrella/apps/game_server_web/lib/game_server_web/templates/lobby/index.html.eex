@@ -14,8 +14,8 @@
 <div id="user-list">
 </div>
 
-<div>Registered Teams</div>
-<div id="lobby-participant-list">
+<button type="button" class="collapsible">Registered Teams</button>
+<div id="lobby-participant-list" class="collapsible-content">
 </div>
 
 <div>

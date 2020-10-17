@@ -29,3 +29,13 @@
 .alert:empty {
   display: none;
 }
+
+/* Classes used for collapsible lists */
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.collapsible-content {
+  padding: 0 18px;
+  display: none;
+} 
