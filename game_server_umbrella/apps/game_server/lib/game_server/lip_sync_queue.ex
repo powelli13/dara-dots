@@ -77,19 +77,12 @@ defmodule GameServer.LipSyncQueue do
   Adds a new Team to the Queue
   """
   @impl GenServer
-  def handle_cast({:add_team, team_name, youtube_url}, queue_state) do
+  def handle_cast({:add_team, team_name, video_id}, queue_state) do
     # TODO what if someone registers with an existing team name?
-
-    # Retrieve the youtube video ID from the submitted URL
-    # TODO error case here? maybe this should move to the web side
-    #TODO update this to handle watch links as well
-    video_id =
-      ~r{^.*(?:youtu\.be/|\w+/|v=)(?<id>[^#&?]*)}
-      |> Regex.named_captures(youtube_url)
 
     # TODO probably want a more sophisticated struct to maintain participants
     # TODO should we disallow team registration when the queue is performing?
-    updated_teams = Map.put(queue_state[:teams], team_name, video_id["id"])
+    updated_teams = Map.put(queue_state[:teams], team_name, video_id)
 
     # Broadcast the new participant list to the topic
     PubSub.broadcast(

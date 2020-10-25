@@ -26,6 +26,8 @@ defmodule GameServerWeb.Router do
 
     post "/lobby", LobbyController, :create
 
+    post "/lobby/register", LobbyController, :register
+
     get "/game", GameController, :index
 
     live "/tictactoe", TicTacToeLive

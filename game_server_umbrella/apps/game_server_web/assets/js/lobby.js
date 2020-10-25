@@ -40,14 +40,13 @@ let LobbyChat = {
     const userList = document.getElementById("user-list");
     const participantListContainer = document.getElementById("lobby-participant-list");
 
-    // Controls needed for the Lip Sync registration
-    const teamNameInput = document.getElementById("ls-team-name");
-    const videoUrlInput = document.getElementById("ls-video-url");
-    const registerTeamButton = document.getElementById("ls-register-team");
-
     // Controls to control starting and advancing the Lip Sync performance
     const startPerformanceButton = document.getElementById("start-performance-button");
     const nextPerformerButton = document.getElementById("next-performer-button");
+
+    // Hidden input for the lobby id in the register team form
+    let lobbyIdInput = document.getElementById("hidden-lobby-id");
+    lobbyIdInput.value = lobbyId;
 
     let lobbyChannel = socket.channel(`lobby:${lobbyId}`, () => {
       let username = window.localStorage.getItem("dara-username");
@@ -94,21 +93,6 @@ let LobbyChat = {
         console.log(resp.new_id);
         Player.player.loadVideoById(resp.new_id);
       }
-    });
-
-    // Send the registered team to the server
-    // TODO should this just be a form?
-    // if it does then the lobby id is needed for redirect
-    // TODO add validation
-    registerTeamButton.addEventListener("click", e => {
-      lobbyChannel.push("register_team", {
-        team_name: teamNameInput.value,
-        video_url: videoUrlInput.value
-      }).receive("error", e => e.console.log(e));
-
-      // TODO error handling?
-      teamNameInput.value = "";
-      videoUrlInput.value = "";
     });
 
     // Start the Lip Sync performance
