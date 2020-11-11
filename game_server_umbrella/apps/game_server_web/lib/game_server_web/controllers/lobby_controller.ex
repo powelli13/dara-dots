@@ -45,59 +45,62 @@ defmodule GameServerWeb.LobbyController do
   """
   def register(conn, params) do
     # Validate form inputs
-    # TODO using an Ecto changeset here could improve things
-    valid = true
+    case validate_registration(params) do
+      {:invalid_lobby_id, _} ->
+        redirect_invalid_lobby_id(conn)
 
-    unless params["lobby_id"] do
-      redirect_invalid_lobby_id(conn)
-      valid = false
-    end
+      {:error, error_message} ->
+        conn
+        |> put_flash(:error, error_message)
+        |> redirect(to: "/lobby/#{params["lobby_id"]}")
 
-    # TODO determine if team name is already taken?
-    # could just append 1 on queue side
-    unless params["team_name"] do
-      conn
-      |> put_flash(:error, "Team name is required.")
-      |> redirect(to: "/lobby/#{params["lobby_id"]}")
-      valid = false
-    end
+      # If validate_registration returns ok
+      # then we know that params hold lobby_id and team_name
+      {:ok, video_id} ->
+        # TODO using an Ecto changeset here could improve things
+        [{queue_pid, _}] =
+          Registry.lookup(
+            GameServer.Registry,
+            {GameServer.LipSyncQueue, params["lobby_id"]}
+          )
 
-    unless params["video_url"] do
-      conn
-      |> put_flash(:error, "Video Url is required.")
-      |> redirect(to: "/lobby/#{params["lobby_id"]}")
-      valid = false
-    end
-
-    # Retrieve the youtube video ID from the submitted URL
-    url_captures =
-      ~r{^.*(?:youtu\.be/|youtube\.com/watch\?/v=|v=)(?<id>[^#&?]*)}
-      |> Regex.named_captures(params["video_url"])
-    
-    # Ensure that a video id was found from a YouTube url
-    unless url_captures do
-      conn
-      |> put_flash(:error, "Invalid Video Url, must be a YouTube video.")
-      |> redirect(to: "/lobby/#{params["lobby_id"]}")
-      valid = false
-    end
-
-    if valid do
-      [{queue_pid, _}] =
-        Registry.lookup(
-          GameServer.Registry,
-          {GameServer.LipSyncQueue, params["lobby_id"]}
+        GameServer.LipSyncQueue.add_team(
+          queue_pid,
+          params["team_name"],
+          video_id
         )
 
-      GameServer.LipSyncQueue.add_team(
-        queue_pid,
-        params["team_name"],
-        url_captures["id"]
-      )
+        conn
+        |> put_flash(:info, "Successfully registered team #{params["team_name"]}.")
+        |> redirect(to: "/lobby/#{params["lobby_id"]}")
+    end
+  end
 
-      conn
-      |> put_flash(:info, "Successfully registered team #{params["team_name"]}.")
-      |> redirect(to: "/lobby/#{params["lobby_id"]}")
+  # Performs validation on the attempted registration
+  # returns a tuple indicating either an error state
+  # or that it is valid and should proceed.
+  defp validate_registration(params) do
+    cond do
+      !params["lobby_id"] ->
+        {:invalid_lobby_id, ""}
+
+      # TODO determine if team name is already taken?
+      # could just append 1 on queue side
+      !params["team_name"] ->
+        {:error, "Team name is required."}
+
+      !params["video_url"] ->
+        {:error, "Video Url is required."}
+
+      # Retrieve the youtube video ID from the submitted URL
+      url_captures =
+        ~r{^.*(?:youtu\.be/|youtube\.com/watch\?/v=|v=)(?<id>[^#&?]*)}
+        |> Regex.named_captures(params["video_url"]) ->
+        {:ok, url_captures["id"]}
+      
+      # Assume invalid URL id if the above Regex failed
+      true ->
+        {:error, "Invalid Video Url, must be a YouTube video."}
     end
   end
 end

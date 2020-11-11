@@ -66,12 +66,11 @@ defmodule GameServerWeb.LobbyChannel do
   def handle_info({:next_performer, _team_name, video_id}, socket) do
     # TODO add performing team name to this
     # also I think this should be a push
-    IO.inspect video_id
+    IO.inspect(video_id)
     broadcast!(socket, "update_video", %{new_id: video_id})
 
     {:noreply, socket}
   end
-
 
   # Handle message from the client to start the performance
   def handle_in("start_performance", _, socket) do

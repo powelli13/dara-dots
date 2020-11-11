@@ -143,8 +143,7 @@ defmodule GameServer.LipSyncQueue do
         # Stop performance when we run out of performers
         # TODO broadcast here that it is done?
         if queue_state.to_perform == [] do
-          queue_state =
-            Map.put(queue_state, :performing, false)
+          queue_state = Map.put(queue_state, :performing, false)
         end
 
         queue_state
