@@ -2,12 +2,12 @@ defmodule GameServerWeb.LobbyController do
   use GameServerWeb, :controller
 
   def index(conn, params) do
-    unless params["id"] do
+    unless params["lobby_id"] do
       redirect_invalid_lobby_id(conn)
     end
 
     # Ensure that they are trying to join a valid lobby that has been created
-    case Registry.lookup(GameServer.Registry, {GameServer.LipSyncQueue, params["id"]}) do
+    case Registry.lookup(GameServer.Registry, {GameServer.LipSyncQueue, params["lobby_id"]}) do
       [] ->
         redirect_invalid_lobby_id(conn)
 
@@ -30,8 +30,11 @@ defmodule GameServerWeb.LobbyController do
   share key and then redirects to the new lobby.
   """
   # TODO set the creators name to admin
-  def create(conn, _params) do
-    id = UUID.uuid4() |> String.split("-") |> hd
+  def create(conn, params) do
+    id =
+      UUID.uuid4()
+      |> String.split("-")
+      |> hd
 
     # Start the LipSync queue so that it will be available
     # via the Registry inside of the LobbyChannel
@@ -94,10 +97,10 @@ defmodule GameServerWeb.LobbyController do
 
       # Retrieve the youtube video ID from the submitted URL
       url_captures =
-        ~r{^.*(?:youtu\.be/|youtube\.com/watch\?/v=|v=)(?<id>[^#&?]*)}
-        |> Regex.named_captures(params["video_url"]) ->
+          ~r{^.*(?:youtu\.be/|youtube\.com/watch\?/v=|v=)(?<id>[^#&?]*)}
+          |> Regex.named_captures(params["video_url"]) ->
         {:ok, url_captures["id"]}
-      
+
       # Assume invalid URL id if the above Regex failed
       true ->
         {:error, "Invalid Video Url, must be a YouTube video."}

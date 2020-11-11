@@ -47,7 +47,7 @@
 <!-- TODO consider changing id to lobby-id and find how to make name team-name -->
   <%= f = form_for @conn, Routes.lobby_path(@conn, :register) %>
     <%= hidden_input f, :lobby_id, id: "hidden-lobby-id" %>
-    <label for="name">Team Name</label>
+    <label for="team_name">Team Name</label>
     <%= text_input f, :team_name, required: "true" %>
     <label for="url">Video URL</label>
     <%= url_input f, :video_url, required: "true" %>
