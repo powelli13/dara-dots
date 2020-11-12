@@ -17,6 +17,8 @@
       Enter a Share Code to join an existing Lip Sync lobby.
     </div>
     <%= form_for @conn, Routes.lobby_path(@conn, :index), method: :get %>
+      <label for="player_name">Player Name</label>
+      <%= text_input f, :player_name, required: "true" %>
       <label for="lobby_id">Share Code</label>
       <%= text_input f, :lobby_id, required: "true" %>
       <%= submit "Join Lobby" %>

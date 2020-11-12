@@ -1,6 +1,8 @@
 defmodule GameServerWeb.LobbyController do
   use GameServerWeb, :controller
 
+  @animal_names ["Aardvark", "Bat", "Cougar", "Dalmatian", "Elephant", "Fox", "Gorilla"]
+
   def index(conn, params) do
     unless params["lobby_id"] do
       redirect_invalid_lobby_id(conn)
@@ -16,7 +18,8 @@ defmodule GameServerWeb.LobbyController do
         nil
     end
 
-    render(conn, "index.html")
+    # TODO sanitize user name
+    render(conn, "index.html", username: if params["player_name"], do: params["player_name"], else: Enum.random(@animal_names))
   end
 
   defp redirect_invalid_lobby_id(conn) do
