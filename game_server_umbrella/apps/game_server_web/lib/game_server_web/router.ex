@@ -22,7 +22,7 @@ defmodule GameServerWeb.Router do
 
     get "/lobby", LobbyController, :index
 
-    get "/lobby/:id", LobbyController, :index
+    get "/lobby/:lobby_id", LobbyController, :index
 
     post "/lobby", LobbyController, :create
 

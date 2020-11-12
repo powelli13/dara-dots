@@ -4,6 +4,9 @@ defmodule GameServerWeb.LobbyController do
   @animal_names ["Aardvark", "Bat", "Cougar", "Dalmatian", "Elephant", "Fox", "Gorilla"]
 
   def index(conn, params) do
+    IO.inspect "I AM RIGHT HERE IN INDEX, HI THERE!"
+    IO.inspect params["lobby_id"]
+
     unless params["lobby_id"] do
       redirect_invalid_lobby_id(conn)
     end
@@ -18,8 +21,18 @@ defmodule GameServerWeb.LobbyController do
         nil
     end
 
-    # TODO sanitize user name
-    render(conn, "index.html", username: if params["player_name"], do: params["player_name"], else: Enum.random(@animal_names))
+    # Only allow alphanumeric characters and whitespace for usernames
+    # max length of fifty
+    username =
+      cond do
+        params["player_name"] && Regex.match?(~r/^[A-Za-z0-9\s]{1,50}$/, params["player_name"]) ->
+          params["player_name"]
+
+        true ->
+          Enum.random(@animal_names)
+      end
+
+    render(conn, "index.html", username: username)
   end
 
   defp redirect_invalid_lobby_id(conn) do
@@ -33,7 +46,8 @@ defmodule GameServerWeb.LobbyController do
   share key and then redirects to the new lobby.
   """
   # TODO set the creators name to admin
-  def create(conn, params) do
+  def create(conn, _params) do
+    IO.inspect "I AM RIGHT HERE IN CREATE, HI THERE!"
     id =
       UUID.uuid4()
       |> String.split("-")
