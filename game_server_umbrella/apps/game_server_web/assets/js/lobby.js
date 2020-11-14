@@ -81,6 +81,14 @@ let LobbyChat = {
     //     .receive("error", e => e.console.log(e));
     // });
 
+    // Test to send a new video ID for the player and update it
+    lobbyChannel.on("update_video", (resp) => {
+      if (Player.player != null) {
+        console.log(resp.new_id);
+        Player.player.loadVideoById(resp.new_id);
+      }
+    });
+
     // Start the Lip Sync performance
     startPerformanceButton.addEventListener("click", e => {
       lobbyChannel.push("start_performance", {})
