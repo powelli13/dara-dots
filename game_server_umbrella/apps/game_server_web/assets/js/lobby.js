@@ -81,22 +81,6 @@ let LobbyChat = {
     //     .receive("error", e => e.console.log(e));
     // });
 
-    // Test to send a new video ID for the player and update it
-    let updateVideoId = document.getElementById("update-video-button");
-    let videoIdInput = document.getElementById("video-id-input");
-
-    updateVideoId.addEventListener("click", e => {
-      lobbyChannel.push("update_video", {new_id: videoIdInput.value})
-        .receive("error", e => e.console.log(e));
-    });
-
-    lobbyChannel.on("update_video", (resp) => {
-      if (Player.player != null) {
-        console.log(resp.new_id);
-        Player.player.loadVideoById(resp.new_id);
-      }
-    });
-
     // Start the Lip Sync performance
     startPerformanceButton.addEventListener("click", e => {
       lobbyChannel.push("start_performance", {})
@@ -175,5 +159,6 @@ let LobbyChat = {
     }
   }
 };
+
 
 export default LobbyChat;

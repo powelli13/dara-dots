@@ -62,3 +62,20 @@ for (let i = 0; i < coll.length; i++)
     }
   });
 }
+
+// Copies the lobby share code to the user's clip board
+let copyShareCodeButton = document.getElementById("copy-share-code");
+if (copyShareCodeButton != null) { 
+  copyShareCodeButton.addEventListener("click", function () {
+    const shareCode = document.getElementById("hidden-lobby-id").value;
+
+    navigator.clipboard.writeText(shareCode).then(
+      function() {
+        console.log("Successfully copied share code.");
+      },
+      function() {
+        console.log("Failed to copy share code.");
+      }
+    );
+  });
+}

@@ -1,13 +1,11 @@
 <h4>Welcome to the Lip Sync Lobby!</h4>
 
 <%= content_tag :div, id: "video-player-id",
-  data: [video_id: "8jTjNMkWOzM"] do %>
+  data: [video_id: "jHefeA-hyMA"] do %>
 <% end %>
 
-<!-- TODO remove this -->
-<input id="video-id-input" type="text" placeholder="YouTube Video Id" />
-<button id="update-video-button">
-  Change Video
+<button id="copy-share-code">
+Copy the Share Code to Clipboard
 </button>
 
 <div>Lobby Users</div>
