@@ -45,10 +45,6 @@ defmodule GameServer.LipSyncQueue do
     )
   end
 
-  # def via_tuple(queue_id) do
-  #  GameServer.ProcessRegistry.via_tuple({__MODULE__, queue_id})
-  # end
-
   @doc """
   Initializes a new Lip Sync queue process,
   preserves the queue_id in order to later send out
@@ -129,8 +125,8 @@ defmodule GameServer.LipSyncQueue do
       true ->
         team_name = Enum.random(queue_state.to_perform)
 
-        queue_state =
-          Map.put(queue_state, :to_perform, List.delete(queue_state.to_perform, team_name))
+        new_to_perform = List.delete(queue_state.to_perform, team_name)
+          #Map.put(queue_state, :to_perform, List.delete(queue_state.to_perform, team_name))
 
         video_id = queue_state.teams[team_name]
 
@@ -142,11 +138,20 @@ defmodule GameServer.LipSyncQueue do
 
         # Stop performance when we run out of performers
         # TODO broadcast here that it is done?
-        if queue_state.to_perform == [] do
-          queue_state = Map.put(queue_state, :performing, false)
-        end
+        IO.inspect("to perform list")
+        IO.inspect(queue_state.to_perform)
+        new_performing = !(queue_state.to_perform == [])
+
+        #if queue_state.to_perform == [] do
+          #queue_state = Map.put(queue_state, :performing, false)
+        #end
+
+        IO.inspect("end queue state")
+        IO.inspect(queue_state)
 
         queue_state
+        |> Map.put(:to_perform, new_to_perform)
+        |> Map.put(:performing, new_performing)
 
       false ->
         queue_state
