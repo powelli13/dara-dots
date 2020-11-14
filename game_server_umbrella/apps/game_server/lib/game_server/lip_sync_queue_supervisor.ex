@@ -24,15 +24,12 @@ defmodule GameServer.LipSyncQueueSupervisor do
   or start it if it hasn't started yet.
   """
   def find_queue(queue_id) do
-    IO.inspect "finding queue: #{queue_id}"
     case start_child(queue_id) do
       {:ok, pid} ->
-        IO.inspect "child started with a pid"
         pid
 
       # TODO may want to update this to ensure that duplicate IDs aren't started
       {:error, {:already_started, pid}} ->
-        IO.inspect "child already started"
         pid
     end
   end

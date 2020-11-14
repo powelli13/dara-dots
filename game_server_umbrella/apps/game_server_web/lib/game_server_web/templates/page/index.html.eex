@@ -29,22 +29,3 @@
 <div class="fixed-footer">
   Made with &hearts; by Isaac Powell.
 </div>
-
-<script>
-window.addEventListener("load", function () {
-  let usernameInput = document.getElementById("lobby-username-input");
-  let username = window.localStorage.getItem("dara-username");
-
-  if (username != null) {
-    usernameInput.value = username;
-  }
-});
-
-function storeUsername() {
-  let usernameInput = document.getElementById("lobby-username-input");
-
-  if (usernameInput.value) {
-    window.localStorage.setItem("dara-username", usernameInput.value);
-  }
-}
-</script>

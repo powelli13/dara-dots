@@ -3,10 +3,8 @@ defmodule GameServerWeb.LobbyController do
 
   @animal_names ["Aardvark", "Bat", "Cougar", "Dalmatian", "Elephant", "Fox", "Gorilla"]
 
+  # Handles requests to join an existing lobby
   def index(conn, params) do
-    IO.inspect "I AM RIGHT HERE IN INDEX, HI THERE!"
-    IO.inspect params["lobby_id"]
-
     unless params["lobby_id"] do
       redirect_invalid_lobby_id(conn)
     end
@@ -21,18 +19,21 @@ defmodule GameServerWeb.LobbyController do
         nil
     end
 
+    render(conn, "index.html", player_name: validate_username(params))
+  end
+
+  # Validates the user name param
+  # Returns a random animal name if a valid username was not provided
+  defp validate_username(params) do
     # Only allow alphanumeric characters and whitespace for usernames
     # max length of fifty
-    username =
-      cond do
-        params["player_name"] && Regex.match?(~r/^[A-Za-z0-9\s]{1,50}$/, params["player_name"]) ->
-          params["player_name"]
+    cond do
+      params["player_name"] && Regex.match?(~r/^[A-Za-z0-9\s]{1,50}$/, params["player_name"]) ->
+        params["player_name"]
 
-        true ->
-          Enum.random(@animal_names)
-      end
-
-    render(conn, "index.html", username: username)
+      true ->
+        Enum.random(@animal_names)
+    end
   end
 
   defp redirect_invalid_lobby_id(conn) do
@@ -46,8 +47,7 @@ defmodule GameServerWeb.LobbyController do
   share key and then redirects to the new lobby.
   """
   # TODO set the creators name to admin
-  def create(conn, _params) do
-    IO.inspect "I AM RIGHT HERE IN CREATE, HI THERE!"
+  def create(conn, params) do
     id =
       UUID.uuid4()
       |> String.split("-")
@@ -57,7 +57,7 @@ defmodule GameServerWeb.LobbyController do
     # via the Registry inside of the LobbyChannel
     _ = GameServer.LipSyncQueueSupervisor.find_queue(id)
 
-    redirect(conn, to: "/lobby/#{id}")
+    redirect(conn, to: "/lobby/#{id}?player_name=#{validate_username(params)}")
   end
 
   @doc """

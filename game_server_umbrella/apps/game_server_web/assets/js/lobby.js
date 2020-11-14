@@ -14,10 +14,13 @@ let LobbyChat = {
     // or /lobby?id={id} depending on how the player joined
     // both are supported
     let lobbyId = new URL(document.location).pathname.split("/")[2];
+    console.log(`Lobby id is: ${lobbyId}`);
+
+    const searchParams = new URLSearchParams(document.location.search);
+    let playerName = searchParams.get("player_name");
 
     if (lobbyId === undefined) {
-      const searchParams = new URLSearchParams(document.location.search);
-      lobbyId = searchParams.get("id");
+      lobbyId = searchParams.get("lobby_id");
     }
 
     // TODO maybe navigate away here and let them know it's a problem
@@ -25,11 +28,11 @@ let LobbyChat = {
       return;
     }
 
-    this.onReady(socket, lobbyId);
+    this.onReady(socket, lobbyId, playerName);
   },
 
   // Prepare resources and event listeners for lobby chat.
-  onReady(socket, lobbyId) {
+  onReady(socket, lobbyId, playerName) {
     // Controls used for the lobby chatting
     const chatContainer = document.getElementById("lobby-chat-container");
     const chatInput = document.getElementById("lobby-chat-input");
@@ -49,9 +52,8 @@ let LobbyChat = {
     lobbyIdInput.value = lobbyId;
 
     let lobbyChannel = socket.channel(`lobby:${lobbyId}`, () => {
-      let username = window.localStorage.getItem("dara-username");
-      return username 
-        ? {username: username}
+      return playerName 
+        ? {username: playerName}
         : {username: "anon" + Math.floor(Math.random() * 1000)};
     });
 
