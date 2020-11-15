@@ -17,7 +17,13 @@ let LobbyChat = {
     console.log(`Lobby id is: ${lobbyId}`);
 
     const searchParams = new URLSearchParams(document.location.search);
-    let playerName = searchParams.get("player_name");
+
+    let playerName = window.localStorage.getItem("player_name");
+
+    if (playerName == null) {
+      playerName = searchParams.get("player_name");
+      window.localStorage.setItem("player_name", playerName);
+    }
 
     if (lobbyId === undefined) {
       lobbyId = searchParams.get("lobby_id");

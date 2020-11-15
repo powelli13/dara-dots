@@ -124,10 +124,7 @@ defmodule GameServer.LipSyncQueue do
     case queue_state.performing do
       true ->
         team_name = Enum.random(queue_state.to_perform)
-
         new_to_perform = List.delete(queue_state.to_perform, team_name)
-          #Map.put(queue_state, :to_perform, List.delete(queue_state.to_perform, team_name))
-
         video_id = queue_state.teams[team_name]
 
         PubSub.broadcast(
@@ -138,16 +135,7 @@ defmodule GameServer.LipSyncQueue do
 
         # Stop performance when we run out of performers
         # TODO broadcast here that it is done?
-        IO.inspect("to perform list")
-        IO.inspect(queue_state.to_perform)
-        new_performing = !(queue_state.to_perform == [])
-
-        #if queue_state.to_perform == [] do
-          #queue_state = Map.put(queue_state, :performing, false)
-        #end
-
-        IO.inspect("end queue state")
-        IO.inspect(queue_state)
+        new_performing = !(new_to_perform == [])
 
         queue_state
         |> Map.put(:to_perform, new_to_perform)
