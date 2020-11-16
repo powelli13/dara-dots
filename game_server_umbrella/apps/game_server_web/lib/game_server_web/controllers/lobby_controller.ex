@@ -1,6 +1,7 @@
 defmodule GameServerWeb.LobbyController do
   use GameServerWeb, :controller
 
+  @system_admin_name "Administrator Alligator"
   @animal_names ["Aardvark", "Bat", "Cougar", "Dalmatian", "Elephant", "Fox", "Gorilla"]
 
   # Handles requests to join an existing lobby
@@ -28,7 +29,9 @@ defmodule GameServerWeb.LobbyController do
     # Only allow alphanumeric characters and whitespace for usernames
     # max length of fifty
     cond do
-      params["player_name"] && Regex.match?(~r/^[A-Za-z0-9\s]{1,50}$/, params["player_name"]) ->
+      params["player_name"] && 
+      Regex.match?(~r/^[A-Za-z0-9\s]{1,50}$/, params["player_name"]) &&
+      params["player_name"] != @system_admin_name ->
         params["player_name"]
 
       true ->

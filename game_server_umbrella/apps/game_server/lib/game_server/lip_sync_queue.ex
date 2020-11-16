@@ -137,6 +137,11 @@ defmodule GameServer.LipSyncQueue do
         # TODO broadcast here that it is done?
         new_performing = !(new_to_perform == [])
 
+        # Broadcast that the performance has ended
+        unless new_performing do
+          broadcast_performance_end(queue_state.id)
+        end
+
         queue_state
         |> Map.put(:to_perform, new_to_perform)
         |> Map.put(:performing, new_performing)
@@ -144,6 +149,14 @@ defmodule GameServer.LipSyncQueue do
       false ->
         queue_state
     end
+  end
+
+  defp broadcast_performance_end(lobby_id) do
+    PubSub.broadcast(
+      GameServer.PubSub,
+      "lobby:" <> lobby_id,
+      :performance_end
+    )
   end
 
   @impl GenServer

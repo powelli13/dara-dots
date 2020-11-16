@@ -8,7 +8,7 @@
 Copy the Share Code to Clipboard
 </button>
 
-<div>Current Username is: <%= @player_name %></div>
+<div>Currently performing is: <div id="now-performing-display"></div></div>
 
 <div>Lobby Users</div>
 <div id="user-list">

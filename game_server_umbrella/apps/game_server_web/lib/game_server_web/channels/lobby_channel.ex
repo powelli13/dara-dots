@@ -8,6 +8,8 @@ defmodule GameServerWeb.LobbyChannel do
   alias GameServer.LipSyncQueue
   alias GameServer.RockPaperScissors
 
+  @system_admin_name "Administrator Alligator"
+
   def join("lobby:" <> lobby_id, %{"username" => username}, socket) do
     send(self(), :after_join)
 
@@ -63,11 +65,26 @@ defmodule GameServerWeb.LobbyChannel do
   end
 
   # Handle an update to which team is performing
-  def handle_info({:next_performer, _team_name, video_id}, socket) do
+  def handle_info({:next_performer, team_name, video_id}, socket) do
+    broadcast!(socket, "new_msg", %{
+      username: @system_admin_name,
+      message: "Next up is team #{team_name}, enjoy!"
+    })
     # TODO add performing team name to this
     # also I think this should be a push
-    IO.inspect(video_id)
-    broadcast!(socket, "update_video", %{new_id: video_id})
+    broadcast!(socket, "update_video", %{new_id: video_id, team_name: team_name})
+
+    {:noreply, socket}
+  end
+
+  # Handle message indicating that the performance ended
+  def handle_info(:performance_end, socket) do
+    broadcast!(socket, "new_msg", %{
+      username: @system_admin_name,
+      message: "The performances have ended, thanks for participating!"
+    })
+
+    broadcast!(socket, "performance_end", %{continue: false})
 
     {:noreply, socket}
   end
@@ -98,13 +115,6 @@ defmodule GameServerWeb.LobbyChannel do
 
     {:noreply, socket}
   end
-
-  # Invoked when the queue sends that people are ready to play
-  # def handle_in("join_queue", _, socket) do
-  #  PlayerQueue.add_player(socket.assigns.username)
-  #
-  #    {:noreply, socket}
-  #  end
 
   def handle_in("new_msg", %{"message" => message}, socket) do
     broadcast!(socket, "new_msg", %{username: socket.assigns.username, message: message})

@@ -52,6 +52,7 @@ let LobbyChat = {
     // Controls to control starting and advancing the Lip Sync performance
     const startPerformanceButton = document.getElementById("start-performance-button");
     const nextPerformerButton = document.getElementById("next-performer-button");
+    const nowPerformingDisplay = document.getElementById("now-performing-display");
 
     // Hidden input for the lobby id in the register team form
     let lobbyIdInput = document.getElementById("hidden-lobby-id");
@@ -90,8 +91,8 @@ let LobbyChat = {
     // Test to send a new video ID for the player and update it
     lobbyChannel.on("update_video", (resp) => {
       if (Player.player != null) {
-        console.log(resp.new_id);
         Player.player.loadVideoById(resp.new_id);
+        nowPerformingDisplay.value = resp.team_name;
       }
     });
 
@@ -121,6 +122,11 @@ let LobbyChat = {
     // Receive updated list of Lip Sync participants
     lobbyChannel.on("participant_list", (resp) => {
       this.renderParticipantList(participantListContainer, resp);
+    });
+
+    // Receive update that the performance ended
+    lobbyChannel.on("performance_end", (resp) => {
+      startPerformanceButton.removeAttribute("disabled");
     });
 
     // Join the lobby chat channel.
