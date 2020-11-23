@@ -1,4 +1,5 @@
 FROM elixir:1.10.4 as releaser
+ARG secret_key_base
 
 WORKDIR /app
 
@@ -9,9 +10,10 @@ COPY config/ /app/config/
 COPY mix.exs /app/
 COPY mix.* /app/
 
-COPY apps/game_server/mix.exs /app/apps/game_server
-COPY apps/game_server_web/mix.exs /app/apps/game_server_web
+COPY apps/game_server/mix.exs /app/apps/game_server/
+COPY apps/game_server_web/mix.exs /app/apps/game_server_web/
 
+ENV SECRET_KEY_BASE=${secret_key_base}
 ENV MIX_ENV=prod
 RUN mix do deps.get --only $MIX_ENV, deps.compile
 
