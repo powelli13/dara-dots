@@ -16,7 +16,7 @@ config :game_server_web,
 # Configures the endpoint
 config :game_server_web, GameServerWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "zStiB/ks4GLBfAJK8DQrEYtN8VQJ+u9LquzXtkn1v8RmiOhbtscv5OtjlqH6XM/A",
+  secret_key_base: System.fetch_env!("SECRET_KEY_BASE"),
   render_errors: [view: GameServerWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: GameServer.PubSub,
   live_view: [signing_salt: "DyZzG3MZ"]
