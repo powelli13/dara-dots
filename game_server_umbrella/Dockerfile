@@ -1,35 +1,17 @@
-FROM elixir:1.10.4 as releaser
-ARG secret_key_base
+FROM bitwalker/alpine-elixir-phoenix:latest
 
 WORKDIR /app
 
-# Install Hex and Rebar
-RUN apt-get update && \
-    apt-get install -y nodejs && \
-    mix local.hex --force && \
-    mix local.rebar --force && \
-    mix archive.install hex phx_new 1.5.3 --force && \
-    curl -L https://npmjs.org/install.sh | sh
+COPY mix.exs .
+COPY mix.lock .
 
+RUN mkdir assets
 
-#CMD ["mix", "phx.server"]
+COPY apps/game_server_web/assets/package.json assets
+COPY apps/game_server_web/assets/package-lock.json assets
 
-ENV SECRET_KEY_BASE=${secret_key_base}
-ENV MIX_ENV=prod
-
-COPY . .
-RUN mix do deps.get --only $MIX_ENV, deps.compile
-
-WORKDIR /app/apps/game_server_web
-
-RUN MIX_ENV=prod mix compile
-
-RUN groupadd --gid 1000 node \
-  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
-USER node
-RUN npm install --prefix ./assets
-RUN npm run deploy --prefix ./assets
-RUN mix phx.digest
-
-WORKDIR /app
-RUN MIX_ENV=prod mix release
+CMD mix deps.get && \
+    cd assets && \
+    npm install && \
+    cd .. && \
+    mix phx.server
