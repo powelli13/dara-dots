@@ -10,9 +10,8 @@ RUN mkdir assets
 COPY apps/game_server_web/assets/package.json assets
 COPY apps/game_server_web/assets/package-lock.json assets
 
-RUN mix deps.get && \
+CMD mix deps.get && \
     cd assets && \
     npm install && \
-    cd ..
-
-CMD ["mix", "phx.server"]
+    cd .. && \
+    mix phx.server
