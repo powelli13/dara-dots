@@ -1,6 +1,10 @@
+# syntax=docker/dockerfile:1.0-experimental
 FROM bitwalker/alpine-elixir-phoenix:latest
 
 WORKDIR /app
+
+#ENV MIX_ENV prod
+#RUN --mount=type=secret,id=keybase,dst=/keybase bash /keybase
 
 COPY . .
 
