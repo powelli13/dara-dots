@@ -2,37 +2,22 @@ FROM bitwalker/alpine-elixir-phoenix:latest
 
 WORKDIR /app
 
-#COPY mix.exs .
-#COPY mix.lock .
-
 COPY . .
 
-#RUN mkdir assets
+RUN mix deps.get
 
-#COPY apps/game_server_web/assets/package.json assets
-#COPY apps/game_server_web/assets/package-lock.json assets
+WORKDIR /app/apps/game_server_web/assets/node_modules
 
-CMD mix deps.get && \
-    #cd assets && \
-    #npm install && \
-    #cd .. && \
-    mix phx.server
+# Remove the phoenix* folders from node_modules
+# these are copied over as symlinks which do not
+# work correctly
+RUN rm phoenix
+RUN rm phoenix_html
+RUN rm phoenix_live_view
 
-# below worked in the simple example app
-# the phoenix and phoenix_html directories in node_modules
-# were symlinks which didn't copy over well into the image
-# deleting them before running npm install resolved this issue
+RUN npm install
+RUN npm rebuild node-sass
 
-#RUN mix deps.get
+WORKDIR /app
 
-#WORKDIR /app/assets/node_modules
-
-#RUN rm phoenix
-#RUN rm phoenix_html
-
-#RUN npm install
-#RUN npm rebuild node-sass
-
-#WORKDIR /app
-
-#CMD ["mix", "phx.server"]
+CMD ["mix", "phx.server"]
