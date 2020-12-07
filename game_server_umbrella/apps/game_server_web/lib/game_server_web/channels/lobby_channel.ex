@@ -66,25 +66,26 @@ defmodule GameServerWeb.LobbyChannel do
 
   # Handle an update to which team is performing
   def handle_info({:next_performer, team_name, video_id}, socket) do
-    broadcast!(socket, "new_msg", %{
+    push(socket, "new_msg", %{
       username: @system_admin_name,
       message: "Next up is team #{team_name}, enjoy!"
     })
+
     # TODO add performing team name to this
     # also I think this should be a push
-    broadcast!(socket, "update_video", %{new_id: video_id, team_name: team_name})
+    push(socket, "update_video", %{new_id: video_id, team_name: team_name})
 
     {:noreply, socket}
   end
 
   # Handle message indicating that the performance ended
   def handle_info(:performance_end, socket) do
-    broadcast!(socket, "new_msg", %{
+    push(socket, "new_msg", %{
       username: @system_admin_name,
       message: "The performances have ended, thanks for participating!"
     })
 
-    broadcast!(socket, "performance_end", %{continue: false})
+    push(socket, "performance_end", %{continue: false})
 
     {:noreply, socket}
   end
