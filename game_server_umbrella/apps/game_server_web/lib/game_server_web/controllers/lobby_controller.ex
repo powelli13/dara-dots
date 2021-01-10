@@ -58,7 +58,7 @@ defmodule GameServerWeb.LobbyController do
 
     # Start the LipSync queue so that it will be available
     # via the Registry inside of the LobbyChannel
-    _ = GameServer.LipSyncQueueSupervisor.find_queue(id)
+    _ = GameServer.LipSyncQueueSupervisor.start_queue(id)
 
     redirect(conn, to: "/lobby/#{id}?player_name=#{validate_username(params)}")
   end

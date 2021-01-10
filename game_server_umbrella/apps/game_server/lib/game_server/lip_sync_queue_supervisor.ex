@@ -15,7 +15,6 @@ defmodule GameServer.LipSyncQueueSupervisor do
 
   @impl DynamicSupervisor
   def init(_init_arg) do
-    # TODO is one_for_one best here?
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
@@ -23,13 +22,9 @@ defmodule GameServer.LipSyncQueueSupervisor do
   Used to retrieve the process for a Lip Sync queue
   or start it if it hasn't started yet.
   """
-  def find_queue(queue_id) do
+  def start_queue(queue_id) do
     case start_child(queue_id) do
       {:ok, pid} ->
-        pid
-
-      # TODO may want to update this to ensure that duplicate IDs aren't started
-      {:error, {:already_started, pid}} ->
         pid
     end
   end
