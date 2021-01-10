@@ -9,7 +9,7 @@
     </div>
     <%= form_for @conn, Routes.lobby_path(@conn, :create), [method: :post], fn f -> %>
       <label for="player_name">Player Name</label>
-      <%= text_input f, :player_name, required: "true" %>
+      <%= text_input f, :player_name, required: "true", id: "player_name_input" %>
       <%= submit "Create Lobby" %>
     <% end %>
 

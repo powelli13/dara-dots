@@ -17,21 +17,18 @@ let LobbyChat = {
     console.log(`Lobby id is: ${lobbyId}`);
 
     const searchParams = new URLSearchParams(document.location.search);
+    const paramPlayerName = searchParams.get("player_name");
 
     let playerName = window.localStorage.getItem("player_name");
 
-    if (playerName == null) {
-      playerName = searchParams.get("player_name");
-      window.localStorage.setItem("player_name", playerName);
+    if (playerName == null || 
+      (paramPlayerName != null && playerName != paramPlayerName)) {
+      playerName = paramPlayerName;
+      window.localStorage.setItem("player_name", paramPlayerName);
     }
 
     if (lobbyId === undefined) {
       lobbyId = searchParams.get("lobby_id");
-    }
-
-    // TODO maybe navigate away here and let them know it's a problem
-    if (lobbyId === undefined) {
-      return;
     }
 
     this.onReady(socket, lobbyId, playerName);

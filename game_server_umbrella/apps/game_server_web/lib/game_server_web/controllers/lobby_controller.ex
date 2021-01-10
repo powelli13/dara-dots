@@ -29,14 +29,18 @@ defmodule GameServerWeb.LobbyController do
     # Only allow alphanumeric characters and whitespace for usernames
     # max length of fifty
     cond do
-      params["player_name"] && 
-      Regex.match?(~r/^[A-Za-z0-9\s]{1,50}$/, params["player_name"]) &&
-      params["player_name"] != @system_admin_name ->
+      legal_username?(params["player_name"]) ->
         params["player_name"]
 
       true ->
         Enum.random(@animal_names)
     end
+  end
+
+  defp legal_username?(name) do
+    name &&
+      Regex.match?(~r/^[A-Za-z0-9\s]{1,50}$/, name) &&
+      name != @system_admin_name
   end
 
   defp redirect_invalid_lobby_id(conn) do
@@ -80,7 +84,6 @@ defmodule GameServerWeb.LobbyController do
       # If validate_registration returns ok
       # then we know that params hold lobby_id and team_name
       {:ok, video_id} ->
-        # TODO using an Ecto changeset here could improve things
         [{queue_pid, _}] =
           Registry.lookup(
             GameServer.Registry,

@@ -79,3 +79,10 @@ if (copyShareCodeButton != null) {
     );
   });
 }
+
+// Display the player name if one is stored
+const storedPlayerName = window.localStorage.getItem("player_name");
+let playerNameTextInput = document.getElementById("player_name_input");
+if (storedPlayerName != null && playerNameTextInput != null) {
+  playerNameTextInput.value = storedPlayerName;
+}

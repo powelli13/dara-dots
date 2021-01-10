@@ -59,6 +59,7 @@ defmodule GameServer.LipSyncQueue do
     {:ok,
      %{
        :id => queue_id,
+
        # The teams registered in the queue
        :teams => %{},
 
