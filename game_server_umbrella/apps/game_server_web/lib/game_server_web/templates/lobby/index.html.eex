@@ -19,7 +19,6 @@ Copy the Share Code to Clipboard
 </div>
 
 <div>
-  <!-- TODO disable these as appropriate or make them admin/lobby owner only -->
   <button id="start-performance-button">
     Start Performance
   </button>
@@ -44,7 +43,6 @@ Copy the Share Code to Clipboard
 </div>
 
 <div>
-<!-- TODO consider changing id to lobby-id and find how to make name team-name -->
   <%= f = form_for @conn, Routes.lobby_path(@conn, :register) %>
     <%= hidden_input f, :lobby_id, id: "hidden-lobby-id" %>
     <label for="team_name">Team Name</label>

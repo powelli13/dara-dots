@@ -77,14 +77,6 @@ let LobbyChat = {
       chatInput.value = "";
     });
 
-    // Join the queue for rock paper scissors
-    // let joinQueue = document.getElementById("join-queue-button");
-    // joinQueue.addEventListener("click", e => {
-    //   joinQueue.setAttribute("disabled", "disabled");
-    //   lobbyChannel.push("join_queue", {})
-    //     .receive("error", e => e.console.log(e));
-    // });
-
     // Test to send a new video ID for the player and update it
     lobbyChannel.on("update_video", (resp) => {
       if (Player.player != null) {
@@ -129,7 +121,6 @@ let LobbyChat = {
     // Join the lobby chat channel.
     lobbyChannel.join()
       .receive("ok", () => {
-        // TODO welcome message maybe?
         return;
       })
       .receive("error", reason => console.log("join failed", reason));
