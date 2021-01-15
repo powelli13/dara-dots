@@ -16,6 +16,9 @@ import "phoenix_html";
 // JavaScript necessary for the main lobby chat
 import LobbyChat from "./lobby";
 
+// JavaScript for the RPS lobby chat
+import RpsLobbyChat from "./rps_lobby";
+
 // Script for the basic Tic Tac Toe game
 import Game from "./game";
 
@@ -28,9 +31,13 @@ import socket from "./socket";
 // if it is found on the page.
 LobbyChat.init(socket, document.getElementById("lobby-chat-container"));
 
+// Initialize the RPS Lobby chat
+RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));
+
 // Initialize the Game facilitating script
 Game.init(socket, "id");
 
+// TODO remove this
 let Hooks = {};
 Hooks.VideoPlayer = {
   mount() {

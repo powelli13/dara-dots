@@ -27,9 +27,6 @@ defmodule GameServerWeb.LobbyChannel do
 
     # Send the currently registered teams to the lobby
     # entrant when they join.
-    # TODO when this fails or they navigate to the page without a valid
-    # lobby ID the channel process will continue to die and try to rejoin,
-    # should navigate them away or something
     [{queue_pid, _}] =
       Registry.lookup(
         GameServer.Registry,

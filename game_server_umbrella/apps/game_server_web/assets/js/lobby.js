@@ -99,10 +99,6 @@ let LobbyChat = {
         .receive("error", e => e.console.log(e));
     });
 
-    //lobbyChannel.on("game_started", (resp) => {
-    //  this.navigateToGame(resp);
-    //});
-
     // Receive and render a new chat message.
     lobbyChannel.on("new_msg", (resp) => {
       this.renderAnnotation(chatContainer, resp);
@@ -132,14 +128,6 @@ let LobbyChat = {
     div.appendChild(document.createTextNode(str));
 
     return div.innerHTML;
-  },
-
-  // Navigate the user to their newly started game.
-  navigateToGame({username, game_id}) {
-    // TODO improve this by pushing to individual sockets rather than checking usernames
-    if (username == window.localStorage.getItem("dara-username")) {
-      window.location.replace(`/game?id=${game_id}`);
-    }
   },
 
   // Display a new message in the chat container.
