@@ -4,4 +4,8 @@ defmodule GameServerWeb.GameController do
   def index(conn, _params) do
     render(conn, "index.html")
   end
+
+  def lobby(conn, _params) do
+    render(conn, "rps_lobby.html")
+  end
 end

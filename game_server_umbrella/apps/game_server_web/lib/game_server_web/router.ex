@@ -30,6 +30,8 @@ defmodule GameServerWeb.Router do
 
     get "/game", GameController, :index
 
+    get "/rps-game-lobby", GameController, :lobby
+
     live "/tictactoe", TicTacToeLive
 
     live "/lipsync", LipSyncLive

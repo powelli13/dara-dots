@@ -26,6 +26,8 @@
   </article>
 </section>
 
-<div class="fixed-footer">
-  Made with &hearts; by Isaac Powell.
-</div>
+<section class="row">
+  <article class="column">
+    <%= link "Game Lobby", to: "/rps-game-lobby" %>
+  </article>
+</section>
