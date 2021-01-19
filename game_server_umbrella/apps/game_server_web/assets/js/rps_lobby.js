@@ -17,9 +17,16 @@ let RpsLobbyChat = {
     const chatContainer = document.getElementById("rps-lobby-chat-container");
     const chatInput = document.getElementById("lobby-chat-input");
     const postButton = document.getElementById("lobby-chat-submit");
+    const joinQueueButton = document.getElementById("join-game-queue-button");
+
+    // Elements used to display users in lobby and
+    // the participant list
+    const userList = document.getElementById("user-list");
 
     let lobbyChannel = socket.channel(`rps_lobby:1`, () => {
-      return {username: "anon" + Math.floor(Math.random() * 1000)};
+      const username = "anon" + Math.floor(Math.random() * 1000);
+      window.localStorage.setItem("dara-username", username);
+      return {username: username};
     });
 
     let presence = new Presence(lobbyChannel);
@@ -38,9 +45,16 @@ let RpsLobbyChat = {
       chatInput.value = "";
     });
 
-    //lobbyChannel.on("game_started", (resp) => {
-    //  this.navigateToGame(resp);
-    //});
+    // Add the player to the queue.
+    joinQueueButton.addEventListener("click", e => {
+      lobbyChannel.push("join_queue", {player_name: window.localStorage.getItem("dara-username")})
+      .receive("error", e => e.console.log(e));
+      joinQueueButton.disabled = true;
+    });
+
+    lobbyChannel.on("game_started", (resp) => {
+      this.navigateToGame(resp);
+    });
 
     // Receive and render a new chat message.
     lobbyChannel.on("new_msg", (resp) => {
@@ -67,7 +81,7 @@ let RpsLobbyChat = {
   navigateToGame({username, game_id}) {
     // TODO improve this by pushing to individual sockets rather than checking usernames
     if (username == window.localStorage.getItem("dara-username")) {
-      window.location.replace(`/game?id=${game_id}`);
+      window.location.replace(`/game?game_id=${game_id}`);
     }
   },
 

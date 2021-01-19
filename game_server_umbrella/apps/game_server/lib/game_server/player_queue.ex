@@ -4,14 +4,18 @@ defmodule GameServer.PlayerQueue do
   and start games when two or more players are ready.
   """
   use GenServer
+  alias Phoenix.PubSub
 
   # adds the player to the queue
-  def add_player(player_socket) do
-    GenServer.cast(__MODULE__, {:add_player, player_socket})
+  def add_player(player_name) do
+    GenServer.cast(__MODULE__, {:add_player, player_name})
   end
 
   @impl GenServer
   def init(_) do
+    # TODO necessary if it is registered as the module?
+    Registry.register(GameServer.Registry, __MODULE__, %{})
+
     # Erlang language queue is used here
     {:ok, :queue.new()}
   end
@@ -35,15 +39,19 @@ defmodule GameServer.PlayerQueue do
       # Inform the lobby channel that the players are in a game together
       # TODO this can be updated to simply use PubSub since the channels
       # automatically subscribe, see RPC game channel and game GenServer
-      Registry.dispatch(GameServerWebRegistry, "lobby_channel", fn entries ->
-        for {pid, _} <- entries do
-          send(pid, {:start_game, first_player, second_player, new_game_id})
-        end
-      end)
+      #Registry.dispatch(GameServerWebRegistry, "rps_lobby:1", fn entries ->
+        #for {pid, _} <- entries do
+          #send(pid, {:start_game, first_player, second_player, new_game_id})
+        #end
+      #end)
+      PubSub.broadcast(
+        GameServer.PubSub,
+        "rps_lobby:1", #TODO
+        {:start_game, first_player, second_player, new_game_id}
+      )
 
       {:noreply, new_queue}
     else
-      # tell caller there is no game to start
       {:noreply, new_queue}
     end
   end

@@ -1,8 +1,15 @@
 defmodule GameServerWeb.GameController do
   use GameServerWeb, :controller
 
-  def index(conn, _params) do
-    render(conn, "index.html")
+  def index(conn, params) do
+    case Map.fetch(params, "game_id") do
+      {:ok, game_id} ->
+        # TODO put game_id in assigns?
+        render(conn, "index.html")
+
+      :error ->
+        redirect(conn, to: Routes.game_path(conn, :lobby))
+    end
   end
 
   def lobby(conn, _params) do
