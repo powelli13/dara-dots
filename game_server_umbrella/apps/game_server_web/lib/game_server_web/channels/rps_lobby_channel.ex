@@ -54,19 +54,4 @@ defmodule GameServerWeb.RpsLobbyChannel do
 
     {:noreply, socket}
   end
-
-  # Handle messages from the queue indicating that a game is ready
-  def handle_info({:start_game, player_one, player_two, new_game_id}, socket) do
-    # Start the game and add players
-    start_game_pid = GameSupervisor.find_game(new_game_id)
-
-    # TODO this can be improved, maybe these can be socket_ref s instead?
-    if socket.assigns.username == player_one ||
-         socket.assigns.username == player_two do
-      RockPaperScissors.add_player(start_game_pid, socket.assigns.username)
-      push(socket, "game_started", %{username: socket.assigns.username, game_id: new_game_id})
-    end
-
-    {:noreply, socket}
-  end
 end

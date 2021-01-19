@@ -21,7 +21,6 @@ defmodule GameServer.RockPaperScissors do
   move should be either :rock, :paper or :scissors.
   """
   def enter_move(game_pid, player_name, move) when is_atom(move) do
-    # TODO error or guard clause to find illegal moves?
     GenServer.cast(game_pid, {:player_move, player_name, move})
   end
 
@@ -35,17 +34,13 @@ defmodule GameServer.RockPaperScissors do
   def start_link(game_id) do
     GenServer.start_link(
       __MODULE__,
-      game_id,
-      name: via_tuple(game_id)
+      game_id
     )
-  end
-
-  def via_tuple(game_id) do
-    GameServer.ProcessRegistry.via_tuple({__MODULE__, game_id})
   end
 
   @impl GenServer
   def init(game_id) do
+    #IO.inspect Registry.register(GameServer.Registry, {__MODULE__, game_id}, game_id)
     # TODO make a struct for this?
     initial_state = %{
       :game_id => game_id,
