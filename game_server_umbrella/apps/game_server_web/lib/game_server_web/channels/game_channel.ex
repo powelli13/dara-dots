@@ -21,24 +21,24 @@ defmodule GameServerWeb.GameChannel do
   # Handlers to take care of game state updates from the
   # rock_paper_scissors server that was subscribed to on join
   def handle_info(:game_drawn, socket) do
-    IO.puts("Pushing game update to socket")
-    IO.inspect(socket)
+    # IO.puts("Pushing game update to socket")
+    # IO.inspect(socket)
     push(socket, "player_move", %{message: "Game drawn. Thanks for playing!"})
 
     {:noreply, socket}
   end
 
   def handle_info(:game_continue, socket) do
-    IO.puts("Pushing game update to socket")
-    IO.inspect(socket)
+    # IO.puts("Pushing game update to socket")
+    # IO.inspect(socket)
     push(socket, "player_move", %{message: "Game not over, all players must move."})
 
     {:noreply, socket}
   end
 
   def handle_info({:game_over, winner_name}, socket) do
-    IO.puts("Pushing game update to socket")
-    IO.inspect(socket)
+    # IO.puts("Pushing game update to socket")
+    # IO.inspect(socket)
     push(socket, "player_move", %{message: "Game over! #{winner_name} has won."})
 
     {:noreply, socket}

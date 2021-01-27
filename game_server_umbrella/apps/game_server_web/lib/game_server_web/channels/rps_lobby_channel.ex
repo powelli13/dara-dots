@@ -48,7 +48,7 @@ defmodule GameServerWeb.RpsLobbyChannel do
 
   def handle_in("join_queue", %{"player_name" => player_name}, socket) do
     # TODO user socket ref here
-    #[{player_queue_pid, _}] = Registry.lookup(GameServer.Registry, GameServer.PlayerQueue)
+    # [{player_queue_pid, _}] = Registry.lookup(GameServer.Registry, GameServer.PlayerQueue)
 
     GameServer.PlayerQueue.add_player(player_name)
 
