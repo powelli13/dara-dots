@@ -72,9 +72,6 @@ defmodule GameServer.RockPaperScissorsTest do
   end
 
   test "both players move game drawn", state do
-    # Subscribe to receive endgame state after moves are submitted
-    # RPS server stops after both moves are submitted,
-    # so we subscribe to receive endgame state
     PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
 
     test_name_one = "PlayerOne"
@@ -90,5 +87,65 @@ defmodule GameServer.RockPaperScissorsTest do
     RockPaperScissors.enter_move(state[:rps_game_pid], test_name_two, test_move_two)
 
     assert_receive :game_drawn
+  end
+
+  test "paper beats rock", state do
+    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+
+    test_winner = "PaperPlayer"
+    test_loser = "RockPlayer"
+
+    winner_move = :paper
+    loser_move = :rock
+
+    RockPaperScissors.add_player(state[:rps_game_pid], test_winner)
+    RockPaperScissors.add_player(state[:rps_game_pid], test_loser)
+
+    RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
+    RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
+
+    assert_receive {:game_over, winner_name}
+
+    assert winner_name == test_winner
+  end
+
+  test "rock beats scissors", state do
+    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+
+    test_winner = "RockPlayer"
+    test_loser = "ScissorsPlayer"
+
+    winner_move = :rock
+    loser_move = :scissors
+
+    RockPaperScissors.add_player(state[:rps_game_pid], test_winner)
+    RockPaperScissors.add_player(state[:rps_game_pid], test_loser)
+
+    RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
+    RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
+
+    assert_receive {:game_over, winner_name}
+
+    assert winner_name == test_winner
+  end
+
+  test "scissors beats paper", state do
+    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+
+    test_winner = "ScissorsPlayer"
+    test_loser = "PaperPlayer"
+
+    winner_move = :scissors
+    loser_move = :paper
+
+    RockPaperScissors.add_player(state[:rps_game_pid], test_winner)
+    RockPaperScissors.add_player(state[:rps_game_pid], test_loser)
+
+    RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
+    RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
+
+    assert_receive {:game_over, winner_name}
+
+    assert winner_name == test_winner
   end
 end
