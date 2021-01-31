@@ -100,22 +100,28 @@ defmodule GameServer.RockPaperScissors do
   end
 
   @impl GenServer
-  def handle_cast({:player_move, player_name, move}, game_state) do
+  def handle_cast({:player_move, player_name, move}, old_game_state) do
     # TODO this does not correctly update, this entire module is pretty gross
     # should be refactored with tests added
     # should probably handle that using a separate game state struct
     game_state =
       cond do
-        game_state[:player_one_name] == player_name ->
-          Map.put(game_state, :player_one_move, move)
+        old_game_state[:player_one_name] == player_name ->
+          Map.put(old_game_state, :player_one_move, move)
 
-        game_state[:player_two_name] == player_name ->
-          Map.put(game_state, :player_two_move, move)
+        old_game_state[:player_two_name] == player_name ->
+          Map.put(old_game_state, :player_two_move, move)
 
         # Not a valid player name
         true ->
-          game_state
+          old_game_state
       end
+
+    IO.puts "game state after move"
+    IO.puts game_state[:player_one_name]
+    IO.puts game_state[:player_two_name]
+    IO.puts game_state[:player_one_move]
+    IO.puts game_state[:player_two_move]
 
     # TODO should store more info int he game state struct
     # Check for any winner
@@ -124,6 +130,7 @@ defmodule GameServer.RockPaperScissors do
       {:winner, winner_name} ->
         # Scoreboard.report_win(winner_name)
         broadcast_game_update(game_state[:game_id], {:game_over, winner_name})
+        IO.puts "RPS WINNER!!! game over #{winner_name}"
         {:stop, :normal, game_state}
 
       :draw ->
@@ -132,6 +139,7 @@ defmodule GameServer.RockPaperScissors do
 
       :not_over ->
         broadcast_game_update(game_state[:game_id], :game_continue)
+        IO.puts "CONTINUE!!"
         {:noreply, game_state}
     end
   end

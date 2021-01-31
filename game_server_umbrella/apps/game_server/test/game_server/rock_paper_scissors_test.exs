@@ -34,6 +34,22 @@ defmodule GameServer.RockPaperScissorsTest do
     assert hd(tl(player_names)) == test_name_two
   end
 
+  test "adding another player does not remove existing players", state do
+    test_name_one = "Rumplestiltskin"
+    test_name_two = "Pied Piper"
+
+    test_name_excess = "Do Not Add"
+
+    RockPaperScissors.add_player(state[:rps_game_pid], test_name_one)
+    RockPaperScissors.add_player(state[:rps_game_pid], test_name_two)
+    RockPaperScissors.add_player(state[:rps_game_pid], test_name_excess)
+
+    player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
+
+    assert hd(player_names) == test_name_one
+    assert hd(tl(player_names)) == test_name_two
+  end
+
   test "player one makes move", state do
     test_name = "PlayerOne"
     test_move = :rock
