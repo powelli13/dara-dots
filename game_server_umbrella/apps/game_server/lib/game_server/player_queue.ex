@@ -5,6 +5,8 @@ defmodule GameServer.PlayerQueue do
   """
   use GenServer
   alias Phoenix.PubSub
+  alias GameServer.GameSupervisor
+  alias GameServer.RockPaperScissors
 
   # adds the player to the queue
   def add_player(player_name) do
@@ -44,6 +46,12 @@ defmodule GameServer.PlayerQueue do
       # send(pid, {:start_game, first_player, second_player, new_game_id})
       # end
       # end)
+      # Start game GenServer and add players
+      start_game_pid = GameSupervisor.find_game(new_game_id)
+
+      RockPaperScissors.add_player(start_game_pid, first_player)
+      RockPaperScissors.add_player(start_game_pid, second_player)
+
       PubSub.broadcast(
         GameServer.PubSub,
         # TODO

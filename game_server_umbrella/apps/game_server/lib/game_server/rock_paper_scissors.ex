@@ -39,6 +39,7 @@ defmodule GameServer.RockPaperScissors do
     GenServer.call(game_pid, :get_player_moves)
   end
 
+  @impl GenServer
   def start_link(game_id) do
     GenServer.start_link(
       __MODULE__,
@@ -48,6 +49,8 @@ defmodule GameServer.RockPaperScissors do
 
   @impl GenServer
   def init(game_id) do
+    Registry.register(GameServer.Registry, {__MODULE__, game_id}, game_id)
+
     # TODO make a struct for this
     initial_state = %{
       :game_id => game_id,
@@ -117,12 +120,6 @@ defmodule GameServer.RockPaperScissors do
           old_game_state
       end
 
-    IO.puts "game state after move"
-    IO.puts game_state[:player_one_name]
-    IO.puts game_state[:player_two_name]
-    IO.puts game_state[:player_one_move]
-    IO.puts game_state[:player_two_move]
-
     # TODO should store more info int he game state struct
     # Check for any winner
     case check_victory(game_state) do
@@ -130,7 +127,6 @@ defmodule GameServer.RockPaperScissors do
       {:winner, winner_name} ->
         # Scoreboard.report_win(winner_name)
         broadcast_game_update(game_state[:game_id], {:game_over, winner_name})
-        IO.puts "RPS WINNER!!! game over #{winner_name}"
         {:stop, :normal, game_state}
 
       :draw ->
@@ -139,12 +135,11 @@ defmodule GameServer.RockPaperScissors do
 
       :not_over ->
         broadcast_game_update(game_state[:game_id], :game_continue)
-        IO.puts "CONTINUE!!"
         {:noreply, game_state}
     end
   end
 
-  defp check_victory(game_state) when is_map(game_state) do
+  defp check_victory(game_state) do
     %{
       :player_one_name => player_one,
       :player_two_name => player_two,

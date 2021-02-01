@@ -46,7 +46,11 @@ defmodule GameServerWeb.GameChannel do
       |> String.downcase()
       |> String.to_atom()
 
-    game_pid = GameSupervisor.find_game(socket.assigns.game_id)
+    [{game_pid, _}] =
+      Registry.lookup(
+        GameServer.Registry,
+        {GameServer.RockPaperScissors, socket.assigns.game_id}
+      )
 
     RockPaperScissors.enter_move(
       game_pid,
