@@ -5,6 +5,18 @@
 <section class="row">
   <article class="column">
     <div>
+      Join a game lobby to chat and play
+    </div>
+    <ul>
+      <li><%= link "Rock Paper Scissors", to: "/rps-game-lobby" %></li>
+      <li><%= link "Tic Tac Toe", to: "/ttt-game-lobby" %></li>
+    </ul>
+  </article>
+</section>
+
+<section class="row">
+  <article class="column">
+    <div>
       Create a Lib Sync lobby to start grooving with your friends.
     </div>
     <%= form_for @conn, Routes.lobby_path(@conn, :create), [method: :post], fn f -> %>
@@ -23,11 +35,5 @@
       <%= text_input f, :lobby_id, required: "true" %>
       <%= submit "Join Lobby" %>
     <% end %>
-  </article>
-</section>
-
-<section class="row">
-  <article class="column">
-    <%= link "Game Lobby", to: "/rps-game-lobby" %>
   </article>
 </section>
