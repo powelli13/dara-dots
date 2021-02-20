@@ -85,7 +85,10 @@ defmodule GameServer.RockPaperScissors do
   def handle_call(:get_player_names, _, game_state) do
     {
       :reply,
-      [game_state[:player_one_name], game_state[:player_two_name]],
+      %{
+        :player_one_name => game_state[:player_one_name],
+        :player_two_name => game_state[:player_two_name]
+      },
       game_state
     }
   end

@@ -18,7 +18,7 @@ defmodule GameServer.RockPaperScissorsTest do
     RockPaperScissors.add_player(state[:rps_game_pid], test_name)
     player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
 
-    assert hd(player_names) == test_name
+    assert player_names[:player_one_name] == test_name
   end
 
   test "add two players", state do
@@ -30,8 +30,8 @@ defmodule GameServer.RockPaperScissorsTest do
 
     player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
 
-    assert hd(player_names) == test_name_one
-    assert hd(tl(player_names)) == test_name_two
+    assert player_names[:player_one_name] == test_name_one
+    assert player_names[:player_two_name] == test_name_two
   end
 
   test "adding another player does not remove existing players", state do
@@ -46,8 +46,8 @@ defmodule GameServer.RockPaperScissorsTest do
 
     player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
 
-    assert hd(player_names) == test_name_one
-    assert hd(tl(player_names)) == test_name_two
+    assert player_names[:player_one_name] == test_name_one
+    assert player_names[:player_two_name] == test_name_two
   end
 
   test "player names persist after a move is made", state do
@@ -62,8 +62,8 @@ defmodule GameServer.RockPaperScissorsTest do
 
     player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
 
-    assert hd(player_names) == test_name_one
-    assert hd(tl(player_names)) == test_name_two
+    assert player_names[:player_one_name] == test_name_one
+    assert player_names[:player_two_name] == test_name_two
   end
 
   test "player one makes move", state do
