@@ -51,7 +51,6 @@ defmodule GameServer.RockPaperScissors do
   def init(game_id) do
     Registry.register(GameServer.Registry, {__MODULE__, game_id}, game_id)
 
-    # TODO make a struct for this
     initial_state = %{
       :game_id => game_id,
       :player_one_name => nil,

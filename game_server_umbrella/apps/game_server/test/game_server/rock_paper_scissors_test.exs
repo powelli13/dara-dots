@@ -54,7 +54,6 @@ defmodule GameServer.RockPaperScissorsTest do
     test_name_one = "Rumplestiltskin"
     test_name_two = "Pied Piper"
 
-
     RockPaperScissors.add_player(state[:rps_game_pid], test_name_one)
     RockPaperScissors.add_player(state[:rps_game_pid], test_name_two)
 

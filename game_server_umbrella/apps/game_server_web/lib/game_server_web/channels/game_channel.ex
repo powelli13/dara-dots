@@ -21,7 +21,6 @@ defmodule GameServerWeb.GameChannel do
   # Handlers to take care of game state updates from the
   # rock_paper_scissors server that was subscribed to on join
   def handle_info(:game_drawn, socket) do
-    IO.puts "game drawn"
     push(socket, "player_move", %{message: "Game drawn. Thanks for playing!"})
 
     {:noreply, socket}
