@@ -33,9 +33,14 @@ defmodule GameServerWeb.GameChannel do
     {:noreply, socket}
   end
 
-  def handle_info({:game_over, winner_name}, socket) do
-    IO.puts "WINNER!!! Game over winner is #{winner_name}"
+  def handle_info({:game_winner, winner_name}, socket) do
     push(socket, "player_move", %{message: "Game over! #{winner_name} has won."})
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:game_over, socket) do
+    push(socket, "game_over", %{})
 
     {:noreply, socket}
   end

@@ -19,8 +19,8 @@ import LobbyChat from "./lobby";
 // JavaScript for the RPS lobby chat
 import RpsLobbyChat from "./rps_lobby";
 
-// Script for the basic Tic Tac Toe game
-import Game from "./game";
+// Script for the basic Rock Paper Scissors game
+import RpsGame from "./rps_game";
 
 // Video player that is used to play videos on the lip_sync LiveView
 import Player from "./player";
@@ -35,7 +35,7 @@ LobbyChat.init(socket, document.getElementById("lobby-chat-container"));
 RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));
 
 // Initialize the Game facilitating script
-Game.init(socket, "id");
+RpsGame.init(socket, "id");
 
 // TODO remove this
 let Hooks = {};

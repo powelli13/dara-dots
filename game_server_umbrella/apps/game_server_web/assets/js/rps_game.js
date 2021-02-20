@@ -1,7 +1,7 @@
 
 // Object used to send player inputs to the server
 // and receive updates using a websocket.
-let Game = {
+let RpsGame = {
   init(socket, urlParam) {
     let params = new URLSearchParams(document.location.search);
     if (!params.has(urlParam)) { return; }
@@ -47,6 +47,10 @@ let Game = {
       this.renderAnnotation(messageContainer, resp);
     });
 
+    gameChannel.on("game_over", (_) => {
+      this.navigateToLobby();
+    });
+
     gameChannel.join()
       .receive("ok", () => {
         return;
@@ -68,7 +72,11 @@ let Game = {
 
     messageContainer.appendChild(template);
     messageContainer.scrollTop = messageContainer.scrollHeight;
+  },
+
+  navigateToLobby() {
+    window.location.replace("/rps-game-lobby");
   }
 };
 
-export default Game;
+export default RpsGame;

@@ -106,6 +106,13 @@ defmodule GameServer.RockPaperScissors do
   end
 
   @impl GenServer
+  def handle_info(:game_over, game_state) do
+    broadcast_game_update(game_state[:game_id], :game_over)
+
+    {:stop, :normal, game_state}
+  end
+
+  @impl GenServer
   def handle_cast({:player_move, player_name, move}, old_game_state) do
     # TODO this does not correctly update, this entire module is pretty gross
     # should be refactored with tests added
@@ -129,8 +136,10 @@ defmodule GameServer.RockPaperScissors do
       # TODO report win or draw
       {:winner, winner_name} ->
         # Scoreboard.report_win(winner_name)
-        broadcast_game_update(game_state[:game_id], {:game_over, winner_name})
-        {:stop, :normal, game_state}
+        broadcast_game_update(game_state[:game_id], {:game_winner, winner_name})
+        # After five seconds send a message to indicate the game is finished
+        Process.send_after(self(), :game_over, 5000)
+        {:noreply, game_state}
 
       :draw ->
         broadcast_game_update(game_state[:game_id], :game_drawn)
