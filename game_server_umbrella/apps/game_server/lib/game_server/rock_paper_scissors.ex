@@ -105,6 +105,9 @@ defmodule GameServer.RockPaperScissors do
     }
   end
 
+  @doc """
+  Broadcasts a message that the game is over and terminates the process.
+  """
   @impl GenServer
   def handle_info(:game_over, game_state) do
     broadcast_game_update(game_state[:game_id], :game_over)
@@ -137,13 +140,13 @@ defmodule GameServer.RockPaperScissors do
       {:winner, winner_name} ->
         # Scoreboard.report_win(winner_name)
         broadcast_game_update(game_state[:game_id], {:game_winner, winner_name})
-        # After five seconds send a message to indicate the game is finished
         Process.send_after(self(), :game_over, 5000)
         {:noreply, game_state}
 
       :draw ->
         broadcast_game_update(game_state[:game_id], :game_drawn)
-        {:stop, :normal, game_state}
+        Process.send_after(self(), :game_over, 5000)
+        {:noreply, game_state}
 
       :not_over ->
         broadcast_game_update(game_state[:game_id], :game_continue)
