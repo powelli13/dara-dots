@@ -22,13 +22,6 @@ import RpsLobbyChat from "./rps_lobby";
 // Script for the basic Rock Paper Scissors game
 import RpsGame from "./rps_game";
 
-// Used for Phaser display
-import "./phaser.min";
-import "./main";
-import "./boardNode";
-import "./piece";
-import "./starpiece";
-
 // Video player that is used to play videos on the lip_sync LiveView
 import Player from "./player";
 
