@@ -5,6 +5,7 @@ defmodule GameServerWeb.UserSocket do
   channel "lobby:*", GameServerWeb.LobbyChannel
   channel "game:*", GameServerWeb.GameChannel
   channel "rps_lobby:*", GameServerWeb.RpsLobbyChannel
+  channel "ttt_game:*", GameServerWeb.TttGameChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

@@ -14,10 +14,28 @@ let PhaserWrapper = {
   onReady(socket) {
     console.log('Phaser wrapper is now ready');
 
-    this.initPhaserGame(socket)
+    var ticTacToeGameChannel = socket.channel('ttt_game:1', () => {
+      return {};
+    });
+
+    this.initPhaserGame(ticTacToeGameChannel)
   },
 
-  initPhaserGame(socket) {
+  initPhaserGame(gameChannel) {
+    // TODO restructure this for readability
+    // Setup channel listeners
+    gameChannel.on("test_echo", (resp) => {
+      console.log("echo from server");
+      console.log(resp);
+    });
+
+    gameChannel.join()
+      .receive("ok", () => {
+        return;
+      })
+      .receive("error", reason => console.log("join failed", reason));
+
+    // Setup Phaser game
     var config = {
       type: Phaser.AUTO,
       width: 450,
@@ -59,7 +77,10 @@ let PhaserWrapper = {
     }
 
     function actionOnClick () {
-      console.log('clicked the button');
+      console.log('Sending echo to server');
+
+      gameChannel.push("test_echo", {})
+        .receive("error", e => e.console.log(e));
     }
   }
 };
