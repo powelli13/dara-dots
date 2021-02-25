@@ -22,8 +22,8 @@ import RpsLobbyChat from "./rps_lobby";
 // Script for the basic Rock Paper Scissors game
 import RpsGame from "./rps_game";
 
-// Video player that is used to play videos on the lip_sync LiveView
-import Player from "./player";
+// Script for wrapping the Phaser game to connect it with a socket
+import PhaserWrapper from "./phaser_wrapper";
 
 import socket from "./socket";
 
@@ -37,21 +37,7 @@ RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));
 // Initialize the Game facilitating script
 RpsGame.init(socket, "id");
 
-// TODO remove this
-let Hooks = {};
-Hooks.VideoPlayer = {
-  mount() {
-    console.log('mounted the player!');
-  }
-};
-
-import LiveSocket from "phoenix_live_view";
-import {Socket} from "phoenix";
-
-let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks});
-
-liveSocket.connect();
+PhaserWrapper.init(socket, document.getElementById("phaser-wrapper"));
 
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");
