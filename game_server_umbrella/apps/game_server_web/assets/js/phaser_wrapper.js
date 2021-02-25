@@ -36,26 +36,30 @@ let PhaserWrapper = {
     };
 
     var game = new Phaser.Game(config);
-    var masterGroup;
+    var testButton;
 
-    function preload ()
-    {
+    function preload () {
+      // TODO Phaser examples use game instead of this.
       this.load.image('background', 'game_images/background.jpg');
       this.load.image('star_test', 'game_images/star.png');
     }
 
-    function create ()
-    {
+    function create () {
       // Only load the Phaser assets on certain pages
       this.add.image(450, 450, 'background');
-      this.add.image(25, 25, 'star_test');
+
+      testButton = this.add.image(50, 50, 'star_test')
+        .setInteractive()
+        .on('pointerdown', () => actionOnClick());
 
       this.input.mouse.disableContextMenu();
     }
 
-    function update ()
-    {
-      console.log('hi there updating from Phaser');
+    function update () {
+    }
+
+    function actionOnClick () {
+      console.log('clicked the button');
     }
   }
 };
