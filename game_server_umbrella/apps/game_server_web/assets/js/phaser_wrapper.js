@@ -35,11 +35,16 @@ let PhaserWrapper = {
       })
       .receive("error", reason => console.log("join failed", reason));
 
+    // Display constants
+    const boardWidth = 450;
+    const boardHeight = 450;
+    const bufferSize = 25;
+
     // Setup Phaser game
     var config = {
       type: Phaser.AUTO,
-      width: 450,
-      height: 450,
+      width: boardWidth,
+      height: boardHeight,
       physics: {
         default: 'arcade',
         arcade: {
@@ -54,7 +59,9 @@ let PhaserWrapper = {
     };
 
     var game = new Phaser.Game(config);
+    var graphics;
     var testButton;
+    var boardLines = [];
 
     function preload () {
       // TODO Phaser examples use game instead of this.
@@ -64,16 +71,35 @@ let PhaserWrapper = {
 
     function create () {
       // Only load the Phaser assets on certain pages
-      this.add.image(450, 450, 'background');
+      this.add.image(boardWidth, boardHeight, 'background');
 
       testButton = this.add.image(50, 50, 'star_test')
         .setInteractive()
         .on('pointerdown', () => actionOnClick());
 
+      // Setup the board as an array of lines
+      graphics = this.add.graphics({ lineStyle: { width: 4, color: 0xfefefe } });
+      // TODO some algebra when building the board
+      boardLines.push(new Phaser.Geom.Line(
+        boardWidth/3, bufferSize,
+        boardWidth/3, boardHeight - bufferSize));
+      boardLines.push(new Phaser.Geom.Line(
+        2*(boardWidth/3), bufferSize,
+        2*(boardWidth/3), boardHeight-bufferSize));
+      boardLines.push(new Phaser.Geom.Line(
+        bufferSize, boardHeight/3,
+        boardWidth-bufferSize, boardHeight/3));
+      boardLines.push(new Phaser.Geom.Line(
+        bufferSize, 2*(boardHeight/3),
+        boardWidth-bufferSize, 2*(boardHeight/3)));
+
       this.input.mouse.disableContextMenu();
     }
 
     function update () {
+      graphics.clear();
+
+      boardLines.forEach((v, i) => { graphics.strokeLineShape(v); });
     }
 
     function actionOnClick () {
@@ -86,4 +112,3 @@ let PhaserWrapper = {
 };
 
 export default PhaserWrapper;
-
