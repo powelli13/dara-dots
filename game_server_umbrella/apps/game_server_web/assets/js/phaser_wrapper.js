@@ -62,6 +62,7 @@ let PhaserWrapper = {
     var graphics;
     var testButton;
     var boardLines = [];
+    var boardState = [];
 
     function preload () {
       // TODO Phaser examples use game instead of this.
@@ -100,6 +101,10 @@ let PhaserWrapper = {
       graphics.clear();
 
       boardLines.forEach((v, i) => { graphics.strokeLineShape(v); });
+    }
+
+    function drawBoardState () {
+
     }
 
     function actionOnClick () {
