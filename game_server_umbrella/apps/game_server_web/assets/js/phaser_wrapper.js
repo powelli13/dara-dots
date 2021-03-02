@@ -40,6 +40,27 @@ let PhaserWrapper = {
     const boardHeight = 450;
     const bufferSize = 25;
 
+    // Piece sizes and locations
+    const circleRadius = (boardWidth/6) - bufferSize;
+    // TODO lines for x piece
+
+    // Indexes displayed below
+    // 0 | 1 | 2
+    // 3 | 4 | 5
+    // 6 | 7 | 8
+    // Subarrays is X, Y
+    // Center and padding consts
+    const cX = boardWidth/2;
+    const cY = boardHeight/2;
+    const pX = boardWidth/3;
+    const pY = boardHeight/3;
+    const squareCenterLocations = [
+      [cX-pX, cY-pY], [cX, cY-pY], [cX+pX, cY-pY],
+      [cX-pX, cY], [cX, cY], [cX+pX, cY],
+      [cX-pX, cY+pY], [cX, cY+pY], [cX+pX, cY+pY]
+    ];
+
+
     // Setup Phaser game
     var config = {
       type: Phaser.AUTO,
@@ -63,6 +84,7 @@ let PhaserWrapper = {
     var testButton;
     var boardLines = [];
     var boardState = [];
+    var circlePiece;
 
     function preload () {
       // TODO Phaser examples use game instead of this.
@@ -94,6 +116,8 @@ let PhaserWrapper = {
         bufferSize, 2*(boardHeight/3),
         boardWidth-bufferSize, 2*(boardHeight/3)));
 
+      circlePiece = new Phaser.Geom.Circle(0, 0, circleRadius);
+
       this.input.mouse.disableContextMenu();
     }
 
@@ -101,10 +125,20 @@ let PhaserWrapper = {
       graphics.clear();
 
       boardLines.forEach((v, i) => { graphics.strokeLineShape(v); });
+
+      drawBoardState();
     }
 
     function drawBoardState () {
+      squareCenterLocations.forEach((xy, i) => {
+        circlePiece.x = xy[0];
+        circlePiece.y = xy[1];
+        graphics.strokeCircleShape(circlePiece);
+      });
+    }
 
+    function updateBoardState (newBoardState) {
+      boardState = newBoardState;
     }
 
     function actionOnClick () {
