@@ -96,7 +96,7 @@ defmodule GameServer.RockPaperScissorsTest do
     RockPaperScissors.enter_move(state[:rps_game_pid], test_name_one, test_move_one)
     RockPaperScissors.enter_move(state[:rps_game_pid], test_name_two, test_move_two)
 
-    assert_receive {:game_over, winner_name}
+    assert_receive {:game_winner, winner_name}
 
     assert winner_name == test_name_two
   end
@@ -134,7 +134,7 @@ defmodule GameServer.RockPaperScissorsTest do
     RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
     RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
 
-    assert_receive {:game_over, winner_name}
+    assert_receive {:game_winner, winner_name}
 
     assert winner_name == test_winner
   end
@@ -154,7 +154,7 @@ defmodule GameServer.RockPaperScissorsTest do
     RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
     RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
 
-    assert_receive {:game_over, winner_name}
+    assert_receive {:game_winner, winner_name}
 
     assert winner_name == test_winner
   end
@@ -174,7 +174,7 @@ defmodule GameServer.RockPaperScissorsTest do
     RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
     RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
 
-    assert_receive {:game_over, winner_name}
+    assert_receive {:game_winner, winner_name}
 
     assert winner_name == test_winner
   end

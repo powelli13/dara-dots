@@ -62,23 +62,6 @@ defmodule GameServer.RockPaperScissors do
     {:ok, initial_state}
   end
 
-  @impl GenServer
-  def handle_cast({:add_player, player_name}, game_state) do
-    new_state =
-      cond do
-        is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
-          Map.put(game_state, :player_one_name, player_name)
-
-        !is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
-          Map.put(game_state, :player_two_name, player_name)
-
-        # if both names nil then game is full cannot add player
-        true ->
-          game_state
-      end
-
-    {:noreply, new_state}
-  end
 
   @impl GenServer
   def handle_call(:get_player_names, _, game_state) do
@@ -112,6 +95,24 @@ defmodule GameServer.RockPaperScissors do
     broadcast_game_update(game_state[:game_id], :game_over)
 
     {:stop, :normal, game_state}
+  end
+
+  @impl GenServer
+  def handle_cast({:add_player, player_name}, game_state) do
+    new_state =
+      cond do
+        is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
+          Map.put(game_state, :player_one_name, player_name)
+
+        !is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
+          Map.put(game_state, :player_two_name, player_name)
+
+        # if both names nil then game is full cannot add player
+        true ->
+          game_state
+      end
+
+    {:noreply, new_state}
   end
 
   @impl GenServer
