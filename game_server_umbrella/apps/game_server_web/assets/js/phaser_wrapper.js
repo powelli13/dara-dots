@@ -42,7 +42,7 @@ let PhaserWrapper = {
 
     // Piece sizes and locations
     const circleRadius = (boardWidth/6) - bufferSize;
-    // TODO lines for x piece
+    const crossLength = boardWidth/6;
 
     // Indexes displayed below
     // 0 | 1 | 2
@@ -50,6 +50,7 @@ let PhaserWrapper = {
     // 6 | 7 | 8
     // Subarrays is X, Y
     // Center and padding consts
+    // TODO can I move the const stuff to a separate file?
     const cX = boardWidth/2;
     const cY = boardHeight/2;
     const pX = boardWidth/3;
@@ -59,7 +60,6 @@ let PhaserWrapper = {
       [cX-pX, cY], [cX, cY], [cX+pX, cY],
       [cX-pX, cY+pY], [cX, cY+pY], [cX+pX, cY+pY]
     ];
-
 
     // Setup Phaser game
     var config = {
@@ -85,6 +85,7 @@ let PhaserWrapper = {
     var boardLines = [];
     var boardState = [];
     var circlePiece;
+    var crossPiece = [];
 
     function preload () {
       // TODO Phaser examples use game instead of this.
@@ -117,6 +118,8 @@ let PhaserWrapper = {
         boardWidth-bufferSize, 2*(boardHeight/3)));
 
       circlePiece = new Phaser.Geom.Circle(0, 0, circleRadius);
+      crossPiece.push(new Phaser.Geom.Line(0, 0, crossLength, crossLength));
+      crossPiece.push(new Phaser.Geom.Line(0, crossLength, crossLength, 0));
 
       this.input.mouse.disableContextMenu();
     }
@@ -131,9 +134,16 @@ let PhaserWrapper = {
 
     function drawBoardState () {
       squareCenterLocations.forEach((xy, i) => {
+        // Draw circles
         circlePiece.x = xy[0];
         circlePiece.y = xy[1];
         graphics.strokeCircleShape(circlePiece);
+
+        // Draw crosses
+        crossPiece.forEach((line, il) => {
+          Phaser.Geom.Line.CenterOn(line, xy[0], xy[1]);
+          graphics.strokeLineShape(line);
+        });
       });
     }
 
