@@ -24,9 +24,10 @@ let PhaserWrapper = {
   initPhaserGame(gameChannel) {
     // TODO restructure this for readability
     // Setup channel listeners
-    gameChannel.on("test_echo", (resp) => {
-      console.log("echo from server");
+    gameChannel.on("new_board_state", (resp) => {
+      console.log("new board state from server");
       console.log(resp);
+      updateBoardState(resp);
     });
 
     gameChannel.join()
@@ -97,10 +98,6 @@ let PhaserWrapper = {
       // Only load the Phaser assets on certain pages
       this.add.image(boardWidth, boardHeight, 'background');
 
-      testButton = this.add.image(50, 50, 'star_test')
-        .setInteractive()
-        .on('pointerdown', () => actionOnClick());
-
       // Setup the board as an array of lines
       graphics = this.add.graphics({ lineStyle: { width: 4, color: 0xfefefe } });
       // TODO some algebra when building the board
@@ -149,13 +146,6 @@ let PhaserWrapper = {
 
     function updateBoardState (newBoardState) {
       boardState = newBoardState;
-    }
-
-    function actionOnClick () {
-      console.log('Sending echo to server');
-
-      gameChannel.push("test_echo", {})
-        .receive("error", e => e.console.log(e));
     }
   }
 };
