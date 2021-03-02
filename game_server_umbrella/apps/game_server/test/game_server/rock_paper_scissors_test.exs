@@ -4,9 +4,8 @@ defmodule GameServer.RockPaperScissorsTest do
   alias GameServer.RockPaperScissors
   alias Phoenix.PubSub
 
-  # setup?
   setup do
-    game_id = "test_game_id"
+    game_id = "test_rps_id"
     {:ok, pid} = GenServer.start_link(GameServer.RockPaperScissors, game_id)
 
     {:ok, rps_game_pid: pid, game_id: game_id}
