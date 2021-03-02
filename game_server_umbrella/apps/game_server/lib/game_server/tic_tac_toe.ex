@@ -79,16 +79,15 @@ defmodule GameServer.TicTacToe do
     new_state =
       case game_state.players.circle_player_name do
         "" ->
-          # TODO is there a more elegant way to do this in Elixir
-          Map.put(
-            game_state,
-            :players,
-            Map.put(
-              game_state.players,
-              :circle_player_name,
-              player_name
-            )
-          )
+          %{
+            game_state
+            | players:
+                Map.put(
+                  game_state.players,
+                  :circle_player_name,
+                  player_name
+                )
+          }
 
         _ ->
           game_state
@@ -102,16 +101,15 @@ defmodule GameServer.TicTacToe do
     new_state =
       case game_state.players.cross_player_name do
         "" ->
-          # TODO is there a more elegant way to do this in Elixir
-          Map.put(
-            game_state,
-            :players,
-            Map.put(
-              game_state.players,
-              :cross_player_name,
-              player_name
-            )
-          )
+          %{
+            game_state
+            | players:
+                Map.put(
+                  game_state.players,
+                  :cross_player_name,
+                  player_name
+                )
+          }
 
         _ ->
           game_state
