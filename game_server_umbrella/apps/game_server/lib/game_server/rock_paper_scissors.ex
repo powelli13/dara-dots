@@ -39,7 +39,6 @@ defmodule GameServer.RockPaperScissors do
     GenServer.call(game_pid, :get_player_moves)
   end
 
-  @impl GenServer
   def start_link(game_id) do
     GenServer.start_link(
       __MODULE__,
@@ -61,7 +60,6 @@ defmodule GameServer.RockPaperScissors do
 
     {:ok, initial_state}
   end
-
 
   @impl GenServer
   def handle_call(:get_player_names, _, game_state) do
