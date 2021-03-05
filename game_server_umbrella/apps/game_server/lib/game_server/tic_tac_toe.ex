@@ -1,6 +1,9 @@
 defmodule GameServer.TicTacToe do
   use GenServer
 
+  @cross "X"
+  @circle "O"
+
   def get_board_state(game_pid) do
     GenServer.call(game_pid, :get_board_state)
   end
@@ -15,6 +18,10 @@ defmodule GameServer.TicTacToe do
 
   def set_cross_player(game_pid, player_name) when player_name != "" do
     GenServer.cast(game_pid, {:set_cross_name, player_name})
+  end
+
+  def make_move(game_pid, player_name, move_index) do
+    GenServer.cast(game_pid, {:make_move, player_name, move_index})
   end
 
   def start_link(game_id) do
@@ -32,7 +39,9 @@ defmodule GameServer.TicTacToe do
     # Board is laid out how it looks
     initial_state = %{
       :game_id => game_id,
+      :current_turn => @cross,
       # TODO consider changing these to refs
+      # generate GUIDs and put then on the sockets
       :players => %{
         :circle_player_name => "",
         :cross_player_name => ""
@@ -116,5 +125,68 @@ defmodule GameServer.TicTacToe do
       end
 
     {:noreply, new_state}
+  end
+
+  @impl GenServer
+  def handle_cast({:make_move, player_name, move_index}, game_state) do
+    new_state =
+      case valid_move?(game_state, move_index, player_name) do
+        true ->
+          perform_move(game_state, move_index)
+
+        false ->
+          game_state
+      end
+
+    {:noreply, new_state}
+  end
+
+  defp get_current_turn_player_name(game_state) do
+    case game_state.current_turn do
+      @cross ->
+        game_state.players.cross_player_name
+
+      @circle ->
+        game_state.players.circle_player_name
+    end
+  end
+
+  defp change_turn(game_state) do
+    case game_state.current_turn do
+      @cross ->
+        %{
+          game_state
+          | current_turn: @circle
+        }
+
+      @circle ->
+        %{
+          game_state
+          | current_turn: @cross
+        }
+    end
+  end
+
+  defp square_empty?(game_state, move_index) do
+    game_state.board_state[move_index] == " "
+  end
+
+  defp valid_move?(game_state, move_index, player_name) do
+    square_empty?(game_state, move_index) &&
+      get_current_turn_player_name(game_state) == player_name
+  end
+
+  defp perform_move(game_state, move_index) do
+    new_state = %{
+      game_state
+      | board_state:
+          Map.put(
+            game_state.board_state,
+            move_index,
+            game_state.current_turn
+          )
+    }
+
+    change_turn(new_state)
   end
 end
