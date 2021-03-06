@@ -64,11 +64,7 @@ defmodule GameServer.TicTacToe do
 
   @impl GenServer
   def handle_call(:get_board_state, _, game_state) do
-    board_as_list =
-      game_state[:board_state]
-      |> Enum.map(fn {_, sq} -> sq end)
-
-    {:reply, board_as_list, game_state}
+    {:reply, game_state.board_state, game_state}
   end
 
   @impl GenServer
