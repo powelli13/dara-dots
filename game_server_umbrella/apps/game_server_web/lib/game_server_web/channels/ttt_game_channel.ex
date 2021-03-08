@@ -17,6 +17,7 @@ defmodule GameServerWeb.TttGameChannel do
   end
 
   def handle_in("submit_move", %{"move_index" => move_index}, socket) do
+    # TODO left off seems that registry isn't working
     [{game_pid, _}] =
       Registry.lookup(
         GameServer.Registry,

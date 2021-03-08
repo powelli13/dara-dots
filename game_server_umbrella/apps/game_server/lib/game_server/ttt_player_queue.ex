@@ -31,6 +31,7 @@ defmodule GameServer.TttPlayerQueue do
   @impl GenServer
   # TODO update this to use server assigned GUIDs to identify players
   def handle_cast({:add_player, player_name}, queue) do
+    IO.puts "A PLAYER JOINED THE TTT queue"
     new_queue = :queue.in(player_name, queue)
 
     if :queue.len(new_queue) >= 2 do
@@ -41,10 +42,13 @@ defmodule GameServer.TttPlayerQueue do
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Start game GenServer and add players
+      #TODO GameSupervisor is for RPS only right now, need
+      # to find a different way to retrieve TTT gen servers
       start_game_pid = GameSupervisor.find_game(new_game_id)
 
-      TicTacToe.add_player(start_game_pid, first_player)
-      TicTacToe.add_player(start_game_pid, second_player)
+      # TODO randomize this either here or on the TTT GenServer module
+      TicTacToe.set_circle_player(start_game_pid, first_player)
+      TicTacToe.set_cross_player(start_game_pid, second_player)
 
       # Inform the lobby channels that the players are in a game together
       PubSub.broadcast(

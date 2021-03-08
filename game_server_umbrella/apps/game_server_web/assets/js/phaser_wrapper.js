@@ -98,7 +98,7 @@ let PhaserWrapper = {
     function preload () {
       // TODO Phaser examples use game instead of this.
       this.load.image("background", "game_images/background.jpg");
-      this.load.image("star_test", "game_images/star.png");
+      this.load.image("star", "game_images/star.png");
     }
 
     function create () {
@@ -124,6 +124,19 @@ let PhaserWrapper = {
       circlePiece = new Phaser.Geom.Circle(0, 0, circleRadius);
       crossPiece.push(new Phaser.Geom.Line(0, 0, crossLength, crossLength));
       crossPiece.push(new Phaser.Geom.Line(0, crossLength, crossLength, 0));
+
+      // TODO find a way to easily create these 
+      // invisible rectangles to interact with player clicks
+      // Setup sprites for clicking spaces
+      //squareCenterLocations.forEach((xy, i) => {
+
+      //});
+      // TODO trying to submit a move
+      let sprite0 = this.add.sprite(400, 300, "star").setInteractive();
+      sprite0.on("pointerup", function (pointer) {
+        gameChannel.push("submit_move", {"move_index": 0})
+          .receive("error", e => e.console.log(e));
+      });
 
       this.input.mouse.disableContextMenu();
     }
