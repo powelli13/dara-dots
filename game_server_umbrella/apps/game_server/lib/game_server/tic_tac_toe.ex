@@ -4,6 +4,17 @@ defmodule GameServer.TicTacToe do
   @cross "X"
   @circle "O"
 
+  @winning_indices [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ]
+
   def get_board_state(game_pid) do
     GenServer.call(game_pid, :get_board_state)
   end
@@ -134,7 +145,18 @@ defmodule GameServer.TicTacToe do
           game_state
       end
 
+    # broadcast winner if there is one
+    winner = check_victory_near_move(new_state.board_state, move_index)
+
+    if winner != " " do
+      broadcast_winner(game_state, winner)
+    end
+
     {:noreply, new_state}
+  end
+
+  defp broadcast_winner(game_state, winner) do
+    IO.puts "winner"
   end
 
   defp get_current_turn_player_name(game_state) do
@@ -163,6 +185,8 @@ defmodule GameServer.TicTacToe do
     end
   end
 
+  # TODO consider moving these into a separate module 
+  # to share board logic with the super TTT when i implement that
   defp square_empty?(game_state, move_index) do
     game_state.board_state[move_index] == " "
   end
@@ -184,5 +208,43 @@ defmodule GameServer.TicTacToe do
     }
 
     change_turn(new_state)
+  end
+
+  # Check for victories in the possible locations near 
+  # the moved index
+  defp check_victory_near_move(board_map, move_index) do
+    possible_winners =
+      @winning_indices
+      |> Enum.filter(fn triplet -> Enum.member?(triplet, move_index) end)
+
+    check_victory_possibles(possible_winners, board_map)
+  end
+
+  defp check_victory_possibles([check_indices | possible_winners], board_map) do
+    triplet_match = check_victory_triplet(board_map, check_indices)
+
+    if triplet_match != " " do
+      triplet_match
+    else
+      check_victory_possibles(possible_winners, board_map)
+    end
+  end
+
+  defp check_victory_possibles([], _) do
+    " "
+  end
+
+  # Determine if a possible scoring triple is a victory and
+  # return the winning piece if so, otherwise blank
+  defp check_victory_triplet(board_map, [first, second, third]) do
+    if board_map[first] == board_map[second] &&
+         board_map[first] == board_map[third] &&
+         board_map[second] == board_map[third] &&
+         board_map[first] != " " do
+      # Return the winner
+      board_map[first]
+    else
+      " "
+    end
   end
 end

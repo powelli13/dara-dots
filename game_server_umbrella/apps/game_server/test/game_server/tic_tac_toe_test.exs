@@ -75,7 +75,7 @@ defmodule GameServer.TicTacToeTest do
   test "should perform move when cross player moves first", state do
     cross_player = "cross"
     set_player_names(state.game_pid, cross_player, "circle_player")
-    move_index = Enum.random([0,1,2,3,4,5,6,7,8,9])
+    move_index = Enum.random([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
     TicTacToe.make_move(state.game_pid, cross_player, move_index)
 
@@ -93,7 +93,7 @@ defmodule GameServer.TicTacToeTest do
   test "submitting moves in the same square do not change board state", state do
     cross_player = "cross"
     set_player_names(state.game_pid, cross_player, "circle_player")
-    move_index = Enum.random([0,1,2,3,4,5,6,7,8,9])
+    move_index = Enum.random([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
     TicTacToe.make_move(state.game_pid, cross_player, move_index)
 
@@ -123,7 +123,7 @@ defmodule GameServer.TicTacToeTest do
   test "wrong player turn submitting move does not change board state", state do
     circle_player = "circle"
     set_player_names(state.game_pid, "cross_player", circle_player)
-    move_index = Enum.random([0,1,2,3,4,5,6,7,8,9])
+    move_index = Enum.random([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
     TicTacToe.make_move(state.game_pid, circle_player, move_index)
 
