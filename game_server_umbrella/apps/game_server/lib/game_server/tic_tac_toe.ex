@@ -1,5 +1,6 @@
 defmodule GameServer.TicTacToe do
   use GenServer
+  alias Phoenix.PubSub
 
   @cross "X"
   @circle "O"
@@ -44,8 +45,7 @@ defmodule GameServer.TicTacToe do
 
   @impl GenServer
   def init(game_id) do
-    # TODO needed for when channels start looking us up
-    # Registry.register(GameServer.Registry, {__MODULE__, game_id}, game_id)
+    Registry.register(GameServer.Registry, {__MODULE__, game_id}, game_id)
 
     # Board is laid out how it looks
     initial_state = %{
@@ -145,6 +145,9 @@ defmodule GameServer.TicTacToe do
           game_state
       end
 
+    # broadcast game state after successful move
+    broadcast_board_state(game_state)
+
     # broadcast winner if there is one
     winner = check_victory_near_move(new_state.board_state, move_index)
 
@@ -153,10 +156,6 @@ defmodule GameServer.TicTacToe do
     end
 
     {:noreply, new_state}
-  end
-
-  defp broadcast_winner(game_state, winner) do
-    IO.puts("winner")
   end
 
   defp get_current_turn_player_name(game_state) do
@@ -246,5 +245,24 @@ defmodule GameServer.TicTacToe do
     else
       " "
     end
+  end
+
+  defp broadcast_board_state(game_state) do
+    broadcast_game_update(
+      game_state.game_id,
+      {:new_board_state, game_state.board_state}
+    )
+  end
+
+  defp broadcast_winner(game_state, winner) do
+    # TODO change this to use player id
+    broadcast_game_update(
+      game_state.game_id,
+      {:game_winner, winner}
+    )
+  end
+
+  defp broadcast_game_update(game_id, update_term) do
+    PubSub.broadcast(GameServer.PubSub, "ttt_game:" <> game_id, update_term)
   end
 end
