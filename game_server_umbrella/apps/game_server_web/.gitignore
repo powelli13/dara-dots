@@ -33,3 +33,6 @@ npm-debug.log
 # this depending on your deployment strategy.
 # Do not exclude /priv/static/game_images/ since we serve
 # images there for Phaser games
+/priv/static/css/
+/priv/static/js/
+/priv/static/images/
