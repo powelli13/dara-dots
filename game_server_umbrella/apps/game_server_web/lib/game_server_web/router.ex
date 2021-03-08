@@ -32,7 +32,9 @@ defmodule GameServerWeb.Router do
 
     get "/rps-game-lobby", GameController, :lobby
 
-    get "/ttt-game-lobby", TttGameController, :index
+    get "/ttt-game", TttGameController, :index
+
+    get "/ttt-game-lobby", TttGameController, :lobby
 
     live "/tictactoe", TicTacToeLive
 

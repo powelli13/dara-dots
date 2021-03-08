@@ -1,0 +1,11 @@
+<h4>Welcome to the Tic Tac Toe Game Lobby!</h4>
+
+<!-- TODO create generic chat container, separate it from other page specific logic? -->
+<div id="ttt-lobby-chat-container">
+</div>
+
+<button id="join-game-queue-button"
+  class="button column"
+  type="submit">
+  Join Queue
+</button>

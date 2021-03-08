@@ -156,7 +156,7 @@ defmodule GameServer.TicTacToe do
   end
 
   defp broadcast_winner(game_state, winner) do
-    IO.puts "winner"
+    IO.puts("winner")
   end
 
   defp get_current_turn_player_name(game_state) do
