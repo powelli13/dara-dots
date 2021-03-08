@@ -4,7 +4,6 @@ defmodule GameServerWeb.GameController do
   def index(conn, params) do
     case Map.fetch(params, "id") do
       {:ok, game_id} ->
-        # TODO put game_id in assigns?
         render(conn, "index.html")
 
       :error ->

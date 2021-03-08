@@ -22,6 +22,8 @@ import RpsLobbyChat from "./rps_lobby";
 // Script for the basic Rock Paper Scissors game
 import RpsGame from "./rps_game";
 
+import TttLobbyChat from "./ttt_lobby";
+
 // Script for wrapping the Phaser game to connect it with a socket
 import PhaserWrapper from "./phaser_wrapper";
 
@@ -37,6 +39,8 @@ RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));
 // Initialize the Game facilitating script
 RpsGame.init(socket, "id");
 
+// Initialize the Tic Tac Toe game pieces
+TttLobbyChat.init(socket, document.getElementById("ttt-lobby-chat-container"));
 PhaserWrapper.init(socket, document.getElementById("phaser-wrapper"));
 
 // Sets up the onclick listeners for collapsible lists

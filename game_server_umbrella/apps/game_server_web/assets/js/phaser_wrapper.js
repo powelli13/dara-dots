@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 
 let PhaserWrapper = {
   init(socket, element) {
+    // TODO need to initialize with a game id
     if (!element) {
       return;
     }
