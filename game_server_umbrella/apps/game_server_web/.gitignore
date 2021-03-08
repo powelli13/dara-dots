@@ -31,4 +31,8 @@ npm-debug.log
 # Since we are building assets from assets/,
 # we ignore priv/static. You may want to comment
 # this depending on your deployment strategy.
-#/priv/static/
+# Do not exclude /priv/static/game_images/ since we serve
+# images there for Phaser games
+/priv/static/css/
+/priv/static/js/
+/priv/static/images/

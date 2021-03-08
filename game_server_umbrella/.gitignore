@@ -21,7 +21,3 @@ erl_crash.dump
 
 # Ignore environment variables provided to Docker
 .env
-
-/priv/static/css/
-/priv/static/js/
-/priv/static/images/
