@@ -3,8 +3,11 @@ defmodule GameServerWeb.UserSocket do
 
   ## Channels
   channel "lobby:*", GameServerWeb.LobbyChannel
+
   channel "game:*", GameServerWeb.GameChannel
   channel "rps_lobby:*", GameServerWeb.RpsLobbyChannel
+
+  channel "ttt_lobby:*", GameServerWeb.TttLobbyChannel
   channel "ttt_game:*", GameServerWeb.TttGameChannel
 
   # Socket params are passed from the client and can

@@ -1,12 +1,13 @@
-defmodule GameServer.PlayerQueue do
+defmodule GameServer.TttPlayerQueue do
+  # TODO make an abstract re-usable module for queues?
   @moduledoc """
   Queue used to monitor players that are ready to play
-  and start games when two or more players are ready.
+  and start Tic Tac Toe games when two or more players are ready.
   """
   use GenServer
   alias Phoenix.PubSub
   alias GameServer.GameSupervisor
-  alias GameServer.RockPaperScissors
+  alias GameServer.TicTacToe
 
   # adds the player to the queue
   def add_player(player_name) do
@@ -28,6 +29,7 @@ defmodule GameServer.PlayerQueue do
   end
 
   @impl GenServer
+  # TODO update this to use server assigned GUIDs to identify players
   def handle_cast({:add_player, player_name}, queue) do
     new_queue = :queue.in(player_name, queue)
 
@@ -41,14 +43,14 @@ defmodule GameServer.PlayerQueue do
       # Start game GenServer and add players
       start_game_pid = GameSupervisor.find_game(new_game_id)
 
-      RockPaperScissors.add_player(start_game_pid, first_player)
-      RockPaperScissors.add_player(start_game_pid, second_player)
+      TicTacToe.add_player(start_game_pid, first_player)
+      TicTacToe.add_player(start_game_pid, second_player)
 
       # Inform the lobby channels that the players are in a game together
       PubSub.broadcast(
         GameServer.PubSub,
         # TODO
-        "rps_lobby:1",
+        "ttt_lobby:1",
         {:start_game, first_player, second_player, new_game_id}
       )
 
