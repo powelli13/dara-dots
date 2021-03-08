@@ -41,7 +41,7 @@ RpsGame.init(socket, "id");
 
 // Initialize the Tic Tac Toe game pieces
 TttLobbyChat.init(socket, document.getElementById("ttt-lobby-chat-container"));
-PhaserWrapper.init(socket, document.getElementById("phaser-wrapper"));
+PhaserWrapper.init(socket, "id");
 
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");

@@ -1,22 +1,23 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 let PhaserWrapper = {
-  init(socket, element) {
-    // TODO need to initialize with a game id
-    if (!element) {
-      return;
-    }
+  init(socket, urlParam) {
+    let params = new URLSearchParams(document.location.search);
+    if (!params.has(urlParam)) { return; }
 
     socket.connect();
 
-    this.onReady(socket);
+    this.onReady(socket, params.get(urlParam));
   },
 
-  onReady(socket) {
-    console.log('Phaser wrapper is now ready');
+  onReady(socket, gameId) {
+    console.log("Phaser wrapper is now ready");
 
-    var ticTacToeGameChannel = socket.channel('ttt_game:1', () => {
-      return {};
+    var ticTacToeGameChannel = socket.channel("ttt_game:" + gameId, () => {
+      let username = window.localStorage.getItem("dara-username");
+      return username 
+        ? {username: username}
+        : {username: "anon" + Math.floor(Math.random() * 1000)};
     });
 
     this.initPhaserGame(ticTacToeGameChannel)
@@ -29,6 +30,11 @@ let PhaserWrapper = {
       console.log("new board state from server");
       console.log(resp);
       updateBoardState(resp);
+    });
+
+    gameChannel.on("game_winner", (resp) => {
+      console.log("game winner:");
+      console.log(resp);
     });
 
     gameChannel.join()
@@ -69,7 +75,7 @@ let PhaserWrapper = {
       width: boardWidth,
       height: boardHeight,
       physics: {
-        default: 'arcade',
+        default: "arcade",
         arcade: {
           gravity: { y: 0 }
         }
@@ -91,13 +97,13 @@ let PhaserWrapper = {
 
     function preload () {
       // TODO Phaser examples use game instead of this.
-      this.load.image('background', 'game_images/background.jpg');
-      this.load.image('star_test', 'game_images/star.png');
+      this.load.image("background", "game_images/background.jpg");
+      this.load.image("star_test", "game_images/star.png");
     }
 
     function create () {
       // Only load the Phaser assets on certain pages
-      this.add.image(boardWidth, boardHeight, 'background');
+      this.add.image(boardWidth, boardHeight, "background");
 
       // Setup the board as an array of lines
       graphics = this.add.graphics({ lineStyle: { width: 4, color: 0xfefefe } });
