@@ -6,7 +6,7 @@ defmodule GameServer.TttPlayerQueue do
   """
   use GenServer
   alias Phoenix.PubSub
-  alias GameServer.GameSupervisor
+  alias GameServer.TttGameSupervisor
   alias GameServer.TicTacToe
 
   # adds the player to the queue
@@ -42,9 +42,7 @@ defmodule GameServer.TttPlayerQueue do
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Start game GenServer and add players
-      #TODO GameSupervisor is for RPS only right now, need
-      # to find a different way to retrieve TTT gen servers
-      start_game_pid = GameSupervisor.find_game(new_game_id)
+      start_game_pid = TttGameSupervisor.find_game(new_game_id)
 
       # TODO randomize this either here or on the TTT GenServer module
       TicTacToe.set_circle_player(start_game_pid, first_player)
