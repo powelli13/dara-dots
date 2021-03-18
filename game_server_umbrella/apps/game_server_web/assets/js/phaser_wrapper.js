@@ -26,10 +26,8 @@ let PhaserWrapper = {
   initPhaserGame(gameChannel) {
     // TODO restructure this for readability
     // Setup channel listeners
-    gameChannel.on("new_board_state", (resp) => {
-      console.log("new board state from server");
-      console.log(resp);
-      updateBoardState(resp);
+    gameChannel.on("new_board_state", ({board}) => {
+      updateBoardState(board);
     });
 
     gameChannel.on("game_winner", (resp) => {
@@ -150,18 +148,18 @@ let PhaserWrapper = {
     }
 
     function drawBoardState () {
-      //squareCenterLocations.forEach((xy, i) => {
-        // Draw circles
-        //circlePiece.x = xy[0];
-        //circlePiece.y = xy[1];
-        //graphics.strokeCircleShape(circlePiece);
-
-        // Draw crosses
-        //crossPiece.forEach((line, il) => {
-          //Phaser.Geom.Line.CenterOn(line, xy[0], xy[1]);
-          //graphics.strokeLineShape(line);
-        //});
-      //});
+      squareCenterLocations.forEach((xy, i) => {
+        if (boardState[i] == "X") {
+          crossPiece.forEach((line, il) => {
+            Phaser.Geom.Line.CenterOn(line, xy[0], xy[1]);
+            graphics.strokeLineShape(line);
+          });
+        } else if (boardState[i] == "O") {
+          circlePiece.x = xy[0];
+          circlePiece.y = xy[1];
+          graphics.strokeCircleShape(circlePiece);
+        }
+      });
     }
 
     function updateBoardState (newBoardState) {
