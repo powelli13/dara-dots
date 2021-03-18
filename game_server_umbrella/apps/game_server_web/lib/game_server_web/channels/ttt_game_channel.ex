@@ -1,5 +1,6 @@
 defmodule GameServerWeb.TttGameChannel do
   use GameServerWeb, :channel
+  alias GameServer.TicTacToe
 
   def join("ttt_game:" <> game_id, %{"username" => username}, socket) do
     # TODO replace user name with player id at socket join
@@ -17,7 +18,6 @@ defmodule GameServerWeb.TttGameChannel do
   end
 
   def handle_in("submit_move", %{"move_index" => move_index}, socket) do
-    # TODO left off seems that registry isn't working
     [{game_pid, _}] =
       Registry.lookup(
         GameServer.Registry,
@@ -33,12 +33,12 @@ defmodule GameServerWeb.TttGameChannel do
     {:noreply, socket}
   end
 
-  def handle_info({:new_board_state, board_state}, _, socket) do
+  def handle_info({:new_board_state, board_state}, socket) do
     push(socket, "new_board_state", %{board: board_state})
     {:noreply, socket}
   end
 
-  def handle_info({:game_winner, winner_piece}, _, socket) do
+  def handle_info({:game_winner, winner_piece}, socket) do
     push(socket, "game_winner", %{winner: winner_piece})
     {:noreply, socket}
   end

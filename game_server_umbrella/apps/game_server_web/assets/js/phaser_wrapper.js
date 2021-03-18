@@ -107,7 +107,7 @@ let PhaserWrapper = {
 
       // Setup the board as an array of lines
       graphics = this.add.graphics({ lineStyle: { width: 4, color: 0xfefefe } });
-      // TODO some algebra when building the board
+
       boardLines.push(new Phaser.Geom.Line(
         boardWidth/3, bufferSize,
         boardWidth/3, boardHeight - bufferSize));
@@ -150,18 +150,18 @@ let PhaserWrapper = {
     }
 
     function drawBoardState () {
-      squareCenterLocations.forEach((xy, i) => {
+      //squareCenterLocations.forEach((xy, i) => {
         // Draw circles
-        circlePiece.x = xy[0];
-        circlePiece.y = xy[1];
-        graphics.strokeCircleShape(circlePiece);
+        //circlePiece.x = xy[0];
+        //circlePiece.y = xy[1];
+        //graphics.strokeCircleShape(circlePiece);
 
         // Draw crosses
-        crossPiece.forEach((line, il) => {
-          Phaser.Geom.Line.CenterOn(line, xy[0], xy[1]);
-          graphics.strokeLineShape(line);
-        });
-      });
+        //crossPiece.forEach((line, il) => {
+          //Phaser.Geom.Line.CenterOn(line, xy[0], xy[1]);
+          //graphics.strokeLineShape(line);
+        //});
+      //});
     }
 
     function updateBoardState (newBoardState) {

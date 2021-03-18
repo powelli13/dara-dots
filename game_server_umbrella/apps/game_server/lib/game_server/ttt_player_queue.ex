@@ -31,7 +31,6 @@ defmodule GameServer.TttPlayerQueue do
   @impl GenServer
   # TODO update this to use server assigned GUIDs to identify players
   def handle_cast({:add_player, player_name}, queue) do
-    IO.puts "A PLAYER JOINED THE TTT queue"
     new_queue = :queue.in(player_name, queue)
 
     if :queue.len(new_queue) >= 2 do
