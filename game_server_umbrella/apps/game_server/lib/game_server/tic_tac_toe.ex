@@ -146,7 +146,7 @@ defmodule GameServer.TicTacToe do
       end
 
     # broadcast game state after successful move
-    broadcast_board_state(game_state)
+    broadcast_board_state(new_state)
 
     # broadcast winner if there is one
     winner = check_victory_near_move(new_state.board_state, move_index)

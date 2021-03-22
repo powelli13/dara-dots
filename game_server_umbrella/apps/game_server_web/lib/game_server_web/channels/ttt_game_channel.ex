@@ -12,11 +12,6 @@ defmodule GameServerWeb.TttGameChannel do
     {:ok, updated_socket}
   end
 
-  def handle_in("test_echo", _, socket) do
-    broadcast!(socket, "test_echo", %{test: "hi from the server!"})
-    {:noreply, socket}
-  end
-
   def handle_in("submit_move", %{"move_index" => move_index}, socket) do
     [{game_pid, _}] =
       Registry.lookup(
