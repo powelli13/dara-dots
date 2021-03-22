@@ -123,17 +123,16 @@ let PhaserWrapper = {
       crossPiece.push(new Phaser.Geom.Line(0, 0, crossLength, crossLength));
       crossPiece.push(new Phaser.Geom.Line(0, crossLength, crossLength, 0));
 
-      // TODO find a way to easily create these 
-      // invisible rectangles to interact with player clicks
       // Setup sprites for clicking spaces
-      //squareCenterLocations.forEach((xy, i) => {
-
-      //});
-      // TODO trying to submit a move
-      let sprite0 = this.add.sprite(400, 300, "star").setInteractive();
-      sprite0.on("pointerup", function (pointer) {
-        gameChannel.push("submit_move", {"move_index": 0})
-          .receive("error", e => e.console.log(e));
+      squareCenterLocations.forEach((xy, i) => {
+        // TODO star isn't necessary here, another image could be used
+        // TODO looks like 0.0 alpha prevents clicks from interacting
+        let spriteStar = this.add.sprite(xy[0], xy[1], "star").setInteractive();
+        spriteStar.alpha = 0.15;
+        spriteStar.on("pointerup", function (pointer) {
+          gameChannel.push("submit_move", {"move_index": i})
+            .receive("error", e => e.console.log(e));
+        });
       });
 
       this.input.mouse.disableContextMenu();
