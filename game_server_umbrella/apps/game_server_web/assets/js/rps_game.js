@@ -17,7 +17,7 @@ let RpsGame = {
     let messageContainer = document.getElementById("game-message-container");
     let submitMove = document.getElementById("submit-move");
 
-    let gameChannel = socket.channel("game:" + gameId, () => {
+    let gameChannel = socket.channel("rps_game:" + gameId, () => {
       let username = window.localStorage.getItem("dara-username");
       return username 
         ? {username: username}

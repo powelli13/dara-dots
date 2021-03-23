@@ -1,8 +1,10 @@
 import Phaser from "phaser";
 
-let PhaserWrapper = {
+let TttPhaserWrapper = {
   init(socket, urlParam) {
     let params = new URLSearchParams(document.location.search);
+    // TODO this causes TTT board to show on the RPS screen as well
+    // need to have a better differentiation
     if (!params.has(urlParam)) { return; }
 
     socket.connect();
@@ -11,7 +13,7 @@ let PhaserWrapper = {
   },
 
   onReady(socket, gameId) {
-    console.log("Phaser wrapper is now ready");
+    console.log("Tic Tac Toe Phaser wrapper is now ready");
 
     var ticTacToeGameChannel = socket.channel("ttt_game:" + gameId, () => {
       let username = window.localStorage.getItem("dara-username");
@@ -87,7 +89,6 @@ let PhaserWrapper = {
 
     var game = new Phaser.Game(config);
     var graphics;
-    var testButton;
     var boardLines = [];
     var boardState = [];
     var circlePiece;
@@ -167,4 +168,4 @@ let PhaserWrapper = {
   }
 };
 
-export default PhaserWrapper;
+export default TttPhaserWrapper;

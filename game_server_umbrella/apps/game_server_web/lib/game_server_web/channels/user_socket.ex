@@ -4,7 +4,7 @@ defmodule GameServerWeb.UserSocket do
   ## Channels
   channel "lobby:*", GameServerWeb.LobbyChannel
 
-  channel "game:*", GameServerWeb.GameChannel
+  channel "rps_game:*", GameServerWeb.RpsGameChannel
   channel "rps_lobby:*", GameServerWeb.RpsLobbyChannel
 
   channel "ttt_lobby:*", GameServerWeb.TttLobbyChannel

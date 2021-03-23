@@ -1,4 +1,4 @@
-defmodule GameServer.GameSupervisor do
+defmodule GameServer.RpsGameSupervisor do
   @moduledoc """
   Dynamic supervisor used to retrieve the PIDs
   of running games given the ID generated when

@@ -176,6 +176,6 @@ defmodule GameServer.RockPaperScissors do
   end
 
   defp broadcast_game_update(game_id, update_term) do
-    PubSub.broadcast(GameServer.PubSub, "game:" <> game_id, update_term)
+    PubSub.broadcast(GameServer.PubSub, "rps_game:" <> game_id, update_term)
   end
 end

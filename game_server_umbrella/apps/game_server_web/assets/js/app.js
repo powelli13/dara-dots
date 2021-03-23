@@ -25,7 +25,7 @@ import RpsGame from "./rps_game";
 import TttLobbyChat from "./ttt_lobby";
 
 // Script for wrapping the Phaser game to connect it with a socket
-import PhaserWrapper from "./phaser_wrapper";
+import TttPhaserWrapper from "./ttt_phaser_wrapper";
 
 import socket from "./socket";
 
@@ -41,7 +41,7 @@ RpsGame.init(socket, "id");
 
 // Initialize the Tic Tac Toe game pieces
 TttLobbyChat.init(socket, document.getElementById("ttt-lobby-chat-container"));
-PhaserWrapper.init(socket, "id");
+TttPhaserWrapper.init(socket, "id");
 
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");

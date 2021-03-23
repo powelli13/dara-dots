@@ -82,7 +82,7 @@ defmodule GameServer.RockPaperScissorsTest do
     # Subscribe to receive endgame state after moves are submitted
     # RPS server stops after both moves are submitted,
     # so we subscribe to receive endgame state
-    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+    PubSub.subscribe(GameServer.PubSub, "rps_game:" <> state[:game_id])
 
     test_name_one = "PlayerOne"
     test_name_two = "PlayerTwo"
@@ -102,7 +102,7 @@ defmodule GameServer.RockPaperScissorsTest do
   end
 
   test "both players move game drawn", state do
-    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+    PubSub.subscribe(GameServer.PubSub, "rps_game:" <> state[:game_id])
 
     test_name_one = "PlayerOne"
     test_name_two = "PlayerTwo"
@@ -120,7 +120,7 @@ defmodule GameServer.RockPaperScissorsTest do
   end
 
   test "paper beats rock", state do
-    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+    PubSub.subscribe(GameServer.PubSub, "rps_game:" <> state[:game_id])
 
     test_winner = "PaperPlayer"
     test_loser = "RockPlayer"
@@ -140,7 +140,7 @@ defmodule GameServer.RockPaperScissorsTest do
   end
 
   test "rock beats scissors", state do
-    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+    PubSub.subscribe(GameServer.PubSub, "rps_game:" <> state[:game_id])
 
     test_winner = "RockPlayer"
     test_loser = "ScissorsPlayer"
@@ -160,7 +160,7 @@ defmodule GameServer.RockPaperScissorsTest do
   end
 
   test "scissors beats paper", state do
-    PubSub.subscribe(GameServer.PubSub, "game:" <> state[:game_id])
+    PubSub.subscribe(GameServer.PubSub, "rps_game:" <> state[:game_id])
 
     test_winner = "ScissorsPlayer"
     test_loser = "PaperPlayer"

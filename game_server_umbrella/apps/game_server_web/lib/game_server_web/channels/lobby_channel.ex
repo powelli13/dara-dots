@@ -4,7 +4,7 @@ defmodule GameServerWeb.LobbyChannel do
   """
   use GameServerWeb, :channel
   alias GameServerWeb.Presence
-  alias GameServer.GameSupervisor
+  alias GameServer.RpsGameSupervisor
   alias GameServer.LipSyncQueue
   alias GameServer.RockPaperScissors
 

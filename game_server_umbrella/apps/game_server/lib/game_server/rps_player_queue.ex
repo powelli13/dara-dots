@@ -1,11 +1,11 @@
-defmodule GameServer.PlayerQueue do
+defmodule GameServer.RpsPlayerQueue do
   @moduledoc """
   Queue used to monitor players that are ready to play
   and start games when two or more players are ready.
   """
   use GenServer
   alias Phoenix.PubSub
-  alias GameServer.GameSupervisor
+  alias GameServer.RpsGameSupervisor
   alias GameServer.RockPaperScissors
 
   # adds the player to the queue
@@ -39,7 +39,7 @@ defmodule GameServer.PlayerQueue do
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Start game GenServer and add players
-      start_game_pid = GameSupervisor.find_game(new_game_id)
+      start_game_pid = RpsGameSupervisor.find_game(new_game_id)
 
       RockPaperScissors.add_player(start_game_pid, first_player)
       RockPaperScissors.add_player(start_game_pid, second_player)

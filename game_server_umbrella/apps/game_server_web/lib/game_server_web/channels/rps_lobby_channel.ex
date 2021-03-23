@@ -4,8 +4,6 @@ defmodule GameServerWeb.RpsLobbyChannel do
   """
   use GameServerWeb, :channel
   alias GameServerWeb.Presence
-  alias GameServer.GameSupervisor
-  alias GameServer.RockPaperScissors
 
   def join("rps_lobby:" <> lobby_id, %{"username" => username}, socket) do
     send(self(), :after_join)
@@ -46,7 +44,7 @@ defmodule GameServerWeb.RpsLobbyChannel do
     # TODO user socket ref here
     # [{player_queue_pid, _}] = Registry.lookup(GameServer.Registry, GameServer.PlayerQueue)
 
-    GameServer.PlayerQueue.add_player(player_name)
+    GameServer.RpsPlayerQueue.add_player(player_name)
 
     {:noreply, socket}
   end
