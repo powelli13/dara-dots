@@ -13,7 +13,8 @@ Once you have Elixir and the Phoenix Framework setup:
 * Open `game_server_umbrella` folder and run:
   * `mix deps.get`
   * `npm install --prefix .\apps\game_server_web\assets\ install .\apps\game_server_web\assets\`
-  * `mix phx.server` to start the web server
+  * Change to directory `.\apps\game_server_web\assets\` and run `npx browserslist@latest --update-db`
+  * Change directory back to `game_server_umbrella` and run `mix phx.server` to start the web server
 
 ## Contribute
 Contributions to the DaraDots game or the LipSync web app are always welcome! Here is how you can contribute:
