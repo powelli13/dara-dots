@@ -10,7 +10,10 @@ This web app is built using [Elixir](https://elixir-lang.org/) and the [Phoenix 
 Once you have Elixir and the Phoenix Framework setup:
 
 * Clone the DaraDots repository, which contains the LipSync lobby functionality, through `git clone https://github.com/powelli13/dara-dots.git`
-* Open `game_server_umbrella` folder and run `mix phx.server` to start the web server
+* Open `game_server_umbrella` folder and run:
+  * `mix deps.get`
+  * `npm install --prefix .\apps\game_server_web\assets\ install .\apps\game_server_web\assets\`
+  * `mix phx.server` to start the web server
 
 ## Contribute
 Contributions to the DaraDots game or the LipSync web app are always welcome! Here is how you can contribute:
