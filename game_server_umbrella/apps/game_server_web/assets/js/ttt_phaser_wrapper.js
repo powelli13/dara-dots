@@ -35,6 +35,7 @@ let TttPhaserWrapper = {
     gameChannel.on("game_winner", (resp) => {
       console.log("game winner:");
       console.log(resp);
+      postGameAlert(`Game over! Winner is ${resp} player`);
     });
 
     gameChannel.join()
@@ -89,13 +90,15 @@ let TttPhaserWrapper = {
 
     var game = new Phaser.Game(config);
     var graphics;
+    var redGraphics;
     var boardLines = [];
     var boardState = [];
+    var victoryLines = [];
     var circlePiece;
     var crossPiece = [];
 
     function preload () {
-      // TODO Phaser examples use game instead of this.
+      // TODO Phaser examples use game instead of 'this', does it matter?
       this.load.image("background", "game_images/background.jpg");
       this.load.image("star", "game_images/star.png");
     }
@@ -106,6 +109,7 @@ let TttPhaserWrapper = {
 
       // Setup the board as an array of lines
       graphics = this.add.graphics({ lineStyle: { width: 4, color: 0xfefefe } });
+      redGraphics = this.add.graphics({ lineStyle: { width: 6, color: 0xfe4422 } });
 
       boardLines.push(new Phaser.Geom.Line(
         boardWidth/3, bufferSize,
@@ -123,6 +127,26 @@ let TttPhaserWrapper = {
       circlePiece = new Phaser.Geom.Circle(0, 0, circleRadius);
       crossPiece.push(new Phaser.Geom.Line(0, 0, crossLength, crossLength));
       crossPiece.push(new Phaser.Geom.Line(0, crossLength, crossLength, 0));
+
+      // Prepare lines to display the victory path that was used on game over
+      // TODO this may be overkill
+      const possibleVictorySquareIndices = [
+        [0, 2],
+        [0, 6],
+        [0, 8],
+        [1, 7],
+        [2, 6],
+        [2, 8],
+        [3, 5],
+        [6, 8]
+      ];
+
+      possibleVictorySquareIndices.forEach((indexPair, i) => {
+        victoryLines.push(new Phaser.Geom.Line(
+          squareCenterLocations[indexPair[0]][0], squareCenterLocations[indexPair[0]][1],
+          squareCenterLocations[indexPair[1]][0], squareCenterLocations[indexPair[1]][1]
+        ));
+      });
 
       // Setup sprites for clicking spaces
       squareCenterLocations.forEach((xy, i) => {
@@ -144,6 +168,8 @@ let TttPhaserWrapper = {
 
       boardLines.forEach((v, i) => { graphics.strokeLineShape(v); });
 
+      redGraphics.clear();
+
       drawBoardState();
     }
 
@@ -160,10 +186,21 @@ let TttPhaserWrapper = {
           graphics.strokeCircleShape(circlePiece);
         }
       });
+
+      // TODO uncomment this to show red lines on the victory paths
+      // these will be helpful for displaying the victory path on game over
+      //victoryLines.forEach((line, il) => {
+        //redGraphics.strokeLineShape(line);
+      //});
     }
 
     function updateBoardState (newBoardState) {
       boardState = newBoardState;
+    }
+
+    function postGameAlert (alert) {
+      let alertsElement = document.getElementById("game-alerts");
+      alertsElement.innerHTML = alert;
     }
   }
 };
