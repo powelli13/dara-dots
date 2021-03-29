@@ -134,6 +134,9 @@ defmodule GameServer.TicTacToeTest do
     end)
   end
 
+  # TODO add tests around victory detection
+  # during a test game X player was irroneously declared as victor
+
   defp set_player_names(
          game_pid,
          cross_player,

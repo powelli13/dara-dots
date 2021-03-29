@@ -34,8 +34,8 @@ let TttPhaserWrapper = {
 
     gameChannel.on("game_winner", (resp) => {
       console.log("game winner:");
-      console.log(resp);
-      postGameAlert(`Game over! Winner is ${resp} player`);
+      console.log(resp.winner);
+      postGameAlert(`Game over! Winner is ${resp.winner} player`);
     });
 
     gameChannel.join()
@@ -129,7 +129,7 @@ let TttPhaserWrapper = {
       crossPiece.push(new Phaser.Geom.Line(0, crossLength, crossLength, 0));
 
       // Prepare lines to display the victory path that was used on game over
-      // TODO this may be overkill
+      // TODO this may be overkill, why not just draw the line based on to from indices as needed?
       const possibleVictorySquareIndices = [
         [0, 2],
         [0, 6],
