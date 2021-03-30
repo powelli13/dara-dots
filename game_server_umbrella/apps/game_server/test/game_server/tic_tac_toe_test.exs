@@ -1,5 +1,5 @@
 defmodule GameServer.TicTacToeTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
 
   alias GameServer.TicTacToe
   alias Phoenix.PubSub
@@ -155,10 +155,6 @@ defmodule GameServer.TicTacToeTest do
     circle_player = "viclog_circle"
     set_player_names(state.game_pid, cross_player, circle_player)
 
-    initial_board = TicTacToe.get_board_state(state.game_pid)
-
-    IO.inspect initial_board
-
     TicTacToe.make_move(state.game_pid, cross_player, 0)
     assert_receive {:new_board_state, _}
     turn = TicTacToe.get_current_turn(state.game_pid)
@@ -181,9 +177,7 @@ defmodule GameServer.TicTacToeTest do
 
     TicTacToe.make_move(state.game_pid, cross_player, 6)
     assert_receive {:new_board_state, last_state}
-    #IO.inspect last_state
 
-    # assert receive game over
     assert_receive {:game_winner, winner_name}
 
     assert winner_name == "X"

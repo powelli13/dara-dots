@@ -145,21 +145,14 @@ defmodule GameServer.TicTacToe do
 
   @impl GenServer
   def handle_cast({:make_move, player_name, move_index}, game_state) do
-    IO.puts "before move"
-    IO.inspect game_state.current_turn
     new_state =
       case valid_move?(game_state, move_index, player_name) do
         true ->
-          IO.puts "Valid MOVE #{player_name}"
           perform_move(game_state, move_index)
 
         false ->
-          IO.puts "Invalid MOVE #{player_name}"
           game_state
       end
-
-    IO.puts "after move"
-    IO.inspect new_state.current_turn
 
     # broadcast game state after successful move
     broadcast_board_state(new_state)
@@ -205,8 +198,6 @@ defmodule GameServer.TicTacToe do
   end
 
   defp valid_move?(game_state, move_index, player_name) do
-    IO.puts "valid move. empty: #{square_empty?(game_state, move_index)}"
-    IO.puts "valid move. player turn name: #{get_current_turn_player_name(game_state)}"
     square_empty?(game_state, move_index) &&
       get_current_turn_player_name(game_state) == player_name
   end
