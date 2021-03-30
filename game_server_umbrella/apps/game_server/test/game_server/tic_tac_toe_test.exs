@@ -1,7 +1,8 @@
 defmodule GameServer.TicTacToeTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias GameServer.TicTacToe
+  alias Phoenix.PubSub
 
   setup do
     game_id = "test_ttt_id"
@@ -134,8 +135,59 @@ defmodule GameServer.TicTacToeTest do
     end)
   end
 
+  test "valid move should change turn", state do
+    set_player_names(state.game_pid, "cross", "circle")
+    move_index = Enum.random([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    TicTacToe.make_move(state.game_pid, "cross", move_index)
+
+    current_turn = TicTacToe.get_current_turn(state.game_pid)
+
+    assert current_turn == "O"
+  end
+
   # TODO add tests around victory detection
   # during a test game X player was irroneously declared as victor
+  test "left vertical column victory registers", state do
+    PubSub.subscribe(GameServer.PubSub, "ttt_game:" <> state.game_id)
+
+    cross_player = "viclog_cross"
+    circle_player = "viclog_circle"
+    set_player_names(state.game_pid, cross_player, circle_player)
+
+    initial_board = TicTacToe.get_board_state(state.game_pid)
+
+    IO.inspect initial_board
+
+    TicTacToe.make_move(state.game_pid, cross_player, 0)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "O"
+
+    TicTacToe.make_move(state.game_pid, circle_player, 1)
+    assert_receive {:new_board_state, after_circle}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "X"
+
+    TicTacToe.make_move(state.game_pid, cross_player, 3)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "O"
+
+    TicTacToe.make_move(state.game_pid, circle_player, 2)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "X"
+
+    TicTacToe.make_move(state.game_pid, cross_player, 6)
+    assert_receive {:new_board_state, last_state}
+    #IO.inspect last_state
+
+    # assert receive game over
+    assert_receive {:game_winner, winner_name}
+
+    assert winner_name == "X"
+  end
 
   defp set_player_names(
          game_pid,
@@ -143,6 +195,6 @@ defmodule GameServer.TicTacToeTest do
          circle_player
        ) do
     TicTacToe.set_cross_player(game_pid, cross_player)
-    TicTacToe.set_cross_player(game_pid, circle_player)
+    TicTacToe.set_circle_player(game_pid, circle_player)
   end
 end

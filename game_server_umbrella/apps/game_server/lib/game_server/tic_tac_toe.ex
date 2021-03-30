@@ -20,6 +20,10 @@ defmodule GameServer.TicTacToe do
     GenServer.call(game_pid, :get_board_state)
   end
 
+  def get_current_turn(game_pid) do
+    GenServer.call(game_pid, :get_current_turn)
+  end
+
   def get_player_names(game_pid) do
     GenServer.call(game_pid, :get_player_names)
   end
@@ -76,6 +80,11 @@ defmodule GameServer.TicTacToe do
   @impl GenServer
   def handle_call(:get_board_state, _, game_state) do
     {:reply, game_state.board_state, game_state}
+  end
+
+  @impl GenServer
+  def handle_call(:get_current_turn, _, game_state) do
+    {:reply, game_state.current_turn, game_state}
   end
 
   @impl GenServer
@@ -136,14 +145,21 @@ defmodule GameServer.TicTacToe do
 
   @impl GenServer
   def handle_cast({:make_move, player_name, move_index}, game_state) do
+    IO.puts "before move"
+    IO.inspect game_state.current_turn
     new_state =
       case valid_move?(game_state, move_index, player_name) do
         true ->
+          IO.puts "Valid MOVE #{player_name}"
           perform_move(game_state, move_index)
 
         false ->
+          IO.puts "Invalid MOVE #{player_name}"
           game_state
       end
+
+    IO.puts "after move"
+    IO.inspect new_state.current_turn
 
     # broadcast game state after successful move
     broadcast_board_state(new_state)
@@ -184,13 +200,13 @@ defmodule GameServer.TicTacToe do
     end
   end
 
-  # TODO consider moving these into a separate module 
-  # to share board logic with the super TTT when i implement that
   defp square_empty?(game_state, move_index) do
     game_state.board_state[move_index] == " "
   end
 
   defp valid_move?(game_state, move_index, player_name) do
+    IO.puts "valid move. empty: #{square_empty?(game_state, move_index)}"
+    IO.puts "valid move. player turn name: #{get_current_turn_player_name(game_state)}"
     square_empty?(game_state, move_index) &&
       get_current_turn_player_name(game_state) == player_name
   end
