@@ -146,8 +146,8 @@ defmodule GameServer.TicTacToeTest do
     assert current_turn == "O"
   end
 
-  # TODO add tests around victory detection
-  # during a test game X player was irroneously declared as victor
+  # TODO abstract these victory detection tests
+  # into a more compact/reusable state of more are added
   test "left vertical column victory registers", state do
     PubSub.subscribe(GameServer.PubSub, "ttt_game:" <> state.game_id)
 
@@ -178,9 +178,85 @@ defmodule GameServer.TicTacToeTest do
     TicTacToe.make_move(state.game_pid, cross_player, 6)
     assert_receive {:new_board_state, last_state}
 
-    assert_receive {:game_winner, winner_name}
+    assert_receive {:game_winner, winner_piece, winner_name, winning_indices}
 
-    assert winner_name == "X"
+    assert winner_piece == "X"
+    assert winner_name == cross_player
+    assert winning_indices == {0, 6}
+  end
+
+  test "right vertical column victory registers", state do
+    PubSub.subscribe(GameServer.PubSub, "ttt_game:" <> state.game_id)
+
+    cross_player = "viclog_cross"
+    circle_player = "viclog_circle"
+    set_player_names(state.game_pid, cross_player, circle_player)
+
+    TicTacToe.make_move(state.game_pid, cross_player, 2)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "O"
+
+    TicTacToe.make_move(state.game_pid, circle_player, 1)
+    assert_receive {:new_board_state, after_circle}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "X"
+
+    TicTacToe.make_move(state.game_pid, cross_player, 5)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "O"
+
+    TicTacToe.make_move(state.game_pid, circle_player, 0)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "X"
+
+    TicTacToe.make_move(state.game_pid, cross_player, 8)
+    assert_receive {:new_board_state, last_state}
+
+    assert_receive {:game_winner, winner_piece, winner_name, winning_indices}
+
+    assert winner_piece == "X"
+    assert winner_name == cross_player
+    assert winning_indices == {2, 8}
+  end
+
+  test "top left to bottom right diagonal victory registers", state do
+    PubSub.subscribe(GameServer.PubSub, "ttt_game:" <> state.game_id)
+
+    cross_player = "viclog_cross"
+    circle_player = "viclog_circle"
+    set_player_names(state.game_pid, cross_player, circle_player)
+
+    TicTacToe.make_move(state.game_pid, cross_player, 0)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "O"
+
+    TicTacToe.make_move(state.game_pid, circle_player, 1)
+    assert_receive {:new_board_state, after_circle}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "X"
+
+    TicTacToe.make_move(state.game_pid, cross_player, 4)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "O"
+
+    TicTacToe.make_move(state.game_pid, circle_player, 5)
+    assert_receive {:new_board_state, _}
+    turn = TicTacToe.get_current_turn(state.game_pid)
+    assert turn == "X"
+
+    TicTacToe.make_move(state.game_pid, cross_player, 8)
+    assert_receive {:new_board_state, last_state}
+
+    assert_receive {:game_winner, winner_piece, winner_name, winning_indices}
+
+    assert winner_piece == "X"
+    assert winner_name == cross_player
+    assert winning_indices == {0, 8}
   end
 
   defp set_player_names(

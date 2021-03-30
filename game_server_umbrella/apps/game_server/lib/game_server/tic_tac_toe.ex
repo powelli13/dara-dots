@@ -158,10 +158,10 @@ defmodule GameServer.TicTacToe do
     broadcast_board_state(new_state)
 
     # broadcast winner if there is one
-    winner = check_victory_near_move(new_state.board_state, move_index)
+    {winner_piece, winning_indices} = check_victory_near_move(new_state.board_state, move_index)
 
-    if winner != " " do
-      broadcast_winner(game_state, winner)
+    if winner_piece != " " do
+      broadcast_winner(game_state, winner_piece, player_name, winning_indices)
     end
 
     {:noreply, new_state}
@@ -230,14 +230,15 @@ defmodule GameServer.TicTacToe do
     triplet_match = check_victory_triplet(board_map, check_indices)
 
     if triplet_match != " " do
-      triplet_match
+      [first, _, third] = check_indices
+      {triplet_match, {first, third}}
     else
       check_victory_possibles(possible_winners, board_map)
     end
   end
 
   defp check_victory_possibles([], _) do
-    " "
+    {" ", {}}
   end
 
   # Determine if a possible scoring triple is a victory and
@@ -261,11 +262,12 @@ defmodule GameServer.TicTacToe do
     )
   end
 
-  defp broadcast_winner(game_state, winner) do
+  defp broadcast_winner(game_state, winner_piece, winner_name, winning_indices) do
     # TODO change this to use player id
+    # also possibly a more structure return for the data
     broadcast_game_update(
       game_state.game_id,
-      {:game_winner, winner}
+      {:game_winner, winner_piece, winner_name, winning_indices}
     )
   end
 
