@@ -231,7 +231,7 @@ defmodule GameServer.TicTacToe do
 
     if triplet_match != " " do
       [first, _, third] = check_indices
-      {triplet_match, {first, third}}
+      {triplet_match, [first, third]}
     else
       check_victory_possibles(possible_winners, board_map)
     end
@@ -244,10 +244,10 @@ defmodule GameServer.TicTacToe do
   # Determine if a possible scoring triple is a victory and
   # return the winning piece if so, otherwise blank
   defp check_victory_triplet(board_map, [first, second, third]) do
-    if board_map[first] == board_map[second] &&
+    if board_map[first] != " " &&
+         board_map[first] == board_map[second] &&
          board_map[first] == board_map[third] &&
-         board_map[second] == board_map[third] &&
-         board_map[first] != " " do
+         board_map[second] == board_map[third] do
       # Return the winner
       board_map[first]
     else

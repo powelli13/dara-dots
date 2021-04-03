@@ -33,9 +33,8 @@ let TttPhaserWrapper = {
     });
 
     gameChannel.on("game_winner", (resp) => {
-      console.log("game winner:");
-      console.log(resp.winner);
-      postGameAlert(`Game over! Winner is ${resp.winner} player`);
+      winningIndices = resp.indices;
+      postGameAlert(`Game over! Winner is ${resp.name} playing ${resp.piece}`);
     });
 
     gameChannel.join()
@@ -93,7 +92,8 @@ let TttPhaserWrapper = {
     var redGraphics;
     var boardLines = [];
     var boardState = [];
-    var victoryLines = [];
+    var victoryLines = {};
+    var winningIndices = [];
     var circlePiece;
     var crossPiece = [];
 
@@ -142,10 +142,10 @@ let TttPhaserWrapper = {
       ];
 
       possibleVictorySquareIndices.forEach((indexPair, i) => {
-        victoryLines.push(new Phaser.Geom.Line(
+        victoryLines[indexPair] = new Phaser.Geom.Line(
           squareCenterLocations[indexPair[0]][0], squareCenterLocations[indexPair[0]][1],
           squareCenterLocations[indexPair[1]][0], squareCenterLocations[indexPair[1]][1]
-        ));
+        );
       });
 
       // Setup sprites for clicking spaces
@@ -165,10 +165,9 @@ let TttPhaserWrapper = {
 
     function update () {
       graphics.clear();
+      redGraphics.clear();
 
       boardLines.forEach((v, i) => { graphics.strokeLineShape(v); });
-
-      redGraphics.clear();
 
       drawBoardState();
     }
@@ -187,11 +186,10 @@ let TttPhaserWrapper = {
         }
       });
 
-      // TODO uncomment this to show red lines on the victory paths
-      // these will be helpful for displaying the victory path on game over
-      //victoryLines.forEach((line, il) => {
-        //redGraphics.strokeLineShape(line);
-      //});
+      // If winningIndices is populated then it represents a winning line
+      if (winningIndices.length == 2) {
+        redGraphics.strokeLineShape(victoryLines[winningIndices]);
+      }
     }
 
     function updateBoardState (newBoardState) {

@@ -33,8 +33,11 @@ defmodule GameServerWeb.TttGameChannel do
     {:noreply, socket}
   end
 
-  def handle_info({:game_winner, winner_piece}, socket) do
-    push(socket, "game_winner", %{winner: winner_piece})
+  def handle_info({:game_winner, winner_piece, winner_name, indices}, socket) do
+    push(
+      socket,
+      "game_winner",
+      %{piece: winner_piece, name: winner_name, indices: indices})
     {:noreply, socket}
   end
 end

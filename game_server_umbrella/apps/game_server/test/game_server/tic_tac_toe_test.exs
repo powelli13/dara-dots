@@ -182,7 +182,7 @@ defmodule GameServer.TicTacToeTest do
 
     assert winner_piece == "X"
     assert winner_name == cross_player
-    assert winning_indices == {0, 6}
+    assert winning_indices == [0, 6]
   end
 
   test "right vertical column victory registers", state do
@@ -219,7 +219,7 @@ defmodule GameServer.TicTacToeTest do
 
     assert winner_piece == "X"
     assert winner_name == cross_player
-    assert winning_indices == {2, 8}
+    assert winning_indices == [2, 8]
   end
 
   test "top left to bottom right diagonal victory registers", state do
@@ -256,7 +256,7 @@ defmodule GameServer.TicTacToeTest do
 
     assert winner_piece == "X"
     assert winner_name == cross_player
-    assert winning_indices == {0, 8}
+    assert winning_indices == [0, 8]
   end
 
   defp set_player_names(
