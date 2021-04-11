@@ -137,7 +137,7 @@ defmodule GameServer.TicTacToeTest do
 
   test "valid move should change turn", state do
     set_player_names(state.game_pid, "cross", "circle")
-    move_index = Enum.random([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    move_index = Enum.random([0, 1, 2, 3, 4, 5, 6, 7, 8])
 
     TicTacToe.make_move(state.game_pid, "cross", move_index)
 
@@ -257,6 +257,43 @@ defmodule GameServer.TicTacToeTest do
     assert winner_piece == "X"
     assert winner_name == cross_player
     assert winning_indices == [0, 8]
+  end
+
+  test "drawn game sends out message", state do
+    PubSub.subscribe(GameServer.PubSub, "ttt_game:" <> state.game_id)
+
+    cross_player = "cross"
+    circle_player = "circle"
+    set_player_names(state.game_pid, cross_player, circle_player)
+
+    TicTacToe.make_move(state.game_pid, cross_player, 0)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, circle_player, 3)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, cross_player, 1)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, circle_player, 2)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, cross_player, 4)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, circle_player, 8)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, cross_player, 7)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, circle_player, 5)
+    assert_receive {:new_board_state, _}
+
+    TicTacToe.make_move(state.game_pid, cross_player, 6)
+    assert_receive {:new_board_state, _}
+
+    assert_receive :game_drawn
   end
 
   defp set_player_names(

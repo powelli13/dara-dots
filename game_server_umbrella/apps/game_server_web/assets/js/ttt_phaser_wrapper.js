@@ -37,6 +37,10 @@ let TttPhaserWrapper = {
       postGameAlert(`Game over! Winner is ${resp.name} playing ${resp.piece}`);
     });
 
+    gameChannel.on("game_drawn", (resp) => {
+      postGameAlert('Game drawn! Thanks for playing');
+    });
+
     gameChannel.join()
       .receive("ok", () => {
         return;

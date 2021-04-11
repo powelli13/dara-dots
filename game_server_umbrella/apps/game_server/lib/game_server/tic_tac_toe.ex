@@ -154,14 +154,18 @@ defmodule GameServer.TicTacToe do
           game_state
       end
 
-    # broadcast game state after successful move
     broadcast_board_state(new_state)
 
     # broadcast winner if there is one
     {winner_piece, winning_indices} = check_victory_near_move(new_state.board_state, move_index)
 
     if winner_piece != " " do
-      broadcast_winner(game_state, winner_piece, player_name, winning_indices)
+      broadcast_winner(new_state, winner_piece, player_name, winning_indices)
+    end
+
+    # if the board is full and no winner then broadcast a draw
+    if winner_piece == " " && board_full?(new_state.board_state) do
+      broadcast_draw(new_state)
     end
 
     {:noreply, new_state}
@@ -200,6 +204,10 @@ defmodule GameServer.TicTacToe do
   defp valid_move?(game_state, move_index, player_name) do
     square_empty?(game_state, move_index) &&
       get_current_turn_player_name(game_state) == player_name
+  end
+
+  defp board_full?(board_state) do
+    Enum.all?(board_state, fn {_, v} -> v != " " end)
   end
 
   defp perform_move(game_state, move_index) do
@@ -268,6 +276,13 @@ defmodule GameServer.TicTacToe do
     broadcast_game_update(
       game_state.game_id,
       {:game_winner, winner_piece, winner_name, winning_indices}
+    )
+  end
+
+  defp broadcast_draw(game_state) do
+    broadcast_game_update(
+      game_state.game_id,
+      :game_drawn
     )
   end
 
