@@ -4,6 +4,18 @@
 <div id="ttt-lobby-chat-container">
 </div>
 
+<div>
+  <textarea id="lobby-chat-input"
+    rows="2"
+    placeholder="Chat..."></textarea>
+
+  <button id="lobby-chat-submit"
+    class="button column"
+    type="submit">
+    Send
+  </button>
+</div>
+
 <button id="join-game-queue-button"
   class="button column"
   type="submit">

@@ -4,7 +4,6 @@ defmodule GameServerWeb.TttLobbyChannel do
   in Tic Tac Toe lobby.
   """
   use GameServerWeb, :channel
-  alias GameServerWeb.Presence
   alias GameServer.TicTacToe
 
   # TODO consider removing lobby id?
@@ -32,6 +31,11 @@ defmodule GameServerWeb.TttLobbyChannel do
   def handle_in("join_queue", %{"player_name" => player_name}, socket) do
     GameServer.TttPlayerQueue.add_player(player_name)
 
+    {:noreply, socket}
+  end
+
+  def handle_in("new_msg", %{"message" => message}, socket) do
+    broadcast!(socket, "new_msg", %{username: socket.assigns.username, message: message})
     {:noreply, socket}
   end
 end
