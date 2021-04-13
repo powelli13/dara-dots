@@ -1,5 +1,18 @@
 <section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Lip Sync and Games" %></h1>
+  <h1><%= gettext "Welcome to %{name}!", name: "Games and Lip Sync" %></h1>
+</section>
+
+<section class="row">
+  <article class="column">
+    <form>
+      <label>Player Name</label>
+      <span>This name will identify you in lobbies and games on the site.</span>
+      <input id="site_player_name_input" type="text"></input>
+      <button id="update_site_player_name_button" type="submit">
+        Set Name
+      </button>
+    </form>
+  </article>
 </section>
 
 <section class="row">
@@ -10,30 +23,7 @@
     <ul>
       <li><%= link "Rock Paper Scissors", to: "/rps-game-lobby" %></li>
       <li><%= link "Tic Tac Toe", to: "/ttt-game-lobby" %></li>
+      <li><%= link "Lip Sync Battle", to: "/lip-sync-landing" %></li>
     </ul>
-  </article>
-</section>
-
-<section class="row">
-  <article class="column">
-    <div>
-      Create a Lib Sync lobby to start grooving with your friends.
-    </div>
-    <%= form_for @conn, Routes.lobby_path(@conn, :create), [method: :post], fn f -> %>
-      <label for="player_name">Player Name</label>
-      <%= text_input f, :player_name, required: "true", id: "player_name_input" %>
-      <%= submit "Create Lobby" %>
-    <% end %>
-
-    <div>
-      Enter a Share Code to join an existing Lip Sync lobby.
-    </div>
-    <%= form_for @conn, Routes.lobby_path(@conn, :index), [method: :get], fn f -> %>
-      <label for="player_name">Player Name</label>
-      <%= text_input f, :player_name, required: "true", maxlength: "50" %>
-      <label for="lobby_id">Share Code</label>
-      <%= text_input f, :lobby_id, required: "true" %>
-      <%= submit "Join Lobby" %>
-    <% end %>
   </article>
 </section>

@@ -1,0 +1,23 @@
+<section class="row">
+  <article class="column">
+    <div>
+      Create a Lib Sync lobby to start grooving with your friends.
+    </div>
+    <%= form_for @conn, Routes.lobby_path(@conn, :create), [method: :post], fn f -> %>
+      <label for="player_name">Player Name</label>
+      <%= text_input f, :player_name, required: "true", id: "player_name_input" %>
+      <%= submit "Create Lobby" %>
+    <% end %>
+
+    <div>
+      Enter a Share Code to join an existing Lip Sync lobby.
+    </div>
+    <%= form_for @conn, Routes.lobby_path(@conn, :index), [method: :get], fn f -> %>
+      <label for="player_name">Player Name</label>
+      <%= text_input f, :player_name, required: "true", maxlength: "50" %>
+      <label for="lobby_id">Share Code</label>
+      <%= text_input f, :lobby_id, required: "true" %>
+      <%= submit "Join Lobby" %>
+    <% end %>
+  </article>
+</section>

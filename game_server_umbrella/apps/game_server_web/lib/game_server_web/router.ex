@@ -20,6 +20,8 @@ defmodule GameServerWeb.Router do
 
     get "/", PageController, :index
 
+    get "/lip-sync-landing", LobbyController, :landing
+
     get "/lobby", LobbyController, :index
 
     get "/lobby/:lobby_id", LobbyController, :index
@@ -35,10 +37,6 @@ defmodule GameServerWeb.Router do
     get "/ttt-game", TttGameController, :index
 
     get "/ttt-game-lobby", TttGameController, :lobby
-
-    live "/tictactoe", TicTacToeLive
-
-    live "/lipsync", LipSyncLive
   end
 
   # Other scopes may use custom stacks.

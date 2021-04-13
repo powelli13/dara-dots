@@ -23,6 +23,10 @@ defmodule GameServerWeb.LobbyController do
     render(conn, "index.html", player_name: validate_username(params))
   end
 
+  def landing(conn, _params) do
+    render(conn, "landing.html")
+  end
+
   # Validates the user name param
   # Returns a random animal name if a valid username was not provided
   defp validate_username(params) do

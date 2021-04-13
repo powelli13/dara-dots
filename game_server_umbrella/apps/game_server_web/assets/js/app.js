@@ -77,9 +77,29 @@ if (copyShareCodeButton != null) {
   });
 }
 
+// Used to update the user's name on the site
+let updateSiteNameButton = document.getElementById("update_site_player_name_button");
+if (updateSiteNameButton != null) {
+  updateSiteNameButton.addEventListener("click", function() {
+    // TODO player name validation
+    let sitePlayerNameTextInput = document.getElementById("site_player_name_input");
+    if (sitePlayerNameTextInput != null) {
+      window.localStorage.setItem("player_name", sitePlayerNameTextInput.value);
+    }
+  });
+}
+
 // Display the player name if one is stored
 const storedPlayerName = window.localStorage.getItem("player_name");
+
 let playerNameTextInput = document.getElementById("player_name_input");
 if (storedPlayerName != null && playerNameTextInput != null) {
   playerNameTextInput.value = storedPlayerName;
+}
+
+let sitePlayerNameTextInput = document.getElementById("site_player_name_input");
+if (storedPlayerName != null && sitePlayerNameTextInput != null) {
+  sitePlayerNameTextInput.value = storedPlayerName;
+} else {
+  sitePlayerNameTextInput.value = "anon" + Math.floor(Math.random() * 1000);
 }

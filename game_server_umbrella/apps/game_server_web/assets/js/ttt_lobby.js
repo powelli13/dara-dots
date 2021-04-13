@@ -18,9 +18,8 @@ let TttLobbyChat = {
     const joinQueueButton = document.getElementById("join-game-queue-button");
 
     let lobbyChannel = socket.channel(`ttt_lobby:1`, () => {
-      const username = "anon" + Math.floor(Math.random() * 1000);
-      window.localStorage.setItem("dara-username", username);
-      return {username: username};
+      const playerName = window.localStorage.getItem("player_name") ?? "";
+      return {username: playerName};
     });
 
     // Send chat message
