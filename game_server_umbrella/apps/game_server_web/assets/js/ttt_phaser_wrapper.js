@@ -16,10 +16,8 @@ let TttPhaserWrapper = {
     console.log("Tic Tac Toe Phaser wrapper is now ready");
 
     var ticTacToeGameChannel = socket.channel("ttt_game:" + gameId, () => {
-      let username = window.localStorage.getItem("dara-username");
-      return username 
-        ? {username: username}
-        : {username: "anon" + Math.floor(Math.random() * 1000)};
+      let username = window.localStorage.getItem("player_name");
+      return {username: username};
     });
 
     this.initPhaserGame(ticTacToeGameChannel)

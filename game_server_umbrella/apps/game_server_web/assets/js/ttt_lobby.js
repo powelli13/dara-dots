@@ -32,7 +32,7 @@ let TttLobbyChat = {
 
     // Add the player to the queue.
     joinQueueButton.addEventListener("click", e => {
-      lobbyChannel.push("join_queue", {player_name: window.localStorage.getItem("dara-username")})
+      lobbyChannel.push("join_queue", {player_name: window.localStorage.getItem("player_name")})
       .receive("error", e => e.console.log(e));
       joinQueueButton.disabled = true;
     });
@@ -75,7 +75,7 @@ let TttLobbyChat = {
   // Navigate the user to their newly started game.
   navigateToGame({username, game_id}) {
     // TODO improve this by pushing to individual sockets rather than checking usernames
-    if (username == window.localStorage.getItem("dara-username")) {
+    if (username == window.localStorage.getItem("player_name")) {
       window.location.replace(`/ttt-game?id=${game_id}`);
     }
   }

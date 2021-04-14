@@ -11,6 +11,10 @@ WORKDIR /app
 #ENV MIX_ENV prod
 #ENV SECRET_KEY_BASE mix phx.gen.secret
 
+# Necessary to set port when deploying to Azure container services
+# because we cannot specific port mapping using -p in docker run
+ENV PORT 80
+
 COPY . .
 
 RUN mix deps.get

@@ -92,6 +92,12 @@ if (updateSiteNameButton != null) {
 // Display the player name if one is stored
 const storedPlayerName = window.localStorage.getItem("player_name");
 
+if (storedPlayerName == null) {
+  const anonName = "anon" + Math.floor(Math.random() * 1000);
+  window.localStorage.setItem("player_name", anonName);
+  storedPlayerName = anonName;
+}
+
 let playerNameTextInput = document.getElementById("player_name_input");
 if (storedPlayerName != null && playerNameTextInput != null) {
   playerNameTextInput.value = storedPlayerName;
@@ -100,8 +106,4 @@ if (storedPlayerName != null && playerNameTextInput != null) {
 let sitePlayerNameTextInput = document.getElementById("site_player_name_input");
 if (storedPlayerName != null && sitePlayerNameTextInput != null) {
   sitePlayerNameTextInput.value = storedPlayerName;
-} else {
-  const anonName = "anon" + Math.floor(Math.random() * 1000);
-  sitePlayerNameTextInput.value = anonName;
-  window.localStorage.setItem("player_name", anonName);
 }
