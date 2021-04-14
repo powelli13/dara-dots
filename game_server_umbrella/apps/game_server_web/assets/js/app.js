@@ -90,7 +90,7 @@ if (updateSiteNameButton != null) {
 }
 
 // Display the player name if one is stored
-const storedPlayerName = window.localStorage.getItem("player_name");
+let storedPlayerName = window.localStorage.getItem("player_name");
 
 if (storedPlayerName == null) {
   const anonName = "anon" + Math.floor(Math.random() * 1000);
