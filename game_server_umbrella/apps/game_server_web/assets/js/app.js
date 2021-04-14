@@ -101,5 +101,7 @@ let sitePlayerNameTextInput = document.getElementById("site_player_name_input");
 if (storedPlayerName != null && sitePlayerNameTextInput != null) {
   sitePlayerNameTextInput.value = storedPlayerName;
 } else {
-  sitePlayerNameTextInput.value = "anon" + Math.floor(Math.random() * 1000);
+  const anonName = "anon" + Math.floor(Math.random() * 1000);
+  sitePlayerNameTextInput.value = anonName;
+  window.localStorage.setItem("player_name", anonName);
 }

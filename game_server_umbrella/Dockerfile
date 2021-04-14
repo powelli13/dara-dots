@@ -6,9 +6,10 @@ FROM bitwalker/alpine-elixir-phoenix:latest
 #docker run --name {container name} -p {port mapping e.g. 80:4000} {image name, from above}
 WORKDIR /app
 
-ARG key
-ENV MIX_ENV prod
-ENV SECRET_KEY_BASE key
+#ARG key
+#ENV SECRET_KEY_BASE key
+#ENV MIX_ENV prod
+#ENV SECRET_KEY_BASE mix phx.gen.secret
 
 COPY . .
 
