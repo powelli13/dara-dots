@@ -1,10 +1,14 @@
 # syntax=docker/dockerfile:1.0-experimental
 FROM bitwalker/alpine-elixir-phoenix:latest
 
+#To build and run:
+#docker build . --tag {image name} --build-arg key={key value}
+#docker run --name {container name} -p {port mapping e.g. 80:4000} {image name, from above}
 WORKDIR /app
 
-#ENV MIX_ENV prod
-#RUN --mount=type=secret,id=keybase,dst=/keybase bash /keybase
+ARG key
+ENV MIX_ENV prod
+ENV SECRET_KEY_BASE key
 
 COPY . .
 
