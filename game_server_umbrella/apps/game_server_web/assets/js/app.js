@@ -37,11 +37,11 @@ LobbyChat.init(socket, document.getElementById("lobby-chat-container"));
 RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));
 
 // Initialize the Game facilitating script
-RpsGame.init(socket, "id");
+RpsGame.init(socket, "rps_id");
 
 // Initialize the Tic Tac Toe game pieces
 TttLobbyChat.init(socket, document.getElementById("ttt-lobby-chat-container"));
-TttPhaserWrapper.init(socket, "id");
+TttPhaserWrapper.init(socket, "ttt_id");
 
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");

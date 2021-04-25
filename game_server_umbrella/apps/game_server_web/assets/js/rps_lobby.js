@@ -81,7 +81,7 @@ let RpsLobbyChat = {
   navigateToGame({username, game_id}) {
     // TODO improve this by pushing to individual sockets rather than checking usernames
     if (username == window.localStorage.getItem("dara-username")) {
-      window.location.replace(`/game?id=${game_id}`);
+      window.location.replace(`/game?rps_id=${game_id}`);
     }
   },
 

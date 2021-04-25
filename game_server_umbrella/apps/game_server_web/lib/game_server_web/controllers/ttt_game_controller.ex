@@ -2,7 +2,7 @@ defmodule GameServerWeb.TttGameController do
   use GameServerWeb, :controller
 
   def index(conn, params) do
-    case Map.fetch(params, "id") do
+    case Map.fetch(params, "ttt_id") do
       {:ok, game_id} ->
         # TODO verify that the game is live?
         render(conn, "index.html")

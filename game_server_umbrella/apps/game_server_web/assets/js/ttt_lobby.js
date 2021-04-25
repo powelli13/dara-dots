@@ -76,7 +76,7 @@ let TttLobbyChat = {
   navigateToGame({username, game_id}) {
     // TODO improve this by pushing to individual sockets rather than checking usernames
     if (username == window.localStorage.getItem("player_name")) {
-      window.location.replace(`/ttt-game?id=${game_id}`);
+      window.location.replace(`/ttt-game?ttt_id=${game_id}`);
     }
   }
 };
