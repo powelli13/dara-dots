@@ -39,8 +39,12 @@ let TttPhaserWrapper = {
       postGameAlert('Game drawn! Thanks for playing');
     });
 
+    gameChannel.on("game_status", (resp) => {
+      updateGameStatus(resp.opponent, resp.piece);
+    });
+
     gameChannel.join()
-      .receive("ok", () => {
+      .receive("ok", (resp) => {
         return;
       })
       .receive("error", reason => console.log("join failed", reason));
@@ -201,6 +205,11 @@ let TttPhaserWrapper = {
     function postGameAlert (alert) {
       let alertsElement = document.getElementById("game-alerts");
       alertsElement.innerHTML = alert;
+    }
+
+    function updateGameStatus (opponent, piece) {
+      let statusElement = document.getElementById("game-status");
+      statusElement.innerHTML = `You play as ${piece}, against ${opponent}`;
     }
   }
 };

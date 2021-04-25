@@ -9,15 +9,40 @@ defmodule GameServerWeb.TttGameChannel do
       |> assign(:game_id, game_id)
       |> assign(:username, username)
 
+    send(self(), :after_join)
+
     {:ok, updated_socket}
   end
 
+  def handle_info(:after_join, socket) do
+    game_pid = get_game_pid(socket.assigns.game_id)
+
+    %{
+      :cross_player_name => cross_player,
+      :circle_player_name => circle_player
+    } = TicTacToe.get_player_names(game_pid)
+
+    case socket.assigns.username do
+      ^circle_player ->
+        push(
+          socket,
+          "game_status",
+          %{opponent: cross_player, piece: "O"}
+        )
+
+      ^cross_player ->
+        push(
+          socket,
+          "game_status",
+          %{opponent: circle_player, piece: "X"}
+        )
+    end
+
+    {:noreply, socket}
+  end
+
   def handle_in("submit_move", %{"move_index" => move_index}, socket) do
-    [{game_pid, _}] =
-      Registry.lookup(
-        GameServer.Registry,
-        {GameServer.TicTacToe, socket.assigns.game_id}
-      )
+    game_pid = get_game_pid(socket.assigns.game_id)
 
     TicTacToe.make_move(
       game_pid,
@@ -51,5 +76,15 @@ defmodule GameServerWeb.TttGameChannel do
     )
 
     {:noreply, socket}
+  end
+
+  defp get_game_pid(game_id) do
+    [{game_pid, _}] =
+      Registry.lookup(
+        GameServer.Registry,
+        {GameServer.TicTacToe, game_id}
+      )
+
+    game_pid
   end
 end

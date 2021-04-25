@@ -1,3 +1,5 @@
+<div id="game-status"></div>
+<div><em>X moves first.</em></div>
 <div id="game-alerts"></div>
 
 <div id="phaser-wrapper"></div>
