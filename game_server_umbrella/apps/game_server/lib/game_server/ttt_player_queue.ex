@@ -19,8 +19,7 @@ defmodule GameServer.TttPlayerQueue do
     # TODO necessary if it is registered as the module?
     Registry.register(GameServer.Registry, __MODULE__, %{})
 
-    # Erlang language queue is used here
-    {:ok, :queue.new()}
+    {:ok, MapSet.new()}
   end
 
   def start_link(opts) do
@@ -30,13 +29,48 @@ defmodule GameServer.TttPlayerQueue do
 
   @impl GenServer
   # TODO update this to use server assigned GUIDs to identify players
-  def handle_cast({:add_player, player_name}, queue) do
-    new_queue = :queue.in(player_name, queue)
+  def handle_cast({:add_player, player_name}, map_set) do
+    updated_map_set =
+      unless already_in_queue?(map_set, player_name) do
+        new_map_set = MapSet.put(map_set, {player_name, System.system_time(:second)})
 
-    if :queue.len(new_queue) >= 2 do
-      {{:value, first_player}, new_queue} = :queue.out(new_queue)
-      {{:value, second_player}, new_queue} = :queue.out(new_queue)
+        # check for starting the game
+        check_start_game(new_map_set)
+      else
+        map_set
+      end
 
+    {:noreply, updated_map_set}
+  end
+
+  defp get_two_earliest_player_names(map_set) do
+    [{first, _}, {second, _}] =
+      map_set
+      |> MapSet.to_list()
+      |> Enum.sort(fn {_, a_time}, {_, b_time} -> a_time <= b_time end)
+      |> Enum.take(2)
+
+    {first, second}
+  end
+
+  defp already_in_queue?(map_set, new_name) do
+    map_set
+    |> MapSet.to_list()
+    |> Enum.map(fn {n, _} -> n end)
+    |> Enum.any?(fn n -> n == new_name end)
+  end
+
+  defp check_start_game(map_set) do
+    if MapSet.size(map_set) >= 2 do
+      # grab two players in queue longest
+      {first_player, second_player} = get_two_earliest_player_names(map_set)
+
+      # delete those players from the map set
+      new_map_set = map_set
+      |> remove_player(first_player)
+      |> remove_player(second_player)
+
+      # start new game with player names
       # Generate the new random unique game id
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
@@ -55,9 +89,16 @@ defmodule GameServer.TttPlayerQueue do
         {:start_game, first_player, second_player, new_game_id}
       )
 
-      {:noreply, new_queue}
+      new_map_set
     else
-      {:noreply, new_queue}
+      map_set
     end
+  end
+
+  defp remove_player(map_set, deleted_name) do
+    map_set
+    |> MapSet.to_list()
+    |> Enum.filter(fn {n, _} -> n != deleted_name end)
+    |> MapSet.new()
   end
 end
