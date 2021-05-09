@@ -66,9 +66,10 @@ defmodule GameServer.TttPlayerQueue do
       {first_player, second_player} = get_two_earliest_player_names(map_set)
 
       # delete those players from the map set
-      new_map_set = map_set
-      |> remove_player(first_player)
-      |> remove_player(second_player)
+      new_map_set =
+        map_set
+        |> remove_player(first_player)
+        |> remove_player(second_player)
 
       # start new game with player names
       # Generate the new random unique game id
@@ -77,9 +78,17 @@ defmodule GameServer.TttPlayerQueue do
       # Start game GenServer and add players
       start_game_pid = TttGameSupervisor.find_game(new_game_id)
 
-      # TODO randomize this either here or on the TTT GenServer module
-      TicTacToe.set_circle_player(start_game_pid, first_player)
-      TicTacToe.set_cross_player(start_game_pid, second_player)
+      r = :rand.uniform()
+
+      cond do
+        r > 0.5 ->
+          TicTacToe.set_circle_player(start_game_pid, first_player)
+          TicTacToe.set_cross_player(start_game_pid, second_player)
+
+        true ->
+          TicTacToe.set_circle_player(start_game_pid, second_player)
+          TicTacToe.set_cross_player(start_game_pid, first_player)
+      end
 
       # Inform the lobby channels that the players are in a game together
       PubSub.broadcast(
