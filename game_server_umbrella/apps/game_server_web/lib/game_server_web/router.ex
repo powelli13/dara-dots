@@ -15,8 +15,9 @@ defmodule GameServerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # TODO I think this could be simplified by using resources instead of get post directly 
   scope "/", GameServerWeb do
-    pipe_through :browser
+    pipe_through [:browser, :ensure_player_id]
 
     get "/", PageController, :index
 
@@ -57,6 +58,19 @@ defmodule GameServerWeb.Router do
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: GameServerWeb.Telemetry
+    end
+  end
+
+  # Ensures that each visitor to the site
+  # as a Player ID stored in their session.
+  # This Player ID is used later when joining
+  # queues and identifying the player.
+  defp ensure_player_id(conn, _) do
+    case get_session(conn, :player_id) do
+      nil ->
+        put_session(conn, :player_id, UUID.uuid4())
+      _ ->
+        conn
     end
   end
 end
