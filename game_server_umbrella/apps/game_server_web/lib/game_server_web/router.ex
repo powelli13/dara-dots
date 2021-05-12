@@ -75,6 +75,7 @@ defmodule GameServerWeb.Router do
     else
       new_player_id = UUID.uuid4()
       token = Phoenix.Token.sign(conn, "user socket", new_player_id)
+
       conn
       |> put_session(:player_id, new_player_id)
       |> assign(:player_token, token)

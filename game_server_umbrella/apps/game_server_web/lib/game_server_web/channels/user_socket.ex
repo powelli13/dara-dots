@@ -23,14 +23,11 @@ defmodule GameServerWeb.UserSocket do
   # performing token verification on connect.
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do
-    IO.puts "HERE WE ARE CONNECTING A SOCKET"
-    IO.inspect token
-
-    #TODO this token just needs to be there, we shouldn't have to worry about expiring?
-    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
+    # TODO this token just needs to be there, we shouldn't have to worry about expiring?
+    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1_209_600) do
       {:ok, player_id} ->
-    IO.inspect player_id
         {:ok, assign(socket, :player_id, player_id)}
+
       {:error, _reason} ->
         :error
     end
