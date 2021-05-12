@@ -17,7 +17,7 @@ defmodule GameServerWeb.Router do
 
   # TODO I think this could be simplified by using resources instead of get post directly 
   scope "/", GameServerWeb do
-    pipe_through [:browser, :ensure_player_id]
+    pipe_through [:browser, :put_player_token]
 
     get "/", PageController, :index
 
@@ -62,15 +62,22 @@ defmodule GameServerWeb.Router do
   end
 
   # Ensures that each visitor to the site
-  # as a Player ID stored in their session.
+  # as a Player ID stored in the session, and
+  # a token on the assigns for the client
+  # to use when connecting to a socket.
   # This Player ID is used later when joining
   # queues and identifying the player.
-  defp ensure_player_id(conn, _) do
-    case get_session(conn, :player_id) do
-      nil ->
-        put_session(conn, :player_id, UUID.uuid4())
-      _ ->
-        conn
+  defp put_player_token(conn, _) do
+    # Ensure that the conn has a player ID
+    if player_id = get_session(conn, :player_id) do
+      token = Phoenix.Token.sign(conn, "user socket", player_id)
+      assign(conn, :player_token, token)
+    else
+      new_player_id = UUID.uuid4()
+      token = Phoenix.Token.sign(conn, "user socket", new_player_id)
+      conn
+      |> put_session(:player_id, new_player_id)
+      |> assign(:player_token, token)
     end
   end
 end

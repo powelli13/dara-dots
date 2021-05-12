@@ -22,8 +22,18 @@ defmodule GameServerWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket, _connect_info) do
+    IO.puts "HERE WE ARE CONNECTING A SOCKET"
+    IO.inspect token
+
+    #TODO this token just needs to be there, we shouldn't have to worry about expiring?
+    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
+      {:ok, player_id} ->
+    IO.inspect player_id
+        {:ok, assign(socket, :player_id, player_id)}
+      {:error, _reason} ->
+        :error
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -37,5 +47,7 @@ defmodule GameServerWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(_socket), do: nil
+  def id(_socket) do
+    nil
+  end
 end

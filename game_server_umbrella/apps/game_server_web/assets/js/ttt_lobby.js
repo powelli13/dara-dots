@@ -4,7 +4,7 @@ let TttLobbyChat = {
   init(socket, element) {
     if (!element) { return; }
 
-    socket.connect();
+    socket.connect({token: window.userToken});
 
     this.onReady(socket);
   },

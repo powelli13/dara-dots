@@ -1,5 +1,7 @@
+<script>window.userToken = "<%= assigns[:player_token] %>";</script>
 <main role="main" class="container <%= Enum.at(@conn.path_info, 0) %>">
   <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+  <p>Token: "<%= assigns[:player_token] %>"</p>
   <%= @inner_content %>
 </main>
