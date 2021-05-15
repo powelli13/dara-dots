@@ -33,6 +33,7 @@ let TttPhaserWrapper = {
     gameChannel.on("game_winner", (resp) => {
       winningIndices = resp.indices;
       postGameAlert(`Game over! Winner is ${resp.name} playing ${resp.piece}`);
+      showLobbyLink();
     });
 
     gameChannel.on("game_drawn", (resp) => {
@@ -202,6 +203,11 @@ let TttPhaserWrapper = {
     function postGameAlert (alert) {
       let alertsElement = document.getElementById("game-alerts");
       alertsElement.innerHTML = alert;
+    }
+
+    function showLobbyLink () {
+      let lobbyLink = document.getElementById("lobby-link");
+      lobbyLink.classList.remove("d-none");
     }
 
     function updateGameStatus (opponent, piece) {
