@@ -7,7 +7,7 @@ let TttPhaserWrapper = {
     // need to have a better differentiation
     if (!params.has(urlParam)) { return; }
 
-    socket.connect();
+    socket.connect({token: window.userToken});
 
     this.onReady(socket, params.get(urlParam));
   },
@@ -104,9 +104,8 @@ let TttPhaserWrapper = {
     var crossPiece = [];
 
     function preload () {
-      // TODO Phaser examples use game instead of 'this', does it matter?
       this.load.image("background", "game_images/background.jpg");
-      this.load.image("star", "game_images/star.png");
+      this.load.image("blank_space", "game_images/blank_space.png");
     }
 
     function create () {
@@ -156,11 +155,9 @@ let TttPhaserWrapper = {
 
       // Setup sprites for clicking spaces
       squareCenterLocations.forEach((xy, i) => {
-        // TODO star isn't necessary here, another image could be used
-        // TODO looks like 0.0 alpha prevents clicks from interacting
-        let spriteStar = this.add.sprite(xy[0], xy[1], "star").setInteractive();
-        spriteStar.alpha = 0.15;
-        spriteStar.on("pointerup", function (pointer) {
+        let blankSpace = this.add.sprite(xy[0], xy[1], "blank_space").setInteractive();
+        blankSpace.alpha = 0.15;
+        blankSpace.on("pointerup", function (pointer) {
           gameChannel.push("submit_move", {"move_index": i})
             .receive("error", e => e.console.log(e));
         });
