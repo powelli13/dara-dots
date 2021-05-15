@@ -43,3 +43,8 @@
 .d-none {
   display: none;
 }
+
+.chat-history {
+  max-height: 30rem;
+  overflow: auto;
+}

@@ -38,6 +38,7 @@ let TttPhaserWrapper = {
 
     gameChannel.on("game_drawn", (resp) => {
       postGameAlert('Game drawn! Thanks for playing');
+      showLobbyLink();
     });
 
     gameChannel.on("game_status", (resp) => {
