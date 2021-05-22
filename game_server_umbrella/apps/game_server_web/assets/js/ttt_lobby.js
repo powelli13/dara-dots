@@ -32,7 +32,7 @@ let TttLobbyChat = {
 
     // Add the player to the queue.
     joinQueueButton.addEventListener("click", e => {
-      lobbyChannel.push("join_queue", {player_name: window.localStorage.getItem("player_name")})
+      lobbyChannel.push("join_queue", {})
       .receive("error", e => e.console.log(e));
       joinQueueButton.disabled = true;
     });

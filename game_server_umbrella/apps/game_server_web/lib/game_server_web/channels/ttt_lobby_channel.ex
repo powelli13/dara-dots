@@ -26,8 +26,8 @@ defmodule GameServerWeb.TttLobbyChannel do
     {:noreply, socket}
   end
 
-  def handle_in("join_queue", %{"player_name" => player_name}, socket) do
-    GameServer.TttPlayerQueue.add_player(socket.assigns.player_id, player_name)
+  def handle_in("join_queue", _, socket) do
+    GameServer.TttPlayerQueue.add_player(socket.assigns.player_id, socket.assigns.username)
 
     {:noreply, socket}
   end
