@@ -38,6 +38,10 @@ defmodule GameServerWeb.Router do
     get "/ttt-game", TttGameController, :index
 
     get "/ttt-game-lobby", TttGameController, :lobby
+
+    live "/lipsynclive", LipSyncLive
+
+    live "/lobbychatlive", LobbyChatLive
   end
 
   # Other scopes may use custom stacks.
