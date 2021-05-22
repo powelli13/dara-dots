@@ -3,7 +3,6 @@ defmodule GameServerWeb.TttGameChannel do
   alias GameServer.TicTacToe
 
   def join("ttt_game:" <> game_id, %{"username" => username}, socket) do
-    # TODO replace user name with player id at socket join
     updated_socket =
       socket
       |> assign(:game_id, game_id)
@@ -14,39 +13,12 @@ defmodule GameServerWeb.TttGameChannel do
     {:ok, updated_socket}
   end
 
-  def handle_info(:after_join, socket) do
-    game_pid = get_game_pid(socket.assigns.game_id)
-
-    %{
-      :cross_player_name => cross_player,
-      :circle_player_name => circle_player
-    } = TicTacToe.get_player_names(game_pid)
-
-    case socket.assigns.username do
-      ^circle_player ->
-        push(
-          socket,
-          "game_status",
-          %{opponent: cross_player, piece: "O"}
-        )
-
-      ^cross_player ->
-        push(
-          socket,
-          "game_status",
-          %{opponent: circle_player, piece: "X"}
-        )
-    end
-
-    {:noreply, socket}
-  end
-
   def handle_in("submit_move", %{"move_index" => move_index}, socket) do
     game_pid = get_game_pid(socket.assigns.game_id)
 
     TicTacToe.make_move(
       game_pid,
-      socket.assigns.username,
+      socket.assigns.player_id,
       move_index
     )
 
@@ -74,6 +46,33 @@ defmodule GameServerWeb.TttGameChannel do
       "game_drawn",
       %{}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:after_join, socket) do
+    game_pid = get_game_pid(socket.assigns.game_id)
+
+    %{
+      :cross_player_name => cross_player,
+      :circle_player_name => circle_player
+    } = TicTacToe.get_player_names(game_pid)
+
+    case socket.assigns.username do
+      ^circle_player ->
+        push(
+          socket,
+          "game_status",
+          %{opponent: cross_player, piece: "O"}
+        )
+
+      ^cross_player ->
+        push(
+          socket,
+          "game_status",
+          %{opponent: circle_player, piece: "X"}
+        )
+    end
 
     {:noreply, socket}
   end
