@@ -17,11 +17,9 @@ defmodule GameServerWeb.TttLobbyChannel do
   end
 
   # Handle messages from the queue indicating that a game is ready
-  def handle_info({:start_game, player_one, player_two, new_game_id}, socket) do
-    # TODO this can be improved, maybe these can be socket_ref s instead?
-    # Let's use GUIDs assigned when the socket connects
-    if socket.assigns.username == player_one ||
-         socket.assigns.username == player_two do
+  def handle_info({:start_game, player_one_id, player_two_id, new_game_id}, socket) do
+    if socket.assigns.player_id == player_one_id ||
+         socket.assigns.player_id == player_two_id do
       push(socket, "game_started", %{username: socket.assigns.username, game_id: new_game_id})
     end
 
@@ -29,7 +27,7 @@ defmodule GameServerWeb.TttLobbyChannel do
   end
 
   def handle_in("join_queue", %{"player_name" => player_name}, socket) do
-    GameServer.TttPlayerQueue.add_player(player_name)
+    GameServer.TttPlayerQueue.add_player(socket.assigns.player_id, player_name)
 
     {:noreply, socket}
   end

@@ -96,7 +96,6 @@ defmodule GameServer.TttPlayerQueue do
       # Inform the lobby channels that the players are in a game together
       PubSub.broadcast(
         GameServer.PubSub,
-        # TODO
         "ttt_lobby:1",
         {:start_game, first_player_id, second_player_id, new_game_id}
       )
