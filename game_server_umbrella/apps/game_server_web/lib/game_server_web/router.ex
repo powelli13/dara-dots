@@ -39,6 +39,10 @@ defmodule GameServerWeb.Router do
 
     get "/ttt-game-lobby", TttGameController, :lobby
 
+    get "/pong-game", PongController, :index
+
+    get "/pong-lobby", PongController, :lobby
+
     live "/lipsynclive", LipSyncLive
 
     live "/lobbychatlive", LobbyChatLive

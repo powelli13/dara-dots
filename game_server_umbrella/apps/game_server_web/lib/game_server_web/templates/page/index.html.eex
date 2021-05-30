@@ -21,9 +21,10 @@
       Join a game lobby to chat and play
     </div>
     <ul>
-      <li><%= link "Rock Paper Scissors", to: "/rps-game-lobby" %></li>
       <li><%= link "Tic Tac Toe", to: "/ttt-game-lobby" %></li>
+      <li><%= link "Pong", to: "/pong-lobby" %></li>
       <li><%= link "Lip Sync Battle", to: "/lip-sync-landing" %></li>
+      <li><%= link "Rock Paper Scissors", to: "/rps-game-lobby" %></li>
     </ul>
   </article>
 </section>

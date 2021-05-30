@@ -1,0 +1,3 @@
+<div>Welcome to the lobby</div>
+
+<%= link("Go to game", to: Routes.pong_path(@conn, :index)) %>
