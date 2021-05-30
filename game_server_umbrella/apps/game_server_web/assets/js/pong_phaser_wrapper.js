@@ -14,18 +14,11 @@ let PongPhaserWrapper = {
   },
 
   onReady(socket) {
-    //var ticTacToeGameChannel = socket.channel("ttt_game:" + gameId, () => {
-      //let username = window.localStorage.getItem("player_name");
-      //return {username: username};
-    //});
-
-    //this.initPhaserGame(gameChannel)
     this.initPhaserGame();
   },
 
-
   initPhaserGame() {
-    // Setup game rendering and piece tools
+    // Setup display dimension
     const boardWidth = 500;
     const boardHeight = 500;
 
@@ -49,6 +42,10 @@ let PongPhaserWrapper = {
 
     var game = new Phaser.Game(config);
 
+    // Setup game objects
+    var graphics;
+    var rect;
+
     function preload () {
       this.load.image("background", "game_images/background.jpg");
     }
@@ -56,6 +53,34 @@ let PongPhaserWrapper = {
     function create () {
       // Only load the Phaser assets on certain pages
       this.add.image(boardWidth, boardHeight, "background");
+
+      graphics = this.add.graphics({ fillStyle: { color: 0xfefefe } });
+
+      rect = new Phaser.Geom.Rectangle(20, 400, 50, 25);
+      graphics.fillRectShape(rect);
+
+      // Bind the arrow keys to moving the rectangle
+      this.input.keyboard.on('keydown-LEFT', function (event) {
+        console.log('left arrow down');
+        console.log(rect.x);
+        if (rect.x > 0) {
+          rect.x -= 1;
+
+          graphics.clear();
+          graphics.fillRectShape(rect);
+        }
+      });
+
+      this.input.keyboard.on('keydown-RIGHT', function (event) {
+        console.log('right arrow down');
+        console.log(rect.x);
+        if (rect.x < 500) {
+          rect.x += 1;
+
+          graphics.clear();
+          graphics.fillRectShape(rect);
+        }
+      });
 
       this.input.mouse.disableContextMenu();
     }
