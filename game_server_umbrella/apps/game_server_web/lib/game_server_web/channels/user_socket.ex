@@ -10,6 +10,8 @@ defmodule GameServerWeb.UserSocket do
   channel "ttt_lobby:*", GameServerWeb.TttLobbyChannel
   channel "ttt_game:*", GameServerWeb.TttGameChannel
 
+  channel "pong_game:*", GameServerWeb.PongGameChannel
+
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
   # verification, you can put default assigns into

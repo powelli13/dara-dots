@@ -14,10 +14,25 @@ let PongPhaserWrapper = {
   },
 
   onReady(socket) {
-    this.initPhaserGame();
+    var pongGameChannel = socket.channel("pong_game:1", () => {
+      return {};
+    });
+
+    this.initPhaserGame(pongGameChannel);
   },
 
-  initPhaserGame() {
+  initPhaserGame(gameChannel) {
+    // Setup channel listeners
+    gameChannel.on("move_ball", ({ballX, ballY}) => {
+      moveBallTest(ballX, ballY);
+    });
+
+    gameChannel.join()
+      .receive("ok", (resp) => {
+        return;
+      })
+      .receive("error", reason => console.log("join failed", reason));
+
     // Setup display dimension
     const boardWidth = 500;
     const boardHeight = 500;
@@ -45,6 +60,7 @@ let PongPhaserWrapper = {
     // Setup game objects
     var graphics;
     var rect;
+    var ball;
 
     function preload () {
       this.load.image("background", "game_images/background.jpg");
@@ -59,6 +75,9 @@ let PongPhaserWrapper = {
       rect = new Phaser.Geom.Rectangle(20, 400, 50, 25);
       graphics.fillRectShape(rect);
 
+      ball = new Phaser.Geom.Circle(250, 250, 25);
+      graphics.fillCircleShape(ball);
+
       // Bind the arrow keys to moving the rectangle
       this.input.keyboard.on('keydown-LEFT', function (event) {
         console.log('left arrow down');
@@ -68,6 +87,7 @@ let PongPhaserWrapper = {
 
           graphics.clear();
           graphics.fillRectShape(rect);
+          graphics.fillCircleShape(ball);
         }
       });
 
@@ -79,6 +99,7 @@ let PongPhaserWrapper = {
 
           graphics.clear();
           graphics.fillRectShape(rect);
+          graphics.fillCircleShape(ball);
         }
       });
 
@@ -86,6 +107,17 @@ let PongPhaserWrapper = {
     }
 
     function update () {
+    }
+
+    function moveBallTest(ballX, ballY) {
+      if (ball != null) {
+        ball.x = ballX;
+        ball.y = ballY;
+
+        graphics.clear();
+        graphics.fillCircleShape(ball);
+        graphics.fillRectShape(rect);
+      }
     }
   }
 };
