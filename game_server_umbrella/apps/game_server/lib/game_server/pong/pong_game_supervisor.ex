@@ -21,7 +21,7 @@ defmodule GameServer.PongGameSupervisor do
   def find_game(game_id) do
     case start_child(game_id) do
       {:ok, pid} -> pid
-      {:error, {:alread_started, pid}} -> pid
+      {:error, {:already_started, pid}} -> pid
     end
   end
 

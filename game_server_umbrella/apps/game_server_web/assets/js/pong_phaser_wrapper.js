@@ -23,8 +23,12 @@ let PongPhaserWrapper = {
 
   initPhaserGame(gameChannel) {
     // Setup channel listeners
-    gameChannel.on("move_ball", ({ballX, ballY}) => {
+    gameChannel.on("game_state", ({ballX, ballY, botPaddleX}) => {
       moveBallTest(ballX, ballY);
+
+      moveBotPaddle(botPaddleX);
+
+      redrawGameObjects();
     });
 
     gameChannel.join()
@@ -80,26 +84,16 @@ let PongPhaserWrapper = {
 
       // Bind the arrow keys to moving the rectangle
       this.input.keyboard.on('keydown-LEFT', function (event) {
-        console.log('left arrow down');
-        console.log(rect.x);
         if (rect.x > 0) {
-          rect.x -= 5;
-
-          graphics.clear();
-          graphics.fillRectShape(rect);
-          graphics.fillCircleShape(ball);
+          gameChannel.push("move_paddle_left", {})
+            .receive("error", e => e.console.log(e));
         }
       });
 
       this.input.keyboard.on('keydown-RIGHT', function (event) {
-        console.log('right arrow down');
-        console.log(rect.x);
         if (rect.x < 500) {
-          rect.x += 5;
-
-          graphics.clear();
-          graphics.fillRectShape(rect);
-          graphics.fillCircleShape(ball);
+          gameChannel.push("move_paddle_right", {})
+            .receive("error", e => e.console.log(e));
         }
       });
 
@@ -109,15 +103,21 @@ let PongPhaserWrapper = {
     function update () {
     }
 
+    function redrawGameObjects() {
+        graphics.clear();
+        graphics.fillCircleShape(ball);
+        graphics.fillRectShape(rect);
+    }
+
     function moveBallTest(ballX, ballY) {
       if (ball != null) {
         ball.x = percentWidthToPixels(ballX);
         ball.y = percentHeightToPixels(ballY);
-
-        graphics.clear();
-        graphics.fillCircleShape(ball);
-        graphics.fillRectShape(rect);
       }
+    }
+
+    function moveBotPaddle(botPaddleX) {
+      rect.x = percentWidthToPixels(botPaddleX);
     }
 
     // The server stores object positions as relative percentages
