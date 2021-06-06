@@ -1,13 +1,13 @@
 defmodule GameServerWeb.LobbyChatLive do
   use Phoenix.LiveView
-  #alias Phoenix.PubSub
-  #alias GameServerWeb.LipSyncView
-  #alias GameServerWeb.Presence
+  # alias Phoenix.PubSub
+  # alias GameServerWeb.LipSyncView
+  # alias GameServerWeb.Presence
 
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      #PubSub.subscribe(GameServer.PubSub, "lobby_chat:test")
+      # PubSub.subscribe(GameServer.PubSub, "lobby_chat:test")
       Process.send_after(self(), :second_tick, 1000)
     end
 

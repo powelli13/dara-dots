@@ -14,6 +14,7 @@ defmodule GameServer.Application do
       # Start the dynamic supervisors for running games
       GameServer.RpsGameSupervisor,
       GameServer.TttGameSupervisor,
+      GameServer.PongGameSupervisor,
       # Start the dynamic supervisor for Lip Sync queues
       GameServer.LipSyncQueueSupervisor,
       # Start the server scoreboard

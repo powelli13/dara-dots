@@ -2,29 +2,16 @@ defmodule GameServerWeb.PongGameChannel do
   use GameServerWeb, :channel
 
   def join("pong_game:" <> game_id, _params, socket) do
-    Process.send_after(self(), :move_ball, 1000)
+    # Process.send_after(self(), :move_ball, 1000)
+    # Start the pong game
+    # TODO for testing only, move this to Pong Queue later
+    GameServer.PongGameSupervisor.find_game(game_id)
 
-    {:ok, socket}
+    {:ok, assign(socket, game_id: game_id)}
   end
 
-  def handle_info(:move_ball, socket) do
-    Process.send_after(self(), :move_ball, 1000)
-
-    r = :rand.uniform()
-
-    ball_position =
-      cond do
-        r > 0.67 ->
-          %{ballX: 350, ballY: 350}
-
-        r > 0.33 ->
-          %{ballX: 250, ballY: 250}
-
-        true ->
-          %{ballX: 150, ballY: 150}
-      end
-
-    push(socket, "move_ball", ball_position)
+  def handle_info({:move_ball, %{ball_x: ball_x, ball_y: ball_y}}, socket) do
+    push(socket, "move_ball", %{ballX: ball_x, ballY: ball_y})
 
     {:noreply, socket}
   end

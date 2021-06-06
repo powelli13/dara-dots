@@ -83,7 +83,7 @@ let PongPhaserWrapper = {
         console.log('left arrow down');
         console.log(rect.x);
         if (rect.x > 0) {
-          rect.x -= 1;
+          rect.x -= 5;
 
           graphics.clear();
           graphics.fillRectShape(rect);
@@ -95,7 +95,7 @@ let PongPhaserWrapper = {
         console.log('right arrow down');
         console.log(rect.x);
         if (rect.x < 500) {
-          rect.x += 1;
+          rect.x += 5;
 
           graphics.clear();
           graphics.fillRectShape(rect);
