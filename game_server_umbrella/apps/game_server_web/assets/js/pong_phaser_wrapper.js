@@ -111,13 +111,24 @@ let PongPhaserWrapper = {
 
     function moveBallTest(ballX, ballY) {
       if (ball != null) {
-        ball.x = ballX;
-        ball.y = ballY;
+        ball.x = percentWidthToPixels(ballX);
+        ball.y = percentHeightToPixels(ballY);
 
         graphics.clear();
         graphics.fillCircleShape(ball);
         graphics.fillRectShape(rect);
       }
+    }
+
+    // The server stores object positions as relative percentages
+    // of the total game space. These functions are used to convert
+    // server values into the percentage for the client board position.
+    function percentWidthToPixels(percentage) {
+      return boardWidth * percentage;
+    }
+
+    function percentHeightToPixels(percentage) {
+      return boardHeight * percentage;
     }
   }
 };

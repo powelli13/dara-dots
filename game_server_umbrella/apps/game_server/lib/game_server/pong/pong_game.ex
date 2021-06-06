@@ -2,6 +2,8 @@ defmodule GameServer.PongGame do
   use GenServer
   alias Phoenix.PubSub
 
+  @broadcast_frequency 250
+
   def start_link(id) do
     GenServer.start_link(__MODULE__, id, name: via_tuple(id))
   end
@@ -15,12 +17,13 @@ defmodule GameServer.PongGame do
   @impl GenServer
   def init(game_id) do
     # TODO schedule game state broadcasting
-    Process.send_after(self(), :broadcast_game_state, 500)
+    Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
     initial_state = %{
       game_id: game_id,
-      ball_x: 250,
-      ball_y: 250
+      ball_x: 0.5,
+      ball_y: 0.5,
+      bot_paddle_x: 5
     }
 
     {:ok, initial_state}
@@ -29,21 +32,21 @@ defmodule GameServer.PongGame do
   @impl GenServer
   def handle_info(:broadcast_game_state, game_state) do
     # TODO separate the ball updating logic
-    Process.send_after(self(), :broadcast_game_state, 500)
+    Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
     r = :rand.uniform()
 
-    ball_position =
-      cond do
-        r > 0.67 ->
-          %{ball_x: 350, ball_y: 350}
+    ball_position = %{ball_x: r, ball_y: r}
+      #cond do
+        #r > 0.67 ->
+          #%{ball_x: 0.7, ball_y: 0.7}
 
-        r > 0.33 ->
-          %{ball_x: 250, ball_y: 250}
+        #r > 0.33 ->
+          #%{ball_x: 0.5, ball_y: 0.5}
 
-        true ->
-          %{ball_x: 150, ball_y: 150}
-      end
+        #true ->
+          #%{ball_x: 0.3, ball_y: 0.3}
+      #end
 
     new_game_state = %{game_state | ball_x: ball_position.ball_x, ball_y: ball_position.ball_y}
 
