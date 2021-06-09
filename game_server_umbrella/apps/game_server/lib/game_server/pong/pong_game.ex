@@ -1,12 +1,9 @@
 defmodule GameServer.PongGame do
   use GenServer
   alias Phoenix.PubSub
+  alias GameServer.PongGameState
 
   @broadcast_frequency 35
-
-  @paddle_right_limit 0.95
-  @paddle_left_limit 0.05
-  @paddle_move_step 0.05
 
   def move_paddle_left(game_id) do
     GenServer.cast(via_tuple(game_id), :move_paddle_left)
@@ -28,73 +25,53 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def init(game_id) do
-    # TODO schedule game state broadcasting
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
     initial_state = %{
       game_id: game_id,
-      ball_x: 0.5,
-      ball_y: 0.5,
-      bot_paddle_x: 0.05
+      game_state: %PongGameState{}
     }
 
     {:ok, initial_state}
   end
 
   @impl GenServer
-  def handle_cast(:move_paddle_right, game_state) do
-    new_paddle_x =
-      if game_state.bot_paddle_x <= @paddle_right_limit do
-        game_state.bot_paddle_x + @paddle_move_step
-      else
-        game_state.bot_paddle_x
-      end
+  def handle_cast(:move_paddle_right, state) do
+    new_game_state =
+      PongGameState.move_bottom_paddle(
+        state.game_state,
+        :right
+      )
 
-    {:noreply, %{game_state | bot_paddle_x: new_paddle_x}}
+    {:noreply, %{state | game_state: new_game_state}}
   end
 
   @impl GenServer
-  def handle_cast(:move_paddle_left, game_state) do
-    new_paddle_x =
-      if game_state.bot_paddle_x >= @paddle_left_limit do
-        game_state.bot_paddle_x - @paddle_move_step
-      else
-        game_state.bot_paddle_x
-      end
+  def handle_cast(:move_paddle_left, state) do
+    new_game_state =
+      PongGameState.move_bottom_paddle(
+        state.game_state,
+        :left
+      )
 
-    {:noreply, %{game_state | bot_paddle_x: new_paddle_x}}
+    {:noreply, %{state | game_state: new_game_state}}
   end
 
   @impl GenServer
-  def handle_info(:broadcast_game_state, game_state) do
-    # TODO separate the ball updating logic
+  def handle_info(:broadcast_game_state, state) do
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
-    r = :rand.uniform()
+    new_game_state = PongGameState.move_ball(state.game_state)
 
-    ball_position = %{ball_x: r, ball_y: r}
-    # cond do
-    # r > 0.67 ->
-    # %{ball_x: 0.7, ball_y: 0.7}
+    broadcast_game_state(new_game_state, state.game_id)
 
-    # r > 0.33 ->
-    # %{ball_x: 0.5, ball_y: 0.5}
-
-    # true ->
-    # %{ball_x: 0.3, ball_y: 0.3}
-    # end
-
-    new_game_state = %{game_state | ball_x: ball_position.ball_x, ball_y: ball_position.ball_y}
-
-    broadcast_game_state(new_game_state)
-
-    {:noreply, new_game_state}
+    {:noreply, %{state | game_state: new_game_state}}
   end
 
-  defp broadcast_game_state(game_state) do
+  defp broadcast_game_state(game_state, game_id) do
     PubSub.broadcast(
       GameServer.PubSub,
-      "pong_game:" <> game_state.game_id,
+      "pong_game:" <> game_id,
       {:new_game_state,
        %{
          ball_x: game_state.ball_x,
