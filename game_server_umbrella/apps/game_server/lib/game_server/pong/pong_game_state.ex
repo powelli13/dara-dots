@@ -7,7 +7,7 @@ defmodule GameServer.PongGameState do
             ball_y: 0.5,
             ball_speed: 0.02,
             # Theta here is in degrees and is converted when used
-            ball_theta: 0,
+            ball_theta: 45,
             ball_x_step: 0.05,
             ball_y_step: 0.05,
             bot_paddle_x: 0.05
@@ -64,10 +64,10 @@ defmodule GameServer.PongGameState do
     new_theta =
       cond do
         state.ball_x <= 0.05 ->
-          0
+          45
 
-        state.ball_x >= 0.75 ->
-          180
+        state.ball_x >= 0.95 ->
+          225
 
         true ->
           state.ball_theta
@@ -76,6 +76,7 @@ defmodule GameServer.PongGameState do
     # recalculate x and y step
     radians = degrees_to_radians(new_theta)
 
+    # TODO reminder that increasing Y moves things down the screen
     new_ball_x_step = state.ball_speed * :math.cos(radians)
     new_ball_y_step = state.ball_speed * :math.sin(radians)
 
