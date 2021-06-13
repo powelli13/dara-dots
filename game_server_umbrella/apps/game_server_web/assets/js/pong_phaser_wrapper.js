@@ -79,7 +79,7 @@ let PongPhaserWrapper = {
       rect = new Phaser.Geom.Rectangle(20, 400, 50, 25);
       graphics.fillRectShape(rect);
 
-      ball = new Phaser.Geom.Circle(250, 250, 25);
+      ball = new Phaser.Geom.Circle(250, 250, 12.5);
       graphics.fillCircleShape(ball);
 
       // Bind the arrow keys to moving the rectangle

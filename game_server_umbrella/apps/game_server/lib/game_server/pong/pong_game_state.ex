@@ -1,11 +1,11 @@
 defmodule GameServer.PongGameState do
   @paddle_right_limit 0.9
-  @paddle_left_limit 0.05
-  @paddle_move_step 0.05
+  @paddle_left_limit 0.0
+  @paddle_move_step 0.03
 
   defstruct ball_x: 0.5,
             ball_y: 0.5,
-            ball_speed: 0.05,
+            ball_speed: 0.02,
             # Theta here is in degrees and is converted when used
             ball_theta: 0,
             ball_x_step: 0.05,
@@ -38,11 +38,32 @@ defmodule GameServer.PongGameState do
     degrees * :math.pi() / 180
   end
 
+  # angle of incidence equals the angle of reflection
+  # find which quadrant the angle is in and then reflect it
+  # need to determine if we're flipping over x or y axis
+  # collision with right wall
+
+  # collision with left wall
+
+  # collision with top
+
+  # collision with bottom
+
+  # reflect angles across x and y axis
+  # TODO I think this can be improved still, some cases are wrong
+  defp reflect_across_x(degrees) do
+    abs(360 - degrees)
+  end
+
+  defp reflect_across_y(degrees) do
+    abs(180 - degrees)
+  end
+
   def move_ball(state = %GameServer.PongGameState{}) do
     # check collisions
     new_theta =
       cond do
-        state.ball_x <= 0.25 ->
+        state.ball_x <= 0.05 ->
           0
 
         state.ball_x >= 0.75 ->
