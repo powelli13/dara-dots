@@ -11,28 +11,39 @@ defmodule GameServer.PongGameState do
             ball_theta: @starting_theta,
             ball_x_step: 0.05,
             ball_y_step: 0.05,
-            bot_paddle_x: 0.05
+            bot_paddle_x: 0.05,
+            top_paddle_x: 0.05
+
+  def move_top_paddle(state = %GameServer.PongGameState{}, direction)
+      when is_atom(direction) do
+    new_paddle_x = adjust_paddle_x(state.top_paddle_x, direction)
+
+    %GameServer.PongGameState{state | top_paddle_x: new_paddle_x}
+  end
 
   def move_bottom_paddle(state = %GameServer.PongGameState{}, direction)
       when is_atom(direction) do
-    new_paddle_x =
-      case direction do
-        :left ->
-          if state.bot_paddle_x >= @paddle_left_limit do
-            state.bot_paddle_x - @paddle_move_step
-          else
-            state.bot_paddle_x
-          end
-
-        :right ->
-          if state.bot_paddle_x <= @paddle_right_limit do
-            state.bot_paddle_x + @paddle_move_step
-          else
-            state.bot_paddle_x
-          end
-      end
+    new_paddle_x = adjust_paddle_x(state.bot_paddle_x, direction)
 
     %GameServer.PongGameState{state | bot_paddle_x: new_paddle_x}
+  end
+
+  defp adjust_paddle_x(paddle_x, direction) do
+    case direction do
+      :left ->
+        if paddle_x >= @paddle_left_limit do
+          paddle_x - @paddle_move_step
+        else
+          paddle_x
+        end
+
+      :right ->
+        if paddle_x <= @paddle_right_limit do
+          paddle_x + @paddle_move_step
+        else
+          paddle_x
+        end
+    end
   end
 
   defp degrees_to_radians(degrees) do

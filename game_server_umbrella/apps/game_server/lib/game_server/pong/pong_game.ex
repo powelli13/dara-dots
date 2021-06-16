@@ -5,12 +5,20 @@ defmodule GameServer.PongGame do
 
   @broadcast_frequency 35
 
-  def move_paddle_left(game_id) do
-    GenServer.cast(via_tuple(game_id), :move_paddle_left)
+  def move_paddle_left(game_id, player_id) do
+    GenServer.cast(via_tuple(game_id), {:move_paddle_left, player_id})
   end
 
-  def move_paddle_right(game_id) do
-    GenServer.cast(via_tuple(game_id), :move_paddle_right)
+  def move_paddle_right(game_id, player_id) do
+    GenServer.cast(via_tuple(game_id), {:move_paddle_right, player_id})
+  end
+
+  def set_top_paddle_player(game_id, player_id) do
+    GenServer.cast(via_tuple(game_id), {:set_top_paddle, player_id})
+  end
+
+  def set_bot_paddle_player(game_id, player_id) do
+    GenServer.cast(via_tuple(game_id), {:set_bot_paddle, player_id})
   end
 
   def start_link(id) do
@@ -29,6 +37,8 @@ defmodule GameServer.PongGame do
 
     initial_state = %{
       game_id: game_id,
+      top_paddle_player_id: nil,
+      bot_paddle_player_id: nil,
       game_state: %PongGameState{}
     }
 
@@ -36,25 +46,59 @@ defmodule GameServer.PongGame do
   end
 
   @impl GenServer
-  def handle_cast(:move_paddle_right, state) do
+  def handle_cast({:move_paddle_right, player_id}, state) do
     new_game_state =
-      PongGameState.move_bottom_paddle(
-        state.game_state,
-        :right
-      )
+      cond do
+        player_id == state.top_paddle_player_id ->
+          PongGameState.move_top_paddle(
+            state.game_state,
+            :right
+          )
+
+        player_id = state.bot_paddle_player_id ->
+          PongGameState.move_bottom_paddle(
+            state.game_state,
+            :right
+          )
+
+        true ->
+          state.game_state
+      end
 
     {:noreply, %{state | game_state: new_game_state}}
   end
 
   @impl GenServer
-  def handle_cast(:move_paddle_left, state) do
+  def handle_cast({:move_paddle_left, player_id}, state) do
     new_game_state =
-      PongGameState.move_bottom_paddle(
-        state.game_state,
-        :left
-      )
+      cond do
+        player_id == state.top_paddle_player_id ->
+          PongGameState.move_top_paddle(
+            state.game_state,
+            :left
+          )
+
+        player_id == state.bot_paddle_player_id ->
+          PongGameState.move_bottom_paddle(
+            state.game_state,
+            :left
+          )
+
+        true ->
+          state.game_state
+      end
 
     {:noreply, %{state | game_state: new_game_state}}
+  end
+
+  @impl GenServer
+  def handle_cast({:set_top_paddle, player_id}, state) do
+    {:noreply, %{state | top_paddle_player_id: player_id}}
+  end
+
+  @impl GenServer
+  def handle_cast({:set_bot_paddle, player_id}, state) do
+    {:noreply, %{state | bot_paddle_player_id: player_id}}
   end
 
   @impl GenServer

@@ -18,6 +18,11 @@ defmodule GameServer.PongPlayerQueue do
     {:ok, MapSet.new()}
   end
 
+  def start_link(opts) do
+    opts = Keyword.put_new(opts, :name, __MODULE__)
+    GenServer.start_link(__MODULE__, opts, name: opts[:name])
+  end
+
   @impl GenServer
   def handle_cast({:add_player, player_id, player_name}, map_set) do
     updated_map_set =
@@ -62,8 +67,8 @@ defmodule GameServer.PongPlayerQueue do
     if MapSet.size(map_set) >= 2 do
       # grab two players in queue longest
       {
-        {first_player_id, first_player_name},
-        {second_player_id, second_player_name}
+        {first_player_id, _first_player_name},
+        {second_player_id, _second_player_name}
       } = get_two_earliest_player_ids_and_names(map_set)
 
       # delete those players from the map set
@@ -77,19 +82,18 @@ defmodule GameServer.PongPlayerQueue do
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Start game GenServer and add players
-      start_game_pid = PongGameSupervisor.find_game(new_game_id)
+      _start_game_pid = PongGameSupervisor.find_game(new_game_id)
 
       r = :rand.uniform()
 
-      # TODO set top and bottom paddles
       cond do
         r > 0.5 ->
-          #TicTacToe.set_circle_player(start_game_pid, first_player_id, first_player_name)
-          #TicTacToe.set_cross_player(start_game_pid, second_player_id, second_player_name)
+          PongGame.set_top_paddle_player(new_game_id, first_player_id)
+          PongGame.set_bot_paddle_player(new_game_id, second_player_id)
 
         true ->
-          #TicTacToe.set_circle_player(start_game_pid, second_player_id, second_player_name)
-          #TicTacToe.set_cross_player(start_game_pid, first_player_id, first_player_name)
+          PongGame.set_top_paddle_player(new_game_id, second_player_id)
+          PongGame.set_bot_paddle_player(new_game_id, first_player_id)
       end
 
       # Inform the lobby channels that the players are in a game together

@@ -19,6 +19,7 @@ let GenLobbyChat = {
   onReady(socket, chatContainer) {
     const chatInput = document.getElementById("gen-lobby-chat-input");
     const postButton = document.getElementById("gen-lobby-chat-submit");
+    const joinQueueButton = document.getElementById("join-game-queue-button");
 
     let lobbyChannel = socket.channel(
       `lobby_chat:${chatContainer.dataset.lobbyName}`,
@@ -36,8 +37,19 @@ let GenLobbyChat = {
       chatInput.value = "";
     });
 
+    // Add the player to the queue.
+    joinQueueButton.addEventListener("click", e => {
+      lobbyChannel.push("join_queue", {})
+      .receive("error", e => e.console.log(e));
+      joinQueueButton.disabled = true;
+    });
+
     lobbyChannel.on("new_msg", (resp) => {
       this.renderAnnotation(chatContainer, resp);
+    });
+
+    lobbyChannel.on("game_started", (resp) => {
+      this.navigateToGame(resp);
     });
 
     // Join the lobby chat channel.
@@ -65,6 +77,11 @@ let GenLobbyChat = {
 
     chatContainer.appendChild(template);
     chatContainer.scrollTop = chatContainer.scrollHeight;
+  },
+
+  // Navigate the user to their newly started game.
+  navigateToGame({game_url}) {
+    window.location.replace(`/${game_url}`);
   }
 };
 
