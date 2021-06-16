@@ -2,12 +2,13 @@ defmodule GameServer.PongGameState do
   @paddle_right_limit 0.9
   @paddle_left_limit 0.0
   @paddle_move_step 0.03
+  @starting_theta 27
 
   defstruct ball_x: 0.5,
             ball_y: 0.5,
             ball_speed: 0.02,
             # Theta here is in degrees and is converted when used
-            ball_theta: 45,
+            ball_theta: 27,
             ball_x_step: 0.05,
             ball_y_step: 0.05,
             bot_paddle_x: 0.05
@@ -41,37 +42,11 @@ defmodule GameServer.PongGameState do
   # angle of incidence equals the angle of reflection
   # find which quadrant the angle is in and then reflect it
   # need to determine if we're flipping over x or y axis
-  # collision with right wall
-
-  # collision with left wall
-
-  # collision with top
-
-  # collision with bottom
-
-  # reflect angles across x and y axis
-  # TODO I think this can be improved still, some cases are wrong
-  defp reflect_across_x(degrees) do
-    abs(360 - degrees)
-  end
-
-  defp reflect_across_y(degrees) do
-    abs(180 - degrees)
-  end
 
   def move_ball(state = %GameServer.PongGameState{}) do
     # check collisions
     new_theta =
-      cond do
-        state.ball_x <= 0.05 ->
-          45
-
-        state.ball_x >= 0.95 ->
-          225
-
-        true ->
-          state.ball_theta
-      end
+      check_collisions_and_calculate_theta(state)
 
     # recalculate x and y step
     radians = degrees_to_radians(new_theta)
@@ -92,5 +67,69 @@ defmodule GameServer.PongGameState do
         ball_y_step: new_ball_y_step,
         ball_theta: new_theta
     }
+  end
+
+  defp check_collisions_and_calculate_theta(state) do
+    cond do
+      collide_left?(state.ball_x) ->
+        reflect_left_wall(state.ball_theta)
+
+      collide_right?(state.ball_x) ->
+        reflect_right_wall(state.ball_theta)
+
+      # TODO top and bottom walls need to make paddle checks
+      collide_top?(state.ball_y) ->
+        reflect_top_wall(state.ball_theta)
+
+      collide_bottom?(state.ball_y) ->
+        reflect_bottom_wall(state.ball_theta)
+
+      true ->
+        state.ball_theta
+    end
+  end
+
+  defp collide_left?(ball_x), do: ball_x <= 0.1
+
+  defp collide_right?(ball_x), do: ball_x >= 0.9
+
+  # TODO find a way to better abstract this out of the
+  # game logic so that only the client side cares
+  # lower Y value is the top of the screen
+  defp collide_top?(ball_y), do: ball_y <= 0.1
+
+  defp collide_bottom?(ball_y), do: ball_y >= 0.9
+
+  defp reflect_left_wall(theta) do
+    if theta <= 180 do
+      180 - theta
+    else
+      360 - (180 - theta)
+    end
+  end
+
+  defp reflect_right_wall(theta) do
+    if theta <= 90 do
+      180 - theta
+    else
+      360 - theta
+    end
+  end
+
+  defp reflect_top_wall(theta) do
+    360 - theta
+    #if theta <= 90 do
+      #360 - theta
+    #else
+      #360 - theta
+    #end
+  end
+
+  defp reflect_bottom_wall(theta) do
+    if theta <= 270 do
+      180 - (theta - 180)
+    else
+      360 - theta
+    end
   end
 end

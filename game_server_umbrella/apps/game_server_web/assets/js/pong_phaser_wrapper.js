@@ -112,6 +112,9 @@ let PongPhaserWrapper = {
     function moveBallTest(ballX, ballY) {
       if (ball != null) {
         ball.x = percentWidthToPixels(ballX);
+        // Ball position comes as a percentage
+        // flip this because lower Y value is closer
+        // to the top of the screen in the framework.
         ball.y = percentHeightToPixels(ballY);
       }
     }
