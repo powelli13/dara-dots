@@ -21,7 +21,8 @@ defmodule GameServer.Application do
       GameServer.Scoreboard,
       # Start the player queues
       GameServer.RpsPlayerQueue,
-      GameServer.TttPlayerQueue
+      GameServer.TttPlayerQueue,
+      GameServer.PongPlayerQueue
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: GameServer.Supervisor)
