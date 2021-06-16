@@ -12,6 +12,9 @@ defmodule GameServerWeb.UserSocket do
 
   channel "pong_game:*", GameServerWeb.PongGameChannel
 
+  # Generic lobby chat
+  channel "lobby_chat:*", GameServerWeb.LobbyChatChannel
+
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
   # verification, you can put default assigns into

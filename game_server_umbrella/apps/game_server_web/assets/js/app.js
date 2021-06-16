@@ -30,11 +30,17 @@ import TttLobbyChat from "./ttt_lobby";
 // Wrap Pong Phaser game and connect to the socket
 import PongPhaserWrapper from "./pong_phaser_wrapper";
 
+// Generic lobby chat channel
+import GenLobbyChat from "./lobby_chat";
+
 import socket from "./socket";
 
 // Initialize the Lobby chat object using the lobby chat container
 // if it is found on the page.
 LobbyChat.init(socket, document.getElementById("lobby-chat-container"));
+
+// Initialize the generic lobby chat 
+GenLobbyChat.init(socket);
 
 // Initialize the RPS Lobby chat
 RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));

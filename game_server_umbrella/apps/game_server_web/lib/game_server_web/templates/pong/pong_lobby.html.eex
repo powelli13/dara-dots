@@ -1,3 +1,18 @@
 <div>Welcome to the lobby</div>
 
 <%= link("Go to game", to: Routes.pong_path(@conn, :index)) %>
+
+<div id="gen-lobby-chat-container" data-lobby-name="pong">
+</div>
+
+<div>
+  <textarea id="gen-lobby-chat-input"
+    rows="2"
+    placeholder="Chat..."></textarea>
+
+  <button id="gen-lobby-chat-submit"
+    class="button column"
+    type="submit">
+    Send
+  </button>
+</div>

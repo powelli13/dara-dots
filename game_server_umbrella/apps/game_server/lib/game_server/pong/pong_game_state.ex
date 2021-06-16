@@ -45,8 +45,7 @@ defmodule GameServer.PongGameState do
 
   def move_ball(state = %GameServer.PongGameState{}) do
     # check collisions
-    new_theta =
-      check_collisions_and_calculate_theta(state)
+    new_theta = check_collisions_and_calculate_theta(state)
 
     # recalculate x and y step
     radians = degrees_to_radians(new_theta)
