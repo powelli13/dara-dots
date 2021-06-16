@@ -2,7 +2,9 @@
 
 <%= link("Go to game", to: Routes.pong_path(@conn, :index)) %>
 
-<div id="gen-lobby-chat-container" data-lobby-name="pong">
+<div id="gen-lobby-chat-container"
+    class="chat-history"
+    data-lobby-name="pong">
 </div>
 
 <div>
