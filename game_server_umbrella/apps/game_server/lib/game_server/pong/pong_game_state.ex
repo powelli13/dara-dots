@@ -2,13 +2,13 @@ defmodule GameServer.PongGameState do
   @paddle_right_limit 0.9
   @paddle_left_limit 0.0
   @paddle_move_step 0.03
-  @starting_theta 27
+  @starting_theta 29
 
   defstruct ball_x: 0.5,
             ball_y: 0.5,
             ball_speed: 0.02,
             # Theta here is in degrees and is converted when used
-            ball_theta: 27,
+            ball_theta: @starting_theta,
             ball_x_step: 0.05,
             ball_y_step: 0.05,
             bot_paddle_x: 0.05
@@ -96,15 +96,15 @@ defmodule GameServer.PongGameState do
   # TODO find a way to better abstract this out of the
   # game logic so that only the client side cares
   # lower Y value is the top of the screen
-  defp collide_top?(ball_y), do: ball_y <= 0.1
+  defp collide_top?(ball_y), do: ball_y >= 0.9
 
-  defp collide_bottom?(ball_y), do: ball_y >= 0.9
+  defp collide_bottom?(ball_y), do: ball_y <= 0.1
 
   defp reflect_left_wall(theta) do
     if theta <= 180 do
       180 - theta
     else
-      360 - (180 - theta)
+      360 - (theta - 180)
     end
   end
 
