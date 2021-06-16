@@ -81,6 +81,8 @@ let GenLobbyChat = {
 
   // Navigate the user to their newly started game.
   navigateToGame({game_url}) {
+    console.log('navigating player to:');
+    console.log(game_url);
     window.location.replace(`/${game_url}`);
   }
 };

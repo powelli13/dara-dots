@@ -11,8 +11,8 @@ defmodule GameServer.PongGameState do
             ball_theta: @starting_theta,
             ball_x_step: 0.05,
             ball_y_step: 0.05,
-            bot_paddle_x: 0.05,
-            top_paddle_x: 0.05
+            top_paddle_x: 0.05,
+            bot_paddle_x: 0.05
 
   def move_top_paddle(state = %GameServer.PongGameState{}, direction)
       when is_atom(direction) do

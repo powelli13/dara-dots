@@ -18,9 +18,11 @@ defmodule GameServerWeb.LobbyChatChannel do
   def handle_in("join_queue", _, socket) do
     case socket.assigns.lobby_name do
       "pong" ->
+        IO.inspect "adding player to queue"
+        IO.inspect socket.assigns.player_id
         GameServer.PongPlayerQueue.add_player(
           socket.assigns.player_id,
-          socket.assigns.player_name
+          socket.assigns.username
         )
     end
 
@@ -31,6 +33,8 @@ defmodule GameServerWeb.LobbyChatChannel do
   def handle_info({:start_game, first_player_id, second_player_id, new_game_id}, socket) do
     if socket.assigns.player_id == first_player_id ||
          socket.assigns.player_id == second_player_id do
+      
+      IO.inspect "GAME STARTED!!"
       push(
         socket,
         "game_started",

@@ -3,31 +3,29 @@ defmodule GameServerWeb.PongGameChannel do
   alias GameServer.PongGame
 
   def join("pong_game:" <> game_id, _params, socket) do
-    # Process.send_after(self(), :move_ball, 1000)
     # Start the pong game
     # TODO for testing only, move this to Pong Queue later
     GameServer.PongGameSupervisor.find_game(game_id)
+    
+    IO.inspect "player ID in pong game channel"
+    IO.inspect socket.assigns.player_id
 
     {:ok, assign(socket, game_id: game_id)}
   end
 
   def handle_in("move_paddle_left", _, socket) do
-    PongGame.move_paddle_left(socket.assigns.game_id)
+    IO.inspect "attempting to move left"
+    PongGame.move_paddle_left(socket.assigns.game_id, socket.assigns.player_id)
 
     {:noreply, socket}
   end
 
   def handle_in("move_paddle_right", _, socket) do
-    PongGame.move_paddle_right(socket.assigns.game_id)
+    IO.inspect "attempting to move right"
+    PongGame.move_paddle_right(socket.assigns.game_id, socket.assigns.player_id)
 
     {:noreply, socket}
   end
-
-  # def handle_info({:move_ball, %{ball_x: ball_x, ball_y: ball_y}}, socket) do
-  # push(socket, "move_ball", %{ballX: ball_x, ballY: ball_y})
-
-  # {:noreply, socket}
-  # end
 
   def handle_info({:new_game_state, game_state}, socket) do
     push(
@@ -36,6 +34,7 @@ defmodule GameServerWeb.PongGameChannel do
       %{
         ballX: game_state.ball_x,
         ballY: game_state.ball_y,
+        topPaddleX: game_state.top_paddle_x,
         botPaddleX: game_state.bot_paddle_x
       }
     )

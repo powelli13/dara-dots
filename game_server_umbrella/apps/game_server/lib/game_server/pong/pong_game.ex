@@ -47,21 +47,33 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def handle_cast({:move_paddle_right, player_id}, state) do
+    IO.inspect "player_id"
+    IO.inspect player_id
+
+    IO.inspect "top paddle player id"
+    IO.inspect state.top_paddle_player_id
+
+    IO.inspect "bot paddle player id"
+    IO.inspect state.bot_paddle_player_id
+
     new_game_state =
       cond do
         player_id == state.top_paddle_player_id ->
+          IO.inspect "moved top paddle right"
           PongGameState.move_top_paddle(
             state.game_state,
             :right
           )
 
         player_id = state.bot_paddle_player_id ->
+          IO.inspect "moved bot paddle right"
           PongGameState.move_bottom_paddle(
             state.game_state,
             :right
           )
 
         true ->
+          IO.inspect "no paddle movement"
           state.game_state
       end
 
@@ -70,21 +82,33 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def handle_cast({:move_paddle_left, player_id}, state) do
+    IO.inspect "player_id"
+    IO.inspect player_id
+
+    IO.inspect "top paddle player id"
+    IO.inspect state.top_paddle_player_id
+
+    IO.inspect "bot paddle player id"
+    IO.inspect state.bot_paddle_player_id
+
     new_game_state =
       cond do
         player_id == state.top_paddle_player_id ->
+          IO.inspect "moved top paddle left"
           PongGameState.move_top_paddle(
             state.game_state,
             :left
           )
 
         player_id == state.bot_paddle_player_id ->
+          IO.inspect "moved bot paddle left"
           PongGameState.move_bottom_paddle(
             state.game_state,
             :left
           )
 
         true ->
+          IO.inspect "no paddle movement"
           state.game_state
       end
 
@@ -120,6 +144,7 @@ defmodule GameServer.PongGame do
        %{
          ball_x: game_state.ball_x,
          ball_y: game_state.ball_y,
+         top_paddle_x: game_state.top_paddle_x,
          bot_paddle_x: game_state.bot_paddle_x
        }}
     )

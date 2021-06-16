@@ -23,8 +23,10 @@ let PongPhaserWrapper = {
 
   initPhaserGame(gameChannel) {
     // Setup channel listeners
-    gameChannel.on("game_state", ({ballX, ballY, botPaddleX}) => {
+    gameChannel.on("game_state", ({ballX, ballY, topPaddleX, botPaddleX}) => {
       moveBallTest(ballX, ballY);
+
+      moveTopPaddle(topPaddleX);
 
       moveBotPaddle(botPaddleX);
 
@@ -63,7 +65,8 @@ let PongPhaserWrapper = {
 
     // Setup game objects
     var graphics;
-    var rect;
+    var topPaddle;
+    var botPaddle;
     var ball;
 
     function preload () {
@@ -76,25 +79,28 @@ let PongPhaserWrapper = {
 
       graphics = this.add.graphics({ fillStyle: { color: 0xfefefe } });
 
-      rect = new Phaser.Geom.Rectangle(20, 400, 50, 25);
-      graphics.fillRectShape(rect);
+      topPaddle = new Phaser.Geom.Rectangle(20, 20, 50, 25);
+      graphics.fillRectShape(topPaddle);
+
+      botPaddle = new Phaser.Geom.Rectangle(20, 400, 50, 25);
+      graphics.fillRectShape(botPaddle);
 
       ball = new Phaser.Geom.Circle(250, 250, 12.5);
       graphics.fillCircleShape(ball);
 
       // Bind the arrow keys to moving the rectangle
       this.input.keyboard.on('keydown-LEFT', function (event) {
-        if (rect.x > 0) {
+        //if (botPaddle.x > 0) {
           gameChannel.push("move_paddle_left", {})
             .receive("error", e => e.console.log(e));
-        }
+        //}
       });
 
       this.input.keyboard.on('keydown-RIGHT', function (event) {
-        if (rect.x < 500) {
+        //if (botPaddle.x < 500) {
           gameChannel.push("move_paddle_right", {})
             .receive("error", e => e.console.log(e));
-        }
+        //}
       });
 
       this.input.mouse.disableContextMenu();
@@ -106,7 +112,8 @@ let PongPhaserWrapper = {
     function redrawGameObjects() {
         graphics.clear();
         graphics.fillCircleShape(ball);
-        graphics.fillRectShape(rect);
+        graphics.fillRectShape(topPaddle);
+        graphics.fillRectShape(botPaddle);
     }
 
     function moveBallTest(ballX, ballY) {
@@ -119,8 +126,12 @@ let PongPhaserWrapper = {
       }
     }
 
+    function moveTopPaddle(topPaddleX) {
+      topPaddle.x = percentWidthToPixels(topPaddleX);
+    }
+
     function moveBotPaddle(botPaddleX) {
-      rect.x = percentWidthToPixels(botPaddleX);
+      botPaddle.x = percentWidthToPixels(botPaddleX);
     }
 
     // The server stores object positions as relative percentages
