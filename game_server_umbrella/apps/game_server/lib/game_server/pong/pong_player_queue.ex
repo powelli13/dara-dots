@@ -86,10 +86,6 @@ defmodule GameServer.PongPlayerQueue do
 
       r = :rand.uniform()
 
-      IO.inspect "player IDs when starting game"
-      IO.inspect first_player_id
-      IO.inspect second_player_id
-
       cond do
         r > 0.5 ->
           PongGame.set_top_paddle_player(new_game_id, first_player_id)
