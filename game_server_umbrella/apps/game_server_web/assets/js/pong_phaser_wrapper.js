@@ -8,13 +8,16 @@ let PongPhaserWrapper = {
     let gameElement = document.getElementById(gameElemId);
     if (gameElement == null) { return; }
 
+    const params = new URLSearchParams(document.location.search);
+    if (!params.has('id')) { return; }
+
     socket.connect({token: window.userToken});
 
-    this.onReady(socket);
+    this.onReady(socket, params.get('id'));
   },
 
-  onReady(socket) {
-    var pongGameChannel = socket.channel("pong_game:1", () => {
+  onReady(socket, gameId) {
+    var pongGameChannel = socket.channel(`pong_game:${gameId}`, () => {
       return {};
     });
 
