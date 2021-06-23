@@ -12,7 +12,7 @@ use Mix.Config
 config :game_server_web, GameServerWeb.Endpoint,
   url: [host: "localhost", port: 80],
   # The second is added so that socket tokens can be validated when deployed on Azure
-  check_origin: ["localhost", "http://daradotsdev.westus.azurecontainer.io"],
+  check_origin: ["http://daradotsdev.westus.azurecontainer.io"],
   server: true
 
 # ## SSL Support
