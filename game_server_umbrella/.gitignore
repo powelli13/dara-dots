@@ -21,3 +21,6 @@ erl_crash.dump
 
 # Ignore environment variables provided to Docker
 .env
+
+# Do not check secrets into source
+/config/prod.secret.exs
