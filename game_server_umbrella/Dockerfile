@@ -3,12 +3,12 @@ FROM bitwalker/alpine-elixir-phoenix:latest
 
 #To build and run:
 #docker build . --tag {image name} --build-arg key={key value}
-#docker run --name {container name} -p {port mapping e.g. 80:4000} {image name, from above}
+#docker run --name {container name} -p {port mapping e.g. 4040(host):80(container)} {image name, from above}
 WORKDIR /app
 
 #ARG key
 #ENV SECRET_KEY_BASE key
-#ENV MIX_ENV prod
+ENV MIX_ENV prod
 #ENV SECRET_KEY_BASE mix phx.gen.secret
 
 # Necessary to set port when deploying to Azure container services
