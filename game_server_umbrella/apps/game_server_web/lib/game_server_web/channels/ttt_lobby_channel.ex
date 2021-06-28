@@ -4,7 +4,6 @@ defmodule GameServerWeb.TttLobbyChannel do
   in Tic Tac Toe lobby.
   """
   use GameServerWeb, :channel
-  alias GameServer.TicTacToe
 
   # TODO consider removing lobby id?
   def join("ttt_lobby:" <> lobby_id, %{"username" => username}, socket) do

@@ -3,7 +3,7 @@ defmodule GameServerWeb.GameController do
 
   def index(conn, params) do
     case Map.fetch(params, "rps_id") do
-      {:ok, game_id} ->
+      {:ok, _game_id} ->
         render(conn, "index.html")
 
       :error ->

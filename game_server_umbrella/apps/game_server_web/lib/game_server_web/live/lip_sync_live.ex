@@ -2,7 +2,6 @@ defmodule GameServerWeb.LipSyncLive do
   use Phoenix.LiveView
   alias Phoenix.PubSub
   alias GameServerWeb.LipSyncView
-  alias GameServerWeb.Presence
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do

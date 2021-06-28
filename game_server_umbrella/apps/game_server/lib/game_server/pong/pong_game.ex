@@ -55,7 +55,7 @@ defmodule GameServer.PongGame do
             :right
           )
 
-        player_id = state.bot_paddle_player_id ->
+        player_id == state.bot_paddle_player_id ->
           PongGameState.move_bottom_paddle(
             state.game_state,
             :right

@@ -5,7 +5,6 @@ defmodule GameServer.RockPaperScissors do
   after the game.
   """
   use GenServer
-  alias GameServer.Scoreboard
   alias Phoenix.PubSub
 
   @defeats %{

@@ -14,11 +14,13 @@ defmodule GameServerWeb.LobbyChatLive do
     {:ok, socket |> assign(:count, 0)}
   end
 
+  @impl true
   def handle_info(:second_tick, socket) do
     Process.send_after(self(), :second_tick, 1000)
     {:noreply, assign(socket, :count, socket.assigns.count + 1)}
   end
 
+  @impl true
   def render(assigns) do
     ~L"""
     Hello hi there!

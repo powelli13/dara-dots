@@ -37,7 +37,6 @@ defmodule GameServer.LipSyncQueue do
     GenServer.cast(queue_pid, :next_performer)
   end
 
-  @impl GenServer
   def start_link(queue_id) do
     GenServer.start_link(
       __MODULE__,
