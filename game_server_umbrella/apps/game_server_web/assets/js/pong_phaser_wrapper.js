@@ -2,8 +2,6 @@ import Phaser from "phaser";
 
 let PongPhaserWrapper = {
   init(socket, gameElemId) {
-    // TODO put game Id to connect to channel
-
     // Ensure that we only load Pong Phaser on the correct pages
     let gameElement = document.getElementById(gameElemId);
     if (gameElement == null) { return; }
@@ -17,7 +15,7 @@ let PongPhaserWrapper = {
   },
 
   onReady(socket, gameId) {
-    var pongGameChannel = socket.channel(`pong_game:${gameId}`, () => {
+    let pongGameChannel = socket.channel(`pong_game:${gameId}`, () => {
       return {};
     });
 
@@ -46,8 +44,13 @@ let PongPhaserWrapper = {
     const boardWidth = 500;
     const boardHeight = 500;
 
+    // Paddle width is ten percent of the board width
+    // Paddle height is five percent of the board height 
+    const paddleWidth = boardWidth * 0.1;
+    const paddleHeight = boardHeight * 0.05;
+
     // Setup Phaser game
-    var config = {
+    let config = {
       type: Phaser.AUTO,
       width: boardWidth,
       height: boardHeight,
@@ -64,13 +67,13 @@ let PongPhaserWrapper = {
       }
     };
 
-    var game = new Phaser.Game(config);
+    let game = new Phaser.Game(config);
 
     // Setup game objects
-    var graphics;
-    var topPaddle;
-    var botPaddle;
-    var ball;
+    let graphics;
+    let topPaddle;
+    let botPaddle;
+    let ball;
 
     function preload () {
       this.load.image("background", "game_images/background.jpg");
@@ -82,10 +85,19 @@ let PongPhaserWrapper = {
 
       graphics = this.add.graphics({ fillStyle: { color: 0xfefefe } });
 
-      topPaddle = new Phaser.Geom.Rectangle(20, 20, 50, 25);
+      // TODO change these to be based on percentages of the screen width
+      topPaddle = new Phaser.Geom.Rectangle(
+        0,
+        0,
+        paddleWidth,
+        paddleHeight);
       graphics.fillRectShape(topPaddle);
 
-      botPaddle = new Phaser.Geom.Rectangle(20, 400, 50, 25);
+      botPaddle = new Phaser.Geom.Rectangle(
+        0,
+        boardHeight * 0.95,
+        paddleWidth,
+        paddleHeight);
       graphics.fillRectShape(botPaddle);
 
       ball = new Phaser.Geom.Circle(250, 250, 12.5);
@@ -93,17 +105,13 @@ let PongPhaserWrapper = {
 
       // Bind the arrow keys to moving the rectangle
       this.input.keyboard.on('keydown-LEFT', function (event) {
-        //if (botPaddle.x > 0) {
-          gameChannel.push("move_paddle_left", {})
-            .receive("error", e => e.console.log(e));
-        //}
+        gameChannel.push("move_paddle_left", {})
+          .receive("error", e => e.console.log(e));
       });
 
       this.input.keyboard.on('keydown-RIGHT', function (event) {
-        //if (botPaddle.x < 500) {
-          gameChannel.push("move_paddle_right", {})
-            .receive("error", e => e.console.log(e));
-        //}
+        gameChannel.push("move_paddle_right", {})
+          .receive("error", e => e.console.log(e));
       });
 
       this.input.mouse.disableContextMenu();

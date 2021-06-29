@@ -2,17 +2,28 @@ defmodule GameServer.PongGameState do
   @paddle_right_limit 0.9
   @paddle_left_limit 0.0
   @paddle_move_step 0.03
+  # The paddle width is ten percent
+  # the front end rendering must match this
+  @paddle_width 0.1
+
+  # TODO make function to return randomized starting theta
   @starting_theta 197
 
-  defstruct ball_x: 0.5,
-            ball_y: 0.5,
-            ball_speed: 0.02,
+  @starting_ball_x 0.5
+  @starting_ball_y 0.5
+  @starting_ball_speed 0.02
+  @starting_ball_x_step 0.05
+  @starting_ball_y_step 0.05
+
+  defstruct ball_x: @starting_ball_x,
+            ball_y: @starting_ball_y,
+            ball_speed: @starting_ball_speed,
             # Theta here is in degrees and is converted when used
             ball_theta: @starting_theta,
-            ball_x_step: 0.05,
-            ball_y_step: 0.05,
-            top_paddle_x: 0.05,
-            bot_paddle_x: 0.05
+            ball_x_step: @starting_ball_x_step,
+            ball_y_step: @starting_ball_y_step,
+            top_paddle_x: 0.4,
+            bot_paddle_x: 0.4
 
   def move_top_paddle(state = %GameServer.PongGameState{}, direction)
       when is_atom(direction) do
@@ -58,25 +69,29 @@ defmodule GameServer.PongGameState do
     # check collisions
     new_theta = check_collisions_and_calculate_theta(state)
 
-    # recalculate x and y step
-    radians = degrees_to_radians(new_theta)
+    if new_theta == :reset do
+      reset_ball_position_and_speed(state)
+    else
+      # recalculate x and y step
+      radians = degrees_to_radians(new_theta)
 
-    # TODO reminder that increasing Y moves things down the screen
-    new_ball_x_step = state.ball_speed * :math.cos(radians)
-    new_ball_y_step = state.ball_speed * :math.sin(radians)
+      # TODO reminder that increasing Y moves things down the screen
+      new_ball_x_step = state.ball_speed * :math.cos(radians)
+      new_ball_y_step = state.ball_speed * :math.sin(radians)
 
-    # move ball
-    new_ball_x = state.ball_x + new_ball_x_step
-    new_ball_y = state.ball_y + new_ball_y_step
+      # move ball
+      new_ball_x = state.ball_x + new_ball_x_step
+      new_ball_y = state.ball_y + new_ball_y_step
 
-    %GameServer.PongGameState{
-      state
-      | ball_x: new_ball_x,
-        ball_y: new_ball_y,
-        ball_x_step: new_ball_x_step,
-        ball_y_step: new_ball_y_step,
-        ball_theta: new_theta
-    }
+      %GameServer.PongGameState{
+        state
+        | ball_x: new_ball_x,
+          ball_y: new_ball_y,
+          ball_x_step: new_ball_x_step,
+          ball_y_step: new_ball_y_step,
+          ball_theta: new_theta
+      }
+    end
   end
 
   defp check_collisions_and_calculate_theta(state) do
@@ -87,25 +102,51 @@ defmodule GameServer.PongGameState do
       collide_right?(state.ball_x) ->
         reflect_right_wall(state.ball_theta)
 
-      # TODO top and bottom walls need to make paddle checks
-      collide_top?(state.ball_y) ->
-        reflect_top_wall(state.ball_theta)
+      collide_top_paddle?(state) ->
+        reflect_top_paddle(state.ball_theta)
 
-      collide_bottom?(state.ball_y) ->
-        reflect_bottom_wall(state.ball_theta)
+      collide_bottom_paddle?(state) ->
+        reflect_bottom_paddle(state.ball_theta)
+
+      # TODO return who scored
+      collide_top_goal?(state) ->
+        :reset
+
+      collide_bottom_goal?(state) ->
+        :reset
 
       true ->
         state.ball_theta
     end
   end
 
-  defp collide_left?(ball_x), do: ball_x <= 0.1
+  defp collide_left?(ball_x), do: ball_x <= 0.00
 
-  defp collide_right?(ball_x), do: ball_x >= 0.9
+  defp collide_right?(ball_x), do: ball_x >= 1.00
 
-  defp collide_top?(ball_y), do: ball_y >= 0.9
+  defp collide_top_paddle?(state) do
+    state.ball_y >= 1.00 && 
+    state.ball_x >= state.top_paddle_x &&
+    state.ball_x <= state.top_paddle_x + @paddle_width
+  end
 
-  defp collide_bottom?(ball_y), do: ball_y <= 0.1
+  defp collide_bottom_paddle?(state) do
+    state.ball_y <= 0.00 &&
+    state.ball_x >= state.bot_paddle_x &&
+    state.ball_x <= state.bot_paddle_x + @paddle_width
+  end
+
+  defp collide_top_goal?(state) do
+    state.ball_y >= 1.00 && 
+    (state.ball_x < state.top_paddle_x ||
+    state.ball_x > state.top_paddle_x + @paddle_width)
+  end
+
+  defp collide_bottom_goal?(state) do
+    state.ball_y <= 0.00 &&
+    (state.ball_x < state.bot_paddle_x ||
+    state.ball_x > state.bot_paddle_x + @paddle_width)
+  end
 
   defp reflect_left_wall(theta) do
     180 - theta
@@ -115,11 +156,23 @@ defmodule GameServer.PongGameState do
     180 - theta
   end
 
-  defp reflect_top_wall(theta) do
+  defp reflect_top_paddle(theta) do
     360 - theta
   end
 
-  defp reflect_bottom_wall(theta) do
+  defp reflect_bottom_paddle(theta) do
     360 - theta
+  end
+
+  defp reset_ball_position_and_speed(state = %GameServer.PongGameState{}) do
+    %GameServer.PongGameState{
+      state
+      | ball_x: @starting_ball_x,
+        ball_y: @starting_ball_y,
+        ball_speed: @starting_ball_speed,
+        ball_theta: @starting_theta,
+        ball_x_step: @starting_ball_x_step,
+        ball_y_step: @starting_ball_y_step,
+    }
   end
 end
