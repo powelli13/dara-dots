@@ -102,11 +102,11 @@ defmodule GameServer.PongGameState do
       collide_right?(state.ball_x) ->
         reflect_right_wall(state.ball_theta)
 
-      collide_top_paddle?(state) ->
-        reflect_top_paddle(state.ball_theta)
-
       collide_bottom_paddle?(state) ->
-        reflect_bottom_paddle(state.ball_theta)
+        reflect_paddle(state.ball_theta)
+
+      collide_top_paddle?(state) ->
+        reflect_paddle(state.ball_theta)
 
       # TODO return who scored
       collide_top_goal?(state) ->
@@ -124,28 +124,28 @@ defmodule GameServer.PongGameState do
 
   defp collide_right?(ball_x), do: ball_x >= 1.00
 
-  defp collide_top_paddle?(state) do
-    state.ball_y >= 1.00 && 
-    state.ball_x >= state.top_paddle_x &&
-    state.ball_x <= state.top_paddle_x + @paddle_width
-  end
-
   defp collide_bottom_paddle?(state) do
-    state.ball_y <= 0.00 &&
+    state.ball_y >= 0.95 && 
     state.ball_x >= state.bot_paddle_x &&
     state.ball_x <= state.bot_paddle_x + @paddle_width
   end
 
+  defp collide_top_paddle?(state) do
+    state.ball_y <= 0.05 &&
+    state.ball_x >= state.top_paddle_x &&
+    state.ball_x <= state.top_paddle_x + @paddle_width
+  end
+
   defp collide_top_goal?(state) do
-    state.ball_y >= 1.00 && 
-    (state.ball_x < state.top_paddle_x ||
-    state.ball_x > state.top_paddle_x + @paddle_width)
+    state.ball_y >= 0.95# && 
+    #(state.ball_x < state.top_paddle_x ||
+    #state.ball_x > state.top_paddle_x + @paddle_width)
   end
 
   defp collide_bottom_goal?(state) do
-    state.ball_y <= 0.00 &&
-    (state.ball_x < state.bot_paddle_x ||
-    state.ball_x > state.bot_paddle_x + @paddle_width)
+    state.ball_y <= 0.05# &&
+    #(state.ball_x < state.bot_paddle_x ||
+    #state.ball_x > state.bot_paddle_x + @paddle_width)
   end
 
   defp reflect_left_wall(theta) do
@@ -156,11 +156,7 @@ defmodule GameServer.PongGameState do
     180 - theta
   end
 
-  defp reflect_top_paddle(theta) do
-    360 - theta
-  end
-
-  defp reflect_bottom_paddle(theta) do
+  defp reflect_paddle(theta) do
     360 - theta
   end
 
