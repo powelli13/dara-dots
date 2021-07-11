@@ -6,3 +6,5 @@
 </div>
 
 <%= link("Return to Lobby", to: Routes.pong_path(@conn, :lobby)) %>
+
+<div id="scoreboard"></div>

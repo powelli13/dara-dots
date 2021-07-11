@@ -121,7 +121,9 @@ defmodule GameServer.PongGame do
          ball_x: game_state.ball_x,
          ball_y: game_state.ball_y,
          top_paddle_x: game_state.top_paddle_x,
-         bot_paddle_x: game_state.bot_paddle_x
+         bot_paddle_x: game_state.bot_paddle_x,
+         top_player_score: game_state.top_player_score,
+         bot_player_score: game_state.bot_player_score
        }}
     )
   end

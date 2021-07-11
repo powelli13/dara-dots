@@ -21,7 +21,9 @@ defmodule GameServer.PongGameState do
             ball_x_step: @starting_ball_x_step,
             ball_y_step: @starting_ball_y_step,
             top_paddle_x: 0.4,
-            bot_paddle_x: 0.4
+            bot_paddle_x: 0.4,
+            top_player_score: 0,
+            bot_player_score: 0
 
   def move_top_paddle(state = %GameServer.PongGameState{}, direction)
       when is_atom(direction) do
@@ -65,10 +67,12 @@ defmodule GameServer.PongGameState do
 
   def move_ball(state = %GameServer.PongGameState{}) do
     # check collisions
-    new_theta = check_collisions_and_calculate_theta(state)
+    {new_theta, player_scored} = check_collisions_and_calculate_theta(state)
 
     if new_theta == :reset do
-      reset_ball_position_and_speed(state)
+      state
+      |> score_goal(player_scored)
+      |> reset_ball_position_and_speed
     else
       # recalculate x and y step
       radians = degrees_to_radians(new_theta)
@@ -95,26 +99,25 @@ defmodule GameServer.PongGameState do
   defp check_collisions_and_calculate_theta(state) do
     cond do
       collide_left?(state.ball_x) ->
-        reflect_left_wall(state.ball_theta)
+        {reflect_left_wall(state.ball_theta), :no_score}
 
       collide_right?(state.ball_x) ->
-        reflect_right_wall(state.ball_theta)
+        {reflect_right_wall(state.ball_theta), :no_score}
 
       collide_bottom_paddle?(state) ->
-        reflect_paddle(state.ball_theta)
+        {reflect_paddle(state.ball_theta), :no_score}
 
       collide_top_paddle?(state) ->
-        reflect_paddle(state.ball_theta)
+        {reflect_paddle(state.ball_theta), :no_score}
 
-      # TODO return who scored
       collide_top_goal?(state) ->
-        :reset
+        {:reset, :bot_scored}
 
       collide_bottom_goal?(state) ->
-        :reset
+        {:reset, :top_scored}
 
       true ->
-        state.ball_theta
+        {state.ball_theta, :no_score}
     end
   end
 
@@ -156,6 +159,21 @@ defmodule GameServer.PongGameState do
 
   defp get_random_starting_theta() do
     Enum.concat(45..135, 225..315) |> Enum.random
+  end
+
+  defp score_goal(state = %GameServer.PongGameState{}, player_scored) do
+    case player_scored do
+      :top_scored ->
+        %GameServer.PongGameState{
+          state
+          | top_player_score: state.top_player_score + 1
+        }
+      :bot_scored ->
+        %GameServer.PongGameState{
+          state
+          | bot_player_score: state.bot_player_score + 1
+        }
+    end
   end
 
   def reset_ball_position_and_speed(state = %GameServer.PongGameState{}) do

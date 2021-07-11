@@ -30,7 +30,9 @@ defmodule GameServerWeb.PongGameChannel do
         ballX: game_state.ball_x,
         ballY: game_state.ball_y,
         topPaddleX: game_state.top_paddle_x,
-        botPaddleX: game_state.bot_paddle_x
+        botPaddleX: game_state.bot_paddle_x,
+        topPlayerScore: game_state.top_player_score,
+        botPlayerScore: game_state.bot_player_score
       }
     )
 

@@ -24,12 +24,15 @@ let PongPhaserWrapper = {
 
   initPhaserGame(gameChannel) {
     // Setup channel listeners
-    gameChannel.on("game_state", ({ballX, ballY, topPaddleX, botPaddleX}) => {
+    gameChannel.on("game_state",
+    ({ballX, ballY, topPaddleX, botPaddleX, topPlayerScore, botPlayerScore}) => {
       moveBallTest(ballX, ballY);
 
       moveTopPaddle(topPaddleX);
 
       moveBotPaddle(botPaddleX);
+
+      updateScore(topPlayerScore, botPlayerScore);
 
       redrawGameObjects();
     });
@@ -143,6 +146,11 @@ let PongPhaserWrapper = {
 
     function moveBotPaddle(botPaddleX) {
       botPaddle.x = percentWidthToPixels(botPaddleX);
+    }
+
+    function updateScore(topPlayerScore, botPlayerScore) {
+      let scoreboard = document.getElementById('scoreboard');
+      scoreboard.innerHTML = `${topPlayerScore} - ${botPlayerScore}`;
     }
 
     // The server stores object positions as relative percentages
