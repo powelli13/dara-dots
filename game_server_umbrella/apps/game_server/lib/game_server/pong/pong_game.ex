@@ -39,7 +39,7 @@ defmodule GameServer.PongGame do
       game_id: game_id,
       top_paddle_player_id: nil,
       bot_paddle_player_id: nil,
-      game_state: %PongGameState{}
+      game_state: PongGameState.reset_ball_position_and_speed(%PongGameState{})
     }
 
     {:ok, initial_state}

@@ -2,12 +2,10 @@ defmodule GameServer.PongGameState do
   @paddle_right_limit 0.9
   @paddle_left_limit 0.0
   @paddle_move_step 0.03
+
   # The paddle width is ten percent
   # the front end rendering must match this
   @paddle_width 0.1
-
-  # TODO make function to return randomized starting theta
-  @starting_theta 197
 
   @starting_ball_x 0.5
   @starting_ball_y 0.5
@@ -19,7 +17,7 @@ defmodule GameServer.PongGameState do
             ball_y: @starting_ball_y,
             ball_speed: @starting_ball_speed,
             # Theta here is in degrees and is converted when used
-            ball_theta: @starting_theta,
+            ball_theta: 90,
             ball_x_step: @starting_ball_x_step,
             ball_y_step: @starting_ball_y_step,
             top_paddle_x: 0.4,
@@ -137,15 +135,11 @@ defmodule GameServer.PongGameState do
   end
 
   defp collide_top_goal?(state) do
-    state.ball_y >= 0.95# && 
-    #(state.ball_x < state.top_paddle_x ||
-    #state.ball_x > state.top_paddle_x + @paddle_width)
+    state.ball_y >= 0.95
   end
 
   defp collide_bottom_goal?(state) do
-    state.ball_y <= 0.05# &&
-    #(state.ball_x < state.bot_paddle_x ||
-    #state.ball_x > state.bot_paddle_x + @paddle_width)
+    state.ball_y <= 0.05
   end
 
   defp reflect_left_wall(theta) do
@@ -160,15 +154,19 @@ defmodule GameServer.PongGameState do
     360 - theta
   end
 
-  defp reset_ball_position_and_speed(state = %GameServer.PongGameState{}) do
+  defp get_random_starting_theta() do
+    Enum.concat(45..135, 225..315) |> Enum.random
+  end
+
+  def reset_ball_position_and_speed(state = %GameServer.PongGameState{}) do
     %GameServer.PongGameState{
       state
       | ball_x: @starting_ball_x,
         ball_y: @starting_ball_y,
         ball_speed: @starting_ball_speed,
-        ball_theta: @starting_theta,
+        ball_theta: get_random_starting_theta(),
         ball_x_step: @starting_ball_x_step,
-        ball_y_step: @starting_ball_y_step,
+        ball_y_step: @starting_ball_y_step
     }
   end
 end
