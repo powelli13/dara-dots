@@ -25,9 +25,11 @@ defmodule GameServer.PongPlayerQueue do
 
   @impl GenServer
   def handle_cast({:add_player, player_id, player_name}, map_set) do
-    updated_map_set =
+    {
+      :noreply,
       unless already_in_queue?(map_set, player_id) do
-        new_map_set =
+        # check for starting the game
+        check_start_game(
           MapSet.put(
             map_set,
             {
@@ -36,14 +38,11 @@ defmodule GameServer.PongPlayerQueue do
               System.system_time(:second)
             }
           )
-
-        # check for starting the game
-        check_start_game(new_map_set)
+        )
       else
         map_set
       end
-
-    {:noreply, updated_map_set}
+    }
   end
 
   defp get_two_earliest_player_ids_and_names(map_set) do
@@ -67,8 +66,8 @@ defmodule GameServer.PongPlayerQueue do
     if MapSet.size(map_set) >= 2 do
       # grab two players in queue longest
       {
-        {first_player_id, _first_player_name},
-        {second_player_id, _second_player_name}
+        {first_player_id, first_player_name},
+        {second_player_id, second_player_name}
       } = get_two_earliest_player_ids_and_names(map_set)
 
       # delete those players from the map set
@@ -88,12 +87,12 @@ defmodule GameServer.PongPlayerQueue do
 
       cond do
         r > 0.5 ->
-          PongGame.set_top_paddle_player(new_game_id, first_player_id)
-          PongGame.set_bot_paddle_player(new_game_id, second_player_id)
+          PongGame.set_top_paddle_player(new_game_id, first_player_id, first_player_name)
+          PongGame.set_bot_paddle_player(new_game_id, second_player_id, second_player_name)
 
         true ->
-          PongGame.set_top_paddle_player(new_game_id, second_player_id)
-          PongGame.set_bot_paddle_player(new_game_id, first_player_id)
+          PongGame.set_top_paddle_player(new_game_id, second_player_id, second_player_name)
+          PongGame.set_bot_paddle_player(new_game_id, first_player_id, first_player_name)
       end
 
       # Inform the lobby channels that the players are in a game together

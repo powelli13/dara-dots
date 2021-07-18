@@ -13,12 +13,16 @@ defmodule GameServer.PongGame do
     GenServer.cast(via_tuple(game_id), {:move_paddle_right, player_id})
   end
 
-  def set_top_paddle_player(game_id, player_id) do
-    GenServer.cast(via_tuple(game_id), {:set_top_paddle, player_id})
+  def set_top_paddle_player(game_id, player_id, player_name) do
+    GenServer.cast(via_tuple(game_id), {:set_top_paddle, player_id, player_name})
   end
 
-  def set_bot_paddle_player(game_id, player_id) do
-    GenServer.cast(via_tuple(game_id), {:set_bot_paddle, player_id})
+  def set_bot_paddle_player(game_id, player_id, player_name) do
+    GenServer.cast(via_tuple(game_id), {:set_bot_paddle, player_id, player_name})
+  end
+
+  def get_player_ids_and_names(game_id) do
+    GenServer.call(via_tuple(game_id), :get_player_infos)
   end
 
   def start_link(id) do
@@ -39,6 +43,8 @@ defmodule GameServer.PongGame do
       game_id: game_id,
       top_paddle_player_id: nil,
       bot_paddle_player_id: nil,
+      top_paddle_player_name: nil,
+      bot_paddle_player_name: nil,
       game_state: PongGameState.reset_ball_position_and_speed(%PongGameState{})
     }
 
@@ -92,38 +98,47 @@ defmodule GameServer.PongGame do
   end
 
   @impl GenServer
-  def handle_cast({:set_top_paddle, player_id}, state) do
-    {:noreply, %{state | top_paddle_player_id: player_id}}
+  def handle_cast({:set_top_paddle, player_id, player_name}, state) do
+    {
+      :noreply,
+      %{state | top_paddle_player_id: player_id, top_paddle_player_name: player_name}
+    }
   end
 
   @impl GenServer
-  def handle_cast({:set_bot_paddle, player_id}, state) do
-    {:noreply, %{state | bot_paddle_player_id: player_id}}
+  def handle_cast({:set_bot_paddle, player_id, player_name}, state) do
+    {
+      :noreply,
+      %{state | bot_paddle_player_id: player_id, bot_paddle_player_name: player_name}
+    }
   end
 
   @impl GenServer
   def handle_info(:broadcast_game_state, state) do
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
-    new_game_state = PongGameState.move_ball(state.game_state)
+    new_state = %{state | game_state: PongGameState.move_ball(state.game_state)}
 
-    broadcast_game_state(new_game_state, state.game_id)
+    broadcast_game_state(new_state)
 
-    {:noreply, %{state | game_state: new_game_state}}
+    {:noreply, new_state}
   end
 
-  defp broadcast_game_state(game_state, game_id) do
+  defp broadcast_game_state(state) do
+
     PubSub.broadcast(
       GameServer.PubSub,
-      "pong_game:" <> game_id,
+      "pong_game:" <> state.game_id,
       {:new_game_state,
        %{
-         ball_x: game_state.ball_x,
-         ball_y: game_state.ball_y,
-         top_paddle_x: game_state.top_paddle_x,
-         bot_paddle_x: game_state.bot_paddle_x,
-         top_player_score: game_state.top_player_score,
-         bot_player_score: game_state.bot_player_score
+         ball_x: state.game_state.ball_x,
+         ball_y: state.game_state.ball_y,
+         top_paddle_x: state.game_state.top_paddle_x,
+         bot_paddle_x: state.game_state.bot_paddle_x,
+         top_player_name: state.top_paddle_player_name,
+         bot_player_name: state.bot_paddle_player_name,
+         top_player_score: state.game_state.top_player_score,
+         bot_player_score: state.game_state.bot_player_score
        }}
     )
   end

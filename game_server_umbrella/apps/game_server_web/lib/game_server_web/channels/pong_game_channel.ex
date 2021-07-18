@@ -32,7 +32,9 @@ defmodule GameServerWeb.PongGameChannel do
         topPaddleX: game_state.top_paddle_x,
         botPaddleX: game_state.bot_paddle_x,
         topPlayerScore: game_state.top_player_score,
-        botPlayerScore: game_state.bot_player_score
+        botPlayerScore: game_state.bot_player_score,
+        topPlayerName: game_state.top_player_name,
+        botPlayerName: game_state.bot_player_name
       }
     )
 

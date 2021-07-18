@@ -126,15 +126,15 @@ defmodule GameServer.PongGameState do
   defp collide_right?(ball_x), do: ball_x >= 1.00
 
   defp collide_bottom_paddle?(state) do
-    state.ball_y >= 0.95 && 
-    state.ball_x >= state.bot_paddle_x &&
-    state.ball_x <= state.bot_paddle_x + @paddle_width
+    state.ball_y >= 0.95 &&
+      state.ball_x >= state.bot_paddle_x &&
+      state.ball_x <= state.bot_paddle_x + @paddle_width
   end
 
   defp collide_top_paddle?(state) do
     state.ball_y <= 0.05 &&
-    state.ball_x >= state.top_paddle_x &&
-    state.ball_x <= state.top_paddle_x + @paddle_width
+      state.ball_x >= state.top_paddle_x &&
+      state.ball_x <= state.top_paddle_x + @paddle_width
   end
 
   defp collide_top_goal?(state) do
@@ -158,7 +158,7 @@ defmodule GameServer.PongGameState do
   end
 
   defp get_random_starting_theta() do
-    Enum.concat(45..135, 225..315) |> Enum.random
+    Enum.concat(45..135, 225..315) |> Enum.random()
   end
 
   defp score_goal(state = %GameServer.PongGameState{}, player_scored) do
@@ -168,6 +168,7 @@ defmodule GameServer.PongGameState do
           state
           | top_player_score: state.top_player_score + 1
         }
+
       :bot_scored ->
         %GameServer.PongGameState{
           state

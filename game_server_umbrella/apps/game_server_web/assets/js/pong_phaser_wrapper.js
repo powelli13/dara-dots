@@ -25,14 +25,14 @@ let PongPhaserWrapper = {
   initPhaserGame(gameChannel) {
     // Setup channel listeners
     gameChannel.on("game_state",
-    ({ballX, ballY, topPaddleX, botPaddleX, topPlayerScore, botPlayerScore}) => {
+    ({ballX, ballY, topPaddleX, botPaddleX, topPlayerScore, botPlayerScore, topPlayerName, botPlayerName}) => {
       moveBallTest(ballX, ballY);
 
       moveTopPaddle(topPaddleX);
 
       moveBotPaddle(botPaddleX);
 
-      updateScore(topPlayerScore, botPlayerScore);
+      updateScore(topPlayerName, topPlayerScore, botPlayerName, botPlayerScore);
 
       redrawGameObjects();
     });
@@ -73,7 +73,10 @@ let PongPhaserWrapper = {
     let game = new Phaser.Game(config);
 
     // Setup game objects
-    let graphics;
+    let whiteGraphics;
+    let blueGraphics;
+    let redGraphics;
+    
     let topPaddle;
     let botPaddle;
     let ball;
@@ -86,7 +89,9 @@ let PongPhaserWrapper = {
       // Only load the Phaser assets on certain pages
       this.add.image(boardWidth, boardHeight, "background");
 
-      graphics = this.add.graphics({ fillStyle: { color: 0xfefefe } });
+      whiteGraphics = this.add.graphics({ fillStyle: { color: 0xfefefe } });
+      blueGraphics = this.add.graphics({ fillStyle: { color: 0x1a8dff } });
+      redGraphics = this.add.graphics({ fillStyle: { color: 0xff1a1a } });
 
       // TODO change these to be based on percentages of the screen width
       topPaddle = new Phaser.Geom.Rectangle(
@@ -94,17 +99,17 @@ let PongPhaserWrapper = {
         0,
         paddleWidth,
         paddleHeight);
-      graphics.fillRectShape(topPaddle);
+      blueGraphics.fillRectShape(topPaddle);
 
       botPaddle = new Phaser.Geom.Rectangle(
         0,
         boardHeight * 0.95,
         paddleWidth,
         paddleHeight);
-      graphics.fillRectShape(botPaddle);
+      redGraphics.fillRectShape(botPaddle);
 
       ball = new Phaser.Geom.Circle(250, 250, 12.5);
-      graphics.fillCircleShape(ball);
+      whiteGraphics.fillCircleShape(ball);
 
       // Bind the arrow keys to moving the rectangle
       this.input.keyboard.on('keydown-LEFT', function (event) {
@@ -124,10 +129,13 @@ let PongPhaserWrapper = {
     }
 
     function redrawGameObjects() {
-        graphics.clear();
-        graphics.fillCircleShape(ball);
-        graphics.fillRectShape(topPaddle);
-        graphics.fillRectShape(botPaddle);
+        whiteGraphics.clear();
+        blueGraphics.clear();
+        redGraphics.clear();
+
+        whiteGraphics.fillCircleShape(ball);
+        blueGraphics.fillRectShape(topPaddle);
+        redGraphics.fillRectShape(botPaddle);
     }
 
     function moveBallTest(ballX, ballY) {
@@ -148,9 +156,9 @@ let PongPhaserWrapper = {
       botPaddle.x = percentWidthToPixels(botPaddleX);
     }
 
-    function updateScore(topPlayerScore, botPlayerScore) {
+    function updateScore(topPlayerName, topPlayerScore, botPlayerName, botPlayerScore) {
       let scoreboard = document.getElementById('scoreboard');
-      scoreboard.innerHTML = `${topPlayerScore} - ${botPlayerScore}`;
+      scoreboard.innerHTML = `${topPlayerName}: ${topPlayerScore} - ${botPlayerName}: ${botPlayerScore}`;
     }
 
     // The server stores object positions as relative percentages
