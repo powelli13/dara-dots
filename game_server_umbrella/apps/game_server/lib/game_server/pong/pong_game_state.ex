@@ -77,7 +77,6 @@ defmodule GameServer.PongGameState do
       # recalculate x and y step
       radians = degrees_to_radians(new_theta)
 
-      # TODO reminder that increasing Y moves things down the screen
       new_ball_x_step = state.ball_speed * :math.cos(radians)
       new_ball_y_step = state.ball_speed * :math.sin(radians)
 
