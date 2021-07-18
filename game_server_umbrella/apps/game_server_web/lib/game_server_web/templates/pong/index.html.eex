@@ -1,10 +1,6 @@
 <div id="phaser-pong-wrapper"></div>
-<div>
-    This game is still under development and not fully functional.
-    This page is left as a demonstration of basic paddle and ball movement.
-    Use the left and right arrows to move your paddle.
-</div>
 
 <%= link("Return to Lobby", to: Routes.pong_path(@conn, :lobby)) %>
 
+<div id="instructions"></div>
 <div id="scoreboard"></div>

@@ -3,9 +3,7 @@ defmodule GameServerWeb.PongGameChannel do
   alias GameServer.PongGame
 
   def join("pong_game:" <> game_id, _params, socket) do
-    # Start the pong game
-    # TODO for testing only, move this to Pong Queue later
-    GameServer.PongGameSupervisor.find_game(game_id)
+    send(self(), :after_join)
 
     {:ok, assign(socket, game_id: game_id)}
   end
@@ -18,6 +16,31 @@ defmodule GameServerWeb.PongGameChannel do
 
   def handle_in("move_paddle_right", _, socket) do
     PongGame.move_paddle_right(socket.assigns.game_id, socket.assigns.player_id)
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:after_join, socket) do
+    %{
+      :top_player_id => top_player_id,
+      :bot_player_id => bot_player_id
+    } = PongGame.get_player_positions(socket.assigns.game_id)
+
+    case socket.assigns.player_id do
+      ^top_player_id ->
+        push(
+          socket,
+          "player_status",
+          %{position: "top"}
+        )
+
+      ^bot_player_id ->
+        push(
+          socket,
+          "player_status",
+          %{position: "bottom"}
+        )
+    end
 
     {:noreply, socket}
   end

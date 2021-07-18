@@ -26,7 +26,7 @@ let PongPhaserWrapper = {
     // Setup channel listeners
     gameChannel.on("game_state",
     ({ballX, ballY, topPaddleX, botPaddleX, topPlayerScore, botPlayerScore, topPlayerName, botPlayerName}) => {
-      moveBallTest(ballX, ballY);
+      moveBall(ballX, ballY);
 
       moveTopPaddle(topPaddleX);
 
@@ -35,6 +35,11 @@ let PongPhaserWrapper = {
       updateScore(topPlayerName, topPlayerScore, botPlayerName, botPlayerScore);
 
       redrawGameObjects();
+    });
+
+    gameChannel.on("player_status",
+    ({position}) => {
+      populateGameInstructions(position);
     });
 
     gameChannel.join()
@@ -93,7 +98,6 @@ let PongPhaserWrapper = {
       blueGraphics = this.add.graphics({ fillStyle: { color: 0x1a8dff } });
       redGraphics = this.add.graphics({ fillStyle: { color: 0xff1a1a } });
 
-      // TODO change these to be based on percentages of the screen width
       topPaddle = new Phaser.Geom.Rectangle(
         0,
         0,
@@ -138,9 +142,10 @@ let PongPhaserWrapper = {
         redGraphics.fillRectShape(botPaddle);
     }
 
-    function moveBallTest(ballX, ballY) {
+    function moveBall(ballX, ballY) {
       if (ball != null) {
         ball.x = percentWidthToPixels(ballX);
+
         // Ball position comes as a percentage
         // flip this because lower Y value is closer
         // to the top of the screen in the framework.
@@ -159,6 +164,13 @@ let PongPhaserWrapper = {
     function updateScore(topPlayerName, topPlayerScore, botPlayerName, botPlayerScore) {
       let scoreboard = document.getElementById('scoreboard');
       scoreboard.innerHTML = `${topPlayerName}: ${topPlayerScore} - ${botPlayerName}: ${botPlayerScore}`;
+    }
+
+    function populateGameInstructions(position) {
+      const color = position == 'top' ? 'blue' : 'red';
+      let instructions = document.getElementById('instructions');
+      instructions.innerHTML =
+        `You play on ${position} as the ${color} paddle. Use the arrow keys to move.`;
     }
 
     // The server stores object positions as relative percentages

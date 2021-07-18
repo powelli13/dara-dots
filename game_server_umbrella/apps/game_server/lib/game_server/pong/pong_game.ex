@@ -21,8 +21,8 @@ defmodule GameServer.PongGame do
     GenServer.cast(via_tuple(game_id), {:set_bot_paddle, player_id, player_name})
   end
 
-  def get_player_ids_and_names(game_id) do
-    GenServer.call(via_tuple(game_id), :get_player_infos)
+  def get_player_positions(game_id) do
+    GenServer.call(via_tuple(game_id), :get_player_positions)
   end
 
   def start_link(id) do
@@ -114,6 +114,18 @@ defmodule GameServer.PongGame do
   end
 
   @impl GenServer
+  def handle_call(:get_player_positions, _, state) do
+    {
+      :reply,
+      %{
+        top_player_id: state.top_paddle_player_id,
+        bot_player_id: state.bot_paddle_player_id
+      },
+      state
+    }
+  end
+
+  @impl GenServer
   def handle_info(:broadcast_game_state, state) do
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
@@ -125,7 +137,6 @@ defmodule GameServer.PongGame do
   end
 
   defp broadcast_game_state(state) do
-
     PubSub.broadcast(
       GameServer.PubSub,
       "pong_game:" <> state.game_id,
