@@ -20,6 +20,7 @@ defmodule GameServer.PongGameState do
             ball_theta: 90,
             ball_x_step: @starting_ball_x_step,
             ball_y_step: @starting_ball_y_step,
+            ball_moving: false,
             top_paddle_x: 0.4,
             bot_paddle_x: 0.4,
             top_player_score: 0,
@@ -61,18 +62,27 @@ defmodule GameServer.PongGameState do
     degrees * :math.pi() / 180
   end
 
-  # angle of incidence equals the angle of reflection
-  # find which quadrant the angle is in and then reflect it
-  # need to determine if we're flipping over x or y axis
-
+  # Returns a tuple of game state struct and bool which indicates if the ball
+  # should be reset.
+  # This is because the message mailbox and timers are in the GenServer which
+  # uses this struct.
   def move_ball(state = %GameServer.PongGameState{}) do
+    # Only calculate and update if the ball is set to move
+    if not state.ball_moving do
+      {state, false}
+    else
+      calculate_and_move_ball(state)
+    end
+  end
+
+  defp calculate_and_move_ball(state = %GameServer.PongGameState{}) do
     # check collisions
     {new_theta, player_scored} = check_collisions_and_calculate_theta(state)
 
     if new_theta == :reset do
-      state
-      |> score_goal(player_scored)
-      |> reset_ball_position_and_speed
+      {state
+       |> score_goal(player_scored)
+       |> reset_ball_position_and_speed, true}
     else
       # recalculate x and y step
       radians = degrees_to_radians(new_theta)
@@ -84,18 +94,22 @@ defmodule GameServer.PongGameState do
       new_ball_x = state.ball_x + new_ball_x_step
       new_ball_y = state.ball_y + new_ball_y_step
 
-      %GameServer.PongGameState{
-        state
-        | ball_x: new_ball_x,
-          ball_y: new_ball_y,
-          ball_x_step: new_ball_x_step,
-          ball_y_step: new_ball_y_step,
-          ball_theta: new_theta
-      }
+      {%GameServer.PongGameState{
+         state
+         | ball_x: new_ball_x,
+           ball_y: new_ball_y,
+           ball_x_step: new_ball_x_step,
+           ball_y_step: new_ball_y_step,
+           ball_theta: new_theta
+       }, false}
     end
   end
 
-  defp check_collisions_and_calculate_theta(state) do
+  def start_ball_moving(state = %GameServer.PongGameState{}) do
+    %{state | ball_moving: true}
+  end
+
+  defp check_collisions_and_calculate_theta(state = %GameServer.PongGameState{}) do
     cond do
       collide_left?(state.ball_x) ->
         {reflect_left_wall(state.ball_theta), :no_score}
@@ -184,7 +198,8 @@ defmodule GameServer.PongGameState do
         ball_speed: @starting_ball_speed,
         ball_theta: get_random_starting_theta(),
         ball_x_step: @starting_ball_x_step,
-        ball_y_step: @starting_ball_y_step
+        ball_y_step: @starting_ball_y_step,
+        ball_moving: false
     }
   end
 end

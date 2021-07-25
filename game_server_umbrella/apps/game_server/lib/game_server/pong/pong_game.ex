@@ -4,6 +4,7 @@ defmodule GameServer.PongGame do
   alias GameServer.PongGameState
 
   @broadcast_frequency 35
+  @ball_restart_time 3000
 
   def move_paddle_left(game_id, player_id) do
     GenServer.cast(via_tuple(game_id), {:move_paddle_left, player_id})
@@ -37,7 +38,11 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def init(game_id) do
+    # Start the state broadcasting
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
+
+    # Start the ball moving after the designated time
+    Process.send_after(self(), :start_ball_moving, @ball_restart_time)
 
     initial_state = %{
       game_id: game_id,
@@ -129,11 +134,24 @@ defmodule GameServer.PongGame do
   def handle_info(:broadcast_game_state, state) do
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
-    new_state = %{state | game_state: PongGameState.move_ball(state.game_state)}
+    # TODO improve this, read up on struct GenServer interaction
+    # Send a message to self to restart the ball moving after 3 seconds
+    {game_state, reset} = PongGameState.move_ball(state.game_state)
+
+    if reset do
+      Process.send_after(self(), :start_ball_moving, @ball_restart_time)
+    end
+
+    new_state = %{state | game_state: game_state}
 
     broadcast_game_state(new_state)
 
     {:noreply, new_state}
+  end
+
+  @impl GenServer
+  def handle_info(:start_ball_moving, state) do
+    {:noreply, %{state | game_state: PongGameState.start_ball_moving(state.game_state)}}
   end
 
   defp broadcast_game_state(state) do
