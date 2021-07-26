@@ -20,6 +20,8 @@ defmodule GameServerWeb.PongGameChannel do
     {:noreply, socket}
   end
 
+  # TODO after the game has ended find a way to gracefully handle moves, or just don't handle them
+  # This causes GenServer crashes after the game ends currently
   def handle_info(:after_join, socket) do
     %{
       :top_player_id => top_player_id,
@@ -62,5 +64,15 @@ defmodule GameServerWeb.PongGameChannel do
     )
 
     {:noreply, socket}
+  end
+
+  def handle_info({:game_over, winner_name}, socket) do
+    push(
+      socket,
+      "game_over",
+      %{
+        winnerName: winner_name
+      }
+    )
   end
 end

@@ -284,6 +284,8 @@ defmodule GameServer.TicTacToe do
     )
   end
 
+  # TODO it looks like this GenServer doesn't shut down even when the game is over.
+  # Correct this and refactor it to use a separate struct module for game state for practice.
   defp broadcast_winner(game_state, winner_piece, winner_name, winning_indices) do
     broadcast_game_update(
       game_state.game_id,

@@ -5,6 +5,7 @@ defmodule GameServer.PongGame do
 
   @broadcast_frequency 35
   @ball_restart_time 3000
+  @score_to_win 11
 
   def move_paddle_left(game_id, player_id) do
     GenServer.cast(via_tuple(game_id), {:move_paddle_left, player_id})
@@ -146,12 +147,41 @@ defmodule GameServer.PongGame do
 
     broadcast_game_state(new_state)
 
-    {:noreply, new_state}
+    # If there is a winner then broadcast it and kill the game's process
+    {game_over, winner_name} = has_winner?(new_state)
+    if game_over do
+      broadcast_game_winner(new_state, winner_name)
+
+      {:stop, :normal, new_state}
+    else
+      {:noreply, new_state}
+    end
+  end
+
+  defp has_winner?(state) do
+    cond do
+      state.game_state.top_player_score >= @score_to_win ->
+        {true, state.top_paddle_player_name}
+      
+      state.game_state.bot_player_score >= @score_to_win ->
+        {true, state.bot_paddle_player_name}
+      
+      true ->
+        {false, nil}
+    end
   end
 
   @impl GenServer
   def handle_info(:start_ball_moving, state) do
     {:noreply, %{state | game_state: PongGameState.start_ball_moving(state.game_state)}}
+  end
+
+  defp broadcast_game_winner(state, winner_name) do
+    PubSub.broadcast(
+      GameServer.PubSub,
+      "pong_game:" <> state.game_id,
+      {:game_over, winner_name}
+    )
   end
 
   defp broadcast_game_state(state) do

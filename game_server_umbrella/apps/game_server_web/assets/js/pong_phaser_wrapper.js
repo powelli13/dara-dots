@@ -37,6 +37,11 @@ let PongPhaserWrapper = {
       redrawGameObjects();
     });
 
+    gameChannel.on("game_over",
+    ({winnerName}) => {
+      updateWinner(winnerName);
+    });
+
     gameChannel.on("player_status",
     ({position}) => {
       populateGameInstructions(position);
@@ -164,6 +169,11 @@ let PongPhaserWrapper = {
     function updateScore(topPlayerName, topPlayerScore, botPlayerName, botPlayerScore) {
       let scoreboard = document.getElementById('scoreboard');
       scoreboard.innerHTML = `${topPlayerName}: ${topPlayerScore} - ${botPlayerName}: ${botPlayerScore}`;
+    }
+
+    function updateWinner(winnerName) {
+      let announcement = document.getElementById('announcement');
+      announcement.innerHTML = `Game over! The winner is ${winnerName}.`;
     }
 
     function populateGameInstructions(position) {
