@@ -159,6 +159,11 @@ defmodule GameServer.PongGame do
     end
   end
 
+  @impl GenServer
+  def handle_info(:start_ball_moving, state) do
+    {:noreply, %{state | game_state: PongGameState.start_ball_moving(state.game_state)}}
+  end
+
   defp has_winner?(state) do
     cond do
       state.game_state.top_player_score >= @score_to_win ->
@@ -170,11 +175,6 @@ defmodule GameServer.PongGame do
       true ->
         {false, nil}
     end
-  end
-
-  @impl GenServer
-  def handle_info(:start_ball_moving, state) do
-    {:noreply, %{state | game_state: PongGameState.start_ball_moving(state.game_state)}}
   end
 
   defp broadcast_game_winner(state, winner_name) do
