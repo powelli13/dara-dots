@@ -16,9 +16,15 @@
     Send
   </button>
 </div>
-
-<button id="join-game-queue-button"
-  class="button column"
-  type="submit">
-  Join Queue
-</button>
+<div>
+  <button id="join-game-queue-button"
+    class="button column"
+    type="submit">
+    Join Queue
+  </button>
+  <button id="leave-game-queue-button"
+    class="button column"
+    type="submit">
+    Leave Queue
+  </button>
+</div>

@@ -20,6 +20,10 @@ let GenLobbyChat = {
     const chatInput = document.getElementById("gen-lobby-chat-input");
     const postButton = document.getElementById("gen-lobby-chat-submit");
     const joinQueueButton = document.getElementById("join-game-queue-button");
+    const leaveQueueButton = document.getElementById("leave-game-queue-button");
+
+    // Disable leave queue on page load.
+    leaveQueueButton.disabled = true;
 
     let lobbyChannel = socket.channel(
       `lobby_chat:${chatContainer.dataset.lobbyName}`,
@@ -42,7 +46,18 @@ let GenLobbyChat = {
       lobbyChannel.push("join_queue", {})
       .receive("error", e => e.console.log(e));
       joinQueueButton.disabled = true;
+      leaveQueueButton.disabled = false;
     });
+
+    // Remove the player from the queue.
+    leaveQueueButton.addEventListener("click", e => {
+      lobbyChannel.push("leave_queue", {})
+      .receive("error", e => e.console.log(e));
+      leaveQueueButton.disabled = true;
+      joinQueueButton.disabled = false;
+    })
+
+
 
     lobbyChannel.on("new_msg", (resp) => {
       this.renderAnnotation(chatContainer, resp);

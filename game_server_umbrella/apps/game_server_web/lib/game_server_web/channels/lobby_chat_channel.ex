@@ -1,7 +1,7 @@
 defmodule GameServerWeb.LobbyChatChannel do
   @moduledoc """
-  Channel used to handle the chat for the various
-  lobbies.
+  Generic Lobby Chat Channel used to handle the
+  chat and queue functionality for the various lobbies.
   """
   use GameServerWeb, :channel
 
@@ -24,6 +24,13 @@ defmodule GameServerWeb.LobbyChatChannel do
     end
 
     {:noreply, socket}
+  end
+
+  def handle_in("leave_queue", _, socket) do
+    case socket.assigns.lobby_name do
+      "pong" ->
+        GameServer.PongPlayerQueue.remove_player(socket.assigns.player_id)
+    end
   end
 
   def handle_in("new_msg", %{"message" => message}, socket) do

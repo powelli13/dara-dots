@@ -149,6 +149,7 @@ defmodule GameServer.PongGame do
 
     # If there is a winner then broadcast it and kill the game's process
     {game_over, winner_name} = has_winner?(new_state)
+
     if game_over do
       broadcast_game_winner(new_state, winner_name)
 
@@ -162,10 +163,10 @@ defmodule GameServer.PongGame do
     cond do
       state.game_state.top_player_score >= @score_to_win ->
         {true, state.top_paddle_player_name}
-      
+
       state.game_state.bot_player_score >= @score_to_win ->
         {true, state.bot_paddle_player_name}
-      
+
       true ->
         {false, nil}
     end
