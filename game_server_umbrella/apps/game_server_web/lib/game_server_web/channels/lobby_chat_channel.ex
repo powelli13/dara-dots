@@ -27,10 +27,13 @@ defmodule GameServerWeb.LobbyChatChannel do
   end
 
   def handle_in("leave_queue", _, socket) do
+    IO.puts "Received a LEAVE QUEUE"
     case socket.assigns.lobby_name do
       "pong" ->
         GameServer.PongPlayerQueue.remove_player(socket.assigns.player_id)
     end
+
+    {:noreply, socket}
   end
 
   def handle_in("new_msg", %{"message" => message}, socket) do

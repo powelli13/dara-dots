@@ -44,7 +44,7 @@ let GenLobbyChat = {
     // Add the player to the queue.
     joinQueueButton.addEventListener("click", e => {
       lobbyChannel.push("join_queue", {})
-      .receive("error", e => e.console.log(e));
+        .receive("error", e => e.console.log(e));
       joinQueueButton.disabled = true;
       leaveQueueButton.disabled = false;
     });
@@ -52,12 +52,24 @@ let GenLobbyChat = {
     // Remove the player from the queue.
     leaveQueueButton.addEventListener("click", e => {
       lobbyChannel.push("leave_queue", {})
-      .receive("error", e => e.console.log(e));
+        .receive("error", e => e.console.log(e));
       leaveQueueButton.disabled = true;
       joinQueueButton.disabled = false;
-    })
+    });
 
-
+    // Leave the queue when the user leaves the lobby
+    // TODO this isn't working. it will write the console logs but not push 
+    // leave_queue to the server
+    // After debugging JavaScript in the browser I found that lobbyChannel.socket.unloaded is false
+    // in the above join/leave queue and true here, so the socket is already unloaded
+    // I will try to intercept the channel disconnect on the server side, and remove
+    // their ID from the queue that way.
+    window.addEventListener("beforeunload", e => {
+      console.log("leaving queue and page");
+      lobbyChannel.push("leave_queue", {})
+        .receive("error", e => e.console.log(e));
+      console.log("successfully left queue");
+    });
 
     lobbyChannel.on("new_msg", (resp) => {
       this.renderAnnotation(chatContainer, resp);
