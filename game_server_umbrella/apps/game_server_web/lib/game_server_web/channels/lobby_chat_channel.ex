@@ -14,6 +14,7 @@ defmodule GameServerWeb.LobbyChatChannel do
     {:ok, socket}
   end
 
+  # Handles commands to join game queues from the client
   def handle_in("join_queue", _, socket) do
     case socket.assigns.lobby_name do
       "pong" ->
@@ -26,8 +27,8 @@ defmodule GameServerWeb.LobbyChatChannel do
     {:noreply, socket}
   end
 
+  # Handles commands to leave the queue from the client
   def handle_in("leave_queue", _, socket) do
-    IO.puts "Received a LEAVE QUEUE"
     case socket.assigns.lobby_name do
       "pong" ->
         GameServer.PongPlayerQueue.remove_player(socket.assigns.player_id)
@@ -36,6 +37,7 @@ defmodule GameServerWeb.LobbyChatChannel do
     {:noreply, socket}
   end
 
+  # Handles chat messages from the client
   def handle_in("new_msg", %{"message" => message}, socket) do
     broadcast!(
       socket,
@@ -63,6 +65,17 @@ defmodule GameServerWeb.LobbyChatChannel do
     end
 
     {:noreply, socket}
+  end
+
+  def terminate(reason, socket) do
+    # The Channel terminating means that the user must have left the lobby
+    # so remove them from the queue
+    case socket.assigns.lobby_name do
+      "pong" ->
+        GameServer.PongPlayerQueue.remove_player(socket.assigns.player_id)
+    end
+
+    reason
   end
 
   defp get_game_route(socket) do
