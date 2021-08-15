@@ -11,7 +11,22 @@ defmodule GameServerWeb.LobbyChatChannel do
       |> assign(:username, username)
       |> assign(:lobby_name, lobby_name)
 
+    send(self(), :after_join)
+
     {:ok, socket}
+  end
+
+  def handle_info(:after_join, socket) do
+    push(socket, "presence_state", GameServerWeb.Presence.list(socket))
+
+    {:ok, _} =
+      GameServerWeb.Presence.track(
+        socket,
+        socket.assigns.username,
+        %{device: "browser"}
+      )
+
+    {:noreply, socket}
   end
 
   # Handles commands to join game queues from the client

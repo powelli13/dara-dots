@@ -1,4 +1,6 @@
 <div>Welcome to the lobby</div>
+<div>Users</div>
+<div id="user-list"></div>
 
 <div id="gen-lobby-chat-container"
     class="chat-history"

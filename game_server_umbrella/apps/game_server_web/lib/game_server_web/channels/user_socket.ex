@@ -29,7 +29,12 @@ defmodule GameServerWeb.UserSocket do
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do
     # TODO this token just needs to be there, we shouldn't have to worry about expiring?
-    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1_209_600) do
+    case Phoenix.Token.verify(
+           socket,
+           "user socket",
+           token,
+           max_age: 1_209_600
+         ) do
       {:ok, player_id} ->
         {:ok, assign(socket, :player_id, player_id)}
 

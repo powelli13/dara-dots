@@ -1,3 +1,5 @@
+import {Presence} from "phoenix";
+
 // A generic lobby chat channel which can be used
 // for a variety of games. The template chat
 // container's element must have a data-lobby-name
@@ -21,6 +23,7 @@ let GenLobbyChat = {
     const postButton = document.getElementById("gen-lobby-chat-submit");
     const joinQueueButton = document.getElementById("join-game-queue-button");
     const leaveQueueButton = document.getElementById("leave-game-queue-button");
+    const userList = document.getElementById("user-list");
 
     // Disable leave queue on page load.
     leaveQueueButton.disabled = true;
@@ -31,6 +34,14 @@ let GenLobbyChat = {
         const playerName = window.localStorage.getItem("player_name") ?? "";
         return {username: playerName};
       });
+
+    // Presence will display the names of users in the chat lobby
+    let presence = new Presence(lobbyChannel);
+    presence.onSync(() => {
+      userList.innerHTML = presence.list((username, _) => {
+        return `<li>${username}</li>`;
+      }).join("");
+    });
 
     // Send chat message
     postButton.addEventListener("click", e => {
