@@ -60,7 +60,7 @@ defmodule GameServer.PongPlayerQueue do
 
   @impl GenServer
   def handle_call(:get_queue_size, _caller, map_set) do
-    {:noreply, MapSet.size(map_set), map_set}
+    {:reply, MapSet.size(map_set), map_set}
   end
 
   defp get_two_earliest_player_ids_and_names(map_set) do

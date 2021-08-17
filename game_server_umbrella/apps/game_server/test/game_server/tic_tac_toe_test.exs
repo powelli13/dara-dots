@@ -161,7 +161,7 @@ defmodule GameServer.TicTacToeTest do
     assert turn == "O"
 
     TicTacToe.make_move(state.game_pid, circle_id, 1)
-    assert_receive {:new_board_state, after_circle}
+    assert_receive {:new_board_state, _}
     turn = TicTacToe.get_current_turn(state.game_pid)
     assert turn == "X"
 
@@ -176,7 +176,7 @@ defmodule GameServer.TicTacToeTest do
     assert turn == "X"
 
     TicTacToe.make_move(state.game_pid, cross_id, 6)
-    assert_receive {:new_board_state, last_state}
+    assert_receive {:new_board_state, _}
 
     assert_receive {:game_winner, winner_piece, winner_name, winning_indices}
 
@@ -198,7 +198,7 @@ defmodule GameServer.TicTacToeTest do
     assert turn == "O"
 
     TicTacToe.make_move(state.game_pid, circle_id, 1)
-    assert_receive {:new_board_state, after_circle}
+    assert_receive {:new_board_state, _}
     turn = TicTacToe.get_current_turn(state.game_pid)
     assert turn == "X"
 
@@ -213,7 +213,7 @@ defmodule GameServer.TicTacToeTest do
     assert turn == "X"
 
     TicTacToe.make_move(state.game_pid, cross_id, 8)
-    assert_receive {:new_board_state, last_state}
+    assert_receive {:new_board_state, _}
 
     assert_receive {:game_winner, winner_piece, winner_name, winning_indices}
 
@@ -235,7 +235,7 @@ defmodule GameServer.TicTacToeTest do
     assert turn == "O"
 
     TicTacToe.make_move(state.game_pid, circle_id, 1)
-    assert_receive {:new_board_state, after_circle}
+    assert_receive {:new_board_state, _}
     turn = TicTacToe.get_current_turn(state.game_pid)
     assert turn == "X"
 
@@ -250,7 +250,7 @@ defmodule GameServer.TicTacToeTest do
     assert turn == "X"
 
     TicTacToe.make_move(state.game_pid, cross_id, 8)
-    assert_receive {:new_board_state, last_state}
+    assert_receive {:new_board_state, _}
 
     assert_receive {:game_winner, winner_piece, winner_name, winning_indices}
 
