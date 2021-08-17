@@ -17,6 +17,10 @@ defmodule GameServer.PongPlayerQueue do
     GenServer.cast(__MODULE__, {:remove_player, player_id})
   end
 
+  def get_queue_size() do
+    GenServer.call(__MODULE__, :get_queue_size)
+  end
+
   @impl GenServer
   def init(_) do
     {:ok, MapSet.new()}
@@ -52,6 +56,11 @@ defmodule GameServer.PongPlayerQueue do
   @impl GenServer
   def handle_cast({:remove_player, player_id}, map_set) do
     {:noreply, map_set |> remove_player(player_id)}
+  end
+
+  @impl GenServer
+  def handle_call(:get_queue_size, _caller, map_set) do
+    {:noreply, MapSet.size(map_set), map_set}
   end
 
   defp get_two_earliest_player_ids_and_names(map_set) do
