@@ -92,6 +92,8 @@ defmodule GameServer.PongPlayerQueue do
       # Start game GenServer and add players
       _start_game_pid = PongGameSupervisor.find_game(new_game_id)
 
+      GameServer.PongActiveGames.add_active_game(new_game_id) 
+
       r = :rand.uniform()
 
       cond do
