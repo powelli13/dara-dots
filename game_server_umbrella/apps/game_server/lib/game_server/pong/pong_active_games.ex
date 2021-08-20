@@ -14,6 +14,7 @@ defmodule GameServer.PongActiveGames do
   def get_active_games() do
     GenServer.call(__MODULE__, :get_games)
   end
+  # TODO add remove game that is called when the pong game is over
 
   # TODO this may be better done as a supervisor over the PongGameSupervisors
   # I will need to do more research
