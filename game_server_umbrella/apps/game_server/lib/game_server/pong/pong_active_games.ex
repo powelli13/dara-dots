@@ -1,5 +1,6 @@
 defmodule GameServer.PongActiveGames do
   use GenServer
+
   @moduledoc """
   Keeps track of the active Pong Games to display them in the
   lobby so that other players can view the game.
@@ -8,6 +9,10 @@ defmodule GameServer.PongActiveGames do
   # TODO could we use presence for this?
   def add_active_game(game_id) do
     GenServer.cast(__MODULE__, {:add_game, game_id})
+  end
+
+  def get_active_games() do
+    GenServer.call(__MODULE__, :get_games)
   end
 
   # TODO this may be better done as a supervisor over the PongGameSupervisors
@@ -27,5 +32,10 @@ defmodule GameServer.PongActiveGames do
   @impl GenServer
   def handle_cast({:add_game, game_id}, games) do
     {:noreply, MapSet.put(games, game_id)}
+  end
+
+  @impl GenServer
+  def handle_call(:get_games, _sender, games) do
+    {:reply, MapSet.to_list(games), games}
   end
 end

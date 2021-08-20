@@ -30,3 +30,4 @@
     Leave Queue
   </button>
 </div>
+<%= render("active_games.html", games: @active_games) %>

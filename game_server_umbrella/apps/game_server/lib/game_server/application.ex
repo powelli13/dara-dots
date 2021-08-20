@@ -22,7 +22,9 @@ defmodule GameServer.Application do
       # Start the player queues
       GameServer.RpsPlayerQueue,
       GameServer.TttPlayerQueue,
-      GameServer.PongPlayerQueue
+      GameServer.PongPlayerQueue,
+      # Track active games
+      GameServer.PongActiveGames
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: GameServer.Supervisor)

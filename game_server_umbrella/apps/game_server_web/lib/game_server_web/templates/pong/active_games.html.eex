@@ -1,0 +1,7 @@
+<div>Hi did I render!?</div>
+
+<ol>
+  <% for game <- @games do %>
+    <li><%= game %></li>
+  <% end %>
+</ol>

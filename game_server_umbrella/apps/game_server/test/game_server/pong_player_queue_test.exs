@@ -2,7 +2,7 @@ defmodule GameServer.PongPlayerQueueTest do
   use ExUnit.Case, async: true
 
   alias GameServer.PongPlayerQueue
-  #alias Phoenix.PubSub
+  # alias Phoenix.PubSub
 
   test "add one player should have size of one" do
     PongPlayerQueue.add_player("123", "name")

@@ -39,6 +39,9 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def init(game_id) do
+    # Add the game to the active list
+    GameServer.PongActiveGames.add_active_game(game_id)
+
     # Start the state broadcasting
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
