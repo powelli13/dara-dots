@@ -11,7 +11,8 @@ defmodule GameServerWeb.PongController do
     render(conn, "pong_lobby.html", active_games: active_games)
   end
 
-  #def active_games(conn, _params) do
-    #render(conn, "active_games.html")
-  #end
+  def spectate(conn, _params) do
+
+    render(conn, "spectate.html")
+  end
 end
