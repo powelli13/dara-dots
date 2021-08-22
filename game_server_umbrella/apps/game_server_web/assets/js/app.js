@@ -27,8 +27,9 @@ import RpsGame from "./rps_game";
 import TttPhaserWrapper from "./ttt_phaser_wrapper";
 import TttLobbyChat from "./ttt_lobby";
 
-// Wrap Pong Phaser game and connect to the socket
+// Wrap Pong Phaser game and spectator
 import PongPhaserWrapper from "./pong_phaser_wrapper";
+import PongSpectator from "./pong_spectator";
 
 // Generic lobby chat channel
 import GenLobbyChat from "./lobby_chat";
@@ -52,8 +53,9 @@ RpsGame.init(socket, "rps_id");
 TttLobbyChat.init(socket, document.getElementById("ttt-lobby-chat-container"));
 TttPhaserWrapper.init(socket, "ttt_id");
 
-// Initialize the Pong game wrapper
+// Initialize the Pong game wrapper and spectator
 PongPhaserWrapper.init(socket, "phaser-pong-wrapper");
+PongSpectator.init(socket, "pong_spectator");
 
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");

@@ -1,3 +1,6 @@
 <div>Enjoy spectating the game!</div>
 
-<div id="phaser-pong-wrapper"></div>
+<div id="pong-spectator"></div>
+
+<div id="scoreboard"></div>
+<div id="announcement"></div>
