@@ -28,7 +28,6 @@ defmodule GameServerWeb.PongGameChannel do
       :bot_player_id => bot_player_id
     } = PongGame.get_player_positions(socket.assigns.game_id)
 
-    #TODO either adjust for spectators or make new channel, preferrably adjust
     case socket.assigns.player_id do
       ^top_player_id ->
         push(
@@ -43,6 +42,9 @@ defmodule GameServerWeb.PongGameChannel do
           "player_status",
           %{position: "bottom"}
         )
+
+      _ ->
+        nil
     end
 
     {:noreply, socket}

@@ -12,7 +12,6 @@ defmodule GameServerWeb.PongController do
   end
 
   def spectate(conn, _params) do
-
     render(conn, "spectate.html")
   end
 end

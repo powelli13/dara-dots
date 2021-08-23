@@ -55,7 +55,7 @@ TttPhaserWrapper.init(socket, "ttt_id");
 
 // Initialize the Pong game wrapper and spectator
 PongPhaserWrapper.init(socket, "phaser-pong-wrapper");
-PongSpectator.init(socket, "pong_spectator");
+PongSpectator.init(socket, "pong-spectator");
 
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");
