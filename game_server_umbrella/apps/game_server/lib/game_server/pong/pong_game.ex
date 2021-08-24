@@ -203,6 +203,8 @@ defmodule GameServer.PongGame do
   end
 
   defp broadcast_game_winner(state, winner_name) do
+    # TODO even after the game ends, through score or someone leaving
+    # the ball updates continue to be sent out
     PubSub.broadcast(
       GameServer.PubSub,
       "pong_game:" <> state.game_id,
