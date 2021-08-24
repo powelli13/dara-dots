@@ -23,6 +23,10 @@ defmodule GameServer.PongGame do
     GenServer.cast(via_tuple(game_id), {:set_bot_paddle, player_id, player_name})
   end
 
+  def remove_player(game_id, player_id) do
+    GenServer.cast(via_tuple(game_id), {:remove_player, player_id})
+  end
+
   def get_player_positions(game_id) do
     GenServer.call(via_tuple(game_id), :get_player_positions)
   end
@@ -54,6 +58,7 @@ defmodule GameServer.PongGame do
       bot_paddle_player_id: nil,
       top_paddle_player_name: nil,
       bot_paddle_player_name: nil,
+      game_running: true,
       game_state: PongGameState.reset_ball_position_and_speed(%PongGameState{})
     }
 
@@ -120,6 +125,23 @@ defmodule GameServer.PongGame do
       :noreply,
       %{state | bot_paddle_player_id: player_id, bot_paddle_player_name: player_name}
     }
+  end
+
+  @impl GenServer
+  def handle_cast({:remove_player, player_id}, state) do
+    # TODO make this count down and pause to allow for the player to rejoin
+    # The player that didn't leave is the winner
+    {top_player, bot_player} = {state.top_paddle_player_id, state.bot_paddle_player_id}
+
+    case player_id do
+      ^top_player -> 
+        broadcast_game_winner(state, state.bot_paddle_player_name)
+
+      ^bot_player ->
+        broadcast_game_winner(state, state.top_paddle_player_name)
+    end
+
+    {:stop, :normal, state}
   end
 
   @impl GenServer

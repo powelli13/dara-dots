@@ -78,4 +78,12 @@ defmodule GameServerWeb.PongGameChannel do
       }
     )
   end
+
+  def terminate(reason, socket) do
+    # The Channel terminating means that the user must have left the game
+    # so remove them from the game
+    PongGame.remove_player(socket.assigns.game_id, socket.assigns.player_id)
+
+    reason
+  end
 end
