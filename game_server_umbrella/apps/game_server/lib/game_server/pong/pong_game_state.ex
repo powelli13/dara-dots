@@ -150,12 +150,14 @@ defmodule GameServer.PongGameState do
       state.ball_x <= state.top_paddle_x + @paddle_width
   end
 
+  # Top is lower numbers since it's near the top of the screen
+  # in the Phaser framework used
   defp collide_top_goal?(state) do
-    state.ball_y >= 0.95
+    state.ball_y <= 0.05
   end
 
   defp collide_bottom_goal?(state) do
-    state.ball_y <= 0.05
+    state.ball_y >= 0.95
   end
 
   defp reflect_left_wall(theta) do
