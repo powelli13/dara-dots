@@ -99,7 +99,7 @@ defmodule GameServer.PongPlayerQueue do
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Start game GenServer and add players
-      _start_game_pid = PongGameSupervisor.find_game(new_game_id)
+      _start_game_pid = PongGameSupervisor.find_or_create_game(new_game_id)
 
       r = :rand.uniform()
 

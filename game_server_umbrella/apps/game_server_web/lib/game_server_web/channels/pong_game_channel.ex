@@ -77,6 +77,8 @@ defmodule GameServerWeb.PongGameChannel do
         winnerName: winner_name
       }
     )
+
+    {:noreply, socket}
   end
 
   def terminate(reason, socket) do

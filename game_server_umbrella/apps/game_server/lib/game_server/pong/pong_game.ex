@@ -43,6 +43,9 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def init(game_id) do
+    # TODO the calling via_tuple from the pong game channel will restart this
+    # I think the supervisor needs to be used to guarantee that a game is running
+    IO.inspect("Init'ing a Pong Game with id #{game_id}")
     # Add the game to the active list
     GameServer.PongActiveGames.add_active_game(game_id)
 
@@ -131,10 +134,11 @@ defmodule GameServer.PongGame do
   def handle_cast({:remove_player, player_id}, state) do
     # TODO make this count down and pause to allow for the player to rejoin
     # The player that didn't leave is the winner
+    IO.inspect(state)
     {top_player, bot_player} = {state.top_paddle_player_id, state.bot_paddle_player_id}
 
     case player_id do
-      ^top_player -> 
+      ^top_player ->
         broadcast_game_winner(state, state.bot_paddle_player_name)
 
       ^bot_player ->

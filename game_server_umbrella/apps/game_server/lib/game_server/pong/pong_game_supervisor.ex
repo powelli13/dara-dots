@@ -18,7 +18,7 @@ defmodule GameServer.PongGameSupervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def find_game(game_id) do
+  def find_or_create_game(game_id) do
     case start_child(game_id) do
       {:ok, pid} -> pid
       {:error, {:already_started, pid}} -> pid
