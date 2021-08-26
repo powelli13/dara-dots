@@ -31,13 +31,18 @@ defmodule GameServer.PongGame do
     GenServer.call(via_tuple(game_id), :get_player_positions)
   end
 
-  def start_link(id) do
-    GenServer.start_link(__MODULE__, id, name: via_tuple(id))
+  def start(id) do
+    GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
+
+  #def start_link(id) do
+    #GenServer.start_link(__MODULE__, id, name: via_tuple(id))
+  #end
 
   # Use this to transform the id given to exported functions
   # before calling GenServer call or cast
   defp via_tuple(id) do
+    # TODO maybe I need to move this registry call into init?
     {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
   end
 
@@ -116,6 +121,8 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def handle_cast({:set_top_paddle, player_id, player_name}, state) do
+    IO.inspect state
+    IO.puts "!!!!!!!!!!!!!! state in set top paddle player id"
     {
       :noreply,
       %{state | top_paddle_player_id: player_id, top_paddle_player_name: player_name}
@@ -124,6 +131,8 @@ defmodule GameServer.PongGame do
 
   @impl GenServer
   def handle_cast({:set_bot_paddle, player_id, player_name}, state) do
+    IO.inspect state
+    IO.puts "!!!!!!!!!!!!!! state in set bot paddle player id"
     {
       :noreply,
       %{state | bot_paddle_player_id: player_id, bot_paddle_player_name: player_name}

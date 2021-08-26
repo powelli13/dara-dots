@@ -15,6 +15,7 @@ defmodule GameServer.PongGameSupervisor do
   # to allow for one supervisor to start multiple
   @impl true
   def init(_init_arg) do
+    IO.puts "I am init'ing a new Pong Game Supervisor"
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
@@ -26,6 +27,8 @@ defmodule GameServer.PongGameSupervisor do
   end
 
   def start_child(game_id) do
+    # The supervisor is restarting the pong games when they terminate
+    IO.puts "Supervisor restarting pong game child!!"
     DynamicSupervisor.start_child(
       __MODULE__,
       {GameServer.PongGame, game_id}
