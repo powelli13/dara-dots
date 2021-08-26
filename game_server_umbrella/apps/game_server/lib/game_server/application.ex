@@ -9,20 +9,25 @@ defmodule GameServer.Application do
     children = [
       # Start the PubSub system
       {Phoenix.PubSub, name: GameServer.PubSub},
+
       # Start the Registry
       {Registry, keys: :unique, name: GameServer.Registry},
+
       # Start the dynamic supervisors for running games
       GameServer.RpsGameSupervisor,
       GameServer.TttGameSupervisor,
-      #GameServer.PongGameSupervisor,
+
       # Start the dynamic supervisor for Lip Sync queues
       GameServer.LipSyncQueueSupervisor,
+
       # Start the server scoreboard
       GameServer.Scoreboard,
+
       # Start the player queues
       GameServer.RpsPlayerQueue,
       GameServer.TttPlayerQueue,
       GameServer.PongPlayerQueue,
+
       # Track active games
       GameServer.PongActiveGames
     ]

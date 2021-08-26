@@ -98,13 +98,7 @@ defmodule GameServer.PongPlayerQueue do
       # Generate the new random unique game id
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
-      # Start game GenServer and add players
-      #_start_game_pid = PongGameSupervisor.find_or_create_game(new_game_id)
-      # TODO The supervisor is unneeded because the game will start itself thanks to via_tuple
-      # Also we don't need resiliency for game states
-      IO.puts "!!!!!!!!!!!!!!!!!!!! Attempting to start pong game without linking"
       {:ok, _pid} = PongGame.start(new_game_id)
-      IO.puts "????????????????????? after the attempt"
 
       r = :rand.uniform()
 
