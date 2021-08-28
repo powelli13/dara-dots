@@ -26,7 +26,7 @@ let DaraDotsPhaserWrapper = {
     // Setup channel listeners
     gameChannel.on("game_state",
     ({dots}) => {
-      console.log(dots);
+      drawBoardState(dots);
     });
 
     gameChannel.join()
@@ -57,6 +57,10 @@ let DaraDotsPhaserWrapper = {
       }
     };
 
+    // Setup game objects
+    let grayGraphics;
+    let emptyDot;
+
     let game = new Phaser.Game(config);
 
     function preload () {
@@ -67,10 +71,40 @@ let DaraDotsPhaserWrapper = {
       // Only load the Phaser assets on certain pages
       this.add.image(boardWidth, boardHeight, "background");
 
+      grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
+
+      emptyDot = new Phaser.Geom.Circle(250, 250, 2);
+      grayGraphics.fillCircleShape(emptyDot);
+
       this.input.mouse.disableContextMenu();
     }
 
     function update () {
+    }
+
+    function drawBoardState(dots) {
+      grayGraphics.clear();
+
+      dots.forEach((v, i) => {
+        // TODO delineate type of dots using v[2]
+        const x = percentWidthToPixels(v[0]);
+        const y = percentHeightToPixels(v[1]);
+
+        grayGraphics.fillCircleShape(
+          new Phaser.Geom.Circle(x, y, 2)
+        );
+      });
+    }
+
+    // The server stores object positions as relative percentages
+    // of the total game space. These functions are used to convert
+    // server values into the percentage for the client board position.
+    function percentWidthToPixels(percentage) {
+      return boardWidth * percentage;
+    }
+
+    function percentHeightToPixels(percentage) {
+      return boardHeight * percentage;
     }
   }
 };

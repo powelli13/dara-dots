@@ -2,7 +2,6 @@ defmodule GameServerWeb.DaraDotsGameChannel do
   use GameServerWeb, :channel
 
   def join("dara_dots_game:" <> game_id, _params, socket) do
-
     # TODO move this into the queue
     GameServer.DaraDotsGame.start(game_id)
 
