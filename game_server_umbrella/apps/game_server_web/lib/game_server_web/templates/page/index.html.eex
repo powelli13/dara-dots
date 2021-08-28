@@ -22,10 +22,10 @@
     </div>
     <ul>
       <li><%= link "Dots Puzzle", to: Routes.dots_puzzle_path(@conn, :lobby) %></li>
-      <li><%= link "Tic Tac Toe", to: "/ttt-game-lobby" %></li>
-      <li><%= link "Pong", to: "/pong-lobby" %></li>
-      <li><%= link "Lip Sync Battle", to: "/lip-sync-landing" %></li>
-      <li><%= link "Rock Paper Scissors", to: "/rps-game-lobby" %></li>
+      <li><%= link "Tic Tac Toe", to: Routes.ttt_game_path(@conn, :lobby) %></li>
+      <li><%= link "Pong", to: Routes.pong_path(@conn, :lobby) %></li>
+      <li><%= link "Lip Sync Battle", to: Routes.lobby_path(@conn, :landing) %></li>
+      <li><%= link "Rock Paper Scissors", to: Routes.game_path(@conn, :lobby) %></li>
     </ul>
   </article>
 </section>
