@@ -38,6 +38,7 @@ defmodule GameServerWeb.Router do
     get "/pong-spectate", PongController, :spectate
 
     get "/dots-lobby", DotsPuzzleController, :lobby
+    get "/dots-puzzle", DotsPuzzleController, :puzzle
 
     live "/lipsynclive", LipSyncLive
     live "/lobbychatlive", LobbyChatLive

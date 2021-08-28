@@ -31,6 +31,9 @@ import TttLobbyChat from "./ttt_lobby";
 import PongPhaserWrapper from "./pong_phaser_wrapper";
 import PongSpectator from "./pong_spectator";
 
+// Dara Dots Puzzle
+import DaraDotsPhaserWrapper from "./dara_dots_phaser_wrapper";
+
 // Generic lobby chat channel
 import GenLobbyChat from "./lobby_chat";
 
@@ -56,6 +59,9 @@ TttPhaserWrapper.init(socket, "ttt_id");
 // Initialize the Pong game wrapper and spectator
 PongPhaserWrapper.init(socket, "phaser-pong-wrapper");
 PongSpectator.init(socket, "pong-spectator");
+
+// Initialize the Dara Dots wrapper
+DaraDotsPhaserWrapper.init(socket, "phaser-puzzle-wrapper");
 
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");
