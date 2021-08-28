@@ -35,14 +35,9 @@ defmodule GameServer.PongGame do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
 
-  # def start_link(id) do
-  # GenServer.start_link(__MODULE__, id, name: via_tuple(id))
-  # end
-
   # Use this to transform the id given to exported functions
   # before calling GenServer call or cast
   defp via_tuple(id) do
-    # TODO maybe I need to move this registry call into init?
     {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
   end
 

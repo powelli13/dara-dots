@@ -20,6 +20,9 @@
   </button>
 </div>
 <div>
+  <%= link "Test the Game", to: Routes.dots_puzzle_path(@conn, :puzzle) %>
+</div>
+<div>
   <button id="join-game-queue-button"
     class="button column"
     type="submit">

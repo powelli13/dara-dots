@@ -24,6 +24,10 @@ let DaraDotsPhaserWrapper = {
 
   initPhaserGame(gameChannel) {
     // Setup channel listeners
+    gameChannel.on("game_state",
+    ({dots}) => {
+      console.log(dots);
+    });
 
     gameChannel.join()
       .receive("ok", (resp) => {
