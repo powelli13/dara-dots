@@ -22,31 +22,24 @@ defmodule GameServerWeb.Router do
     get "/", PageController, :index
 
     get "/lip-sync-landing", LobbyController, :landing
-
     get "/lobby", LobbyController, :index
-
     get "/lobby/:lobby_id", LobbyController, :index
-
     post "/lobby", LobbyController, :create
-
     post "/lobby/register", LobbyController, :register
 
     get "/game", GameController, :index
-
     get "/rps-game-lobby", GameController, :lobby
 
     get "/ttt-game", TttGameController, :index
-
     get "/ttt-game-lobby", TttGameController, :lobby
 
     get "/pong-game", PongController, :index
-
     get "/pong-lobby", PongController, :lobby
-
     get "/pong-spectate", PongController, :spectate
 
-    live "/lipsynclive", LipSyncLive
+    get "/dots-lobby", DotsPuzzleController, :lobby
 
+    live "/lipsynclive", LipSyncLive
     live "/lobbychatlive", LobbyChatLive
   end
 
