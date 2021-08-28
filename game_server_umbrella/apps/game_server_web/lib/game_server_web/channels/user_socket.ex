@@ -13,6 +13,8 @@ defmodule GameServerWeb.UserSocket do
 
   channel "pong_game:*", GameServerWeb.PongGameChannel
 
+  channel "dara_dots_game:*", GameServerWeb.DaraDotsGameChannel
+
   # Generic lobby chat
   channel "lobby_chat:*", GameServerWeb.GenericLobbyChatChannel
 

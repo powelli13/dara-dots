@@ -11,7 +11,7 @@ let DaraDotsPhaserWrapper = {
 
     socket.connect({token: window.userToken});
 
-    this.onReady(socket, "");// params.get('id'));
+    this.onReady(socket, "1");// params.get('id'));
   },
 
   onReady(socket, gameId) {
