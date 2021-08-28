@@ -1,0 +1,3 @@
+<div id="phaser-puzzle-wrapper"></div>
+
+<%= link("Return to Lobby", to: Routes.dots_puzzle_path(@conn, :lobby)) %>
