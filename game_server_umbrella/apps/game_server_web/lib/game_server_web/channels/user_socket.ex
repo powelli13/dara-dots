@@ -2,10 +2,11 @@ defmodule GameServerWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
+  # TODO rename this
   channel "lobby:*", GameServerWeb.LobbyChannel
 
-  channel "rps_game:*", GameServerWeb.RpsGameChannel
   channel "rps_lobby:*", GameServerWeb.RpsLobbyChannel
+  channel "rps_game:*", GameServerWeb.RpsGameChannel
 
   channel "ttt_lobby:*", GameServerWeb.TttLobbyChannel
   channel "ttt_game:*", GameServerWeb.TttGameChannel
@@ -13,7 +14,7 @@ defmodule GameServerWeb.UserSocket do
   channel "pong_game:*", GameServerWeb.PongGameChannel
 
   # Generic lobby chat
-  channel "lobby_chat:*", GameServerWeb.LobbyChatChannel
+  channel "lobby_chat:*", GameServerWeb.GenericLobbyChatChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

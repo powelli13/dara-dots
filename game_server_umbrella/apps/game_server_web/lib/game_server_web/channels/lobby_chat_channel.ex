@@ -1,4 +1,4 @@
-defmodule GameServerWeb.LobbyChatChannel do
+defmodule GameServerWeb.GenericLobbyChatChannel do
   @moduledoc """
   Generic Lobby Chat Channel used to handle the
   chat and queue functionality for the various lobbies.

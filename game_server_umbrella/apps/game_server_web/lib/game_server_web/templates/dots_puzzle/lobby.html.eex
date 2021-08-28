@@ -1,3 +1,33 @@
+<div>Welcome to the Dara Dots Puzzle Lobby!</div>
+
+<div>Users</div>
+<div id="user-list"></div>
+
+<div id="gen-lobby-chat-container"
+    class="chat-history"
+    data-lobby-name="dots-puzzle">
+</div>
+
 <div>
-Hey there! Puzzle lobby is here.
+  <textarea id="gen-lobby-chat-input"
+    rows="2"
+    placeholder="Chat..."></textarea>
+
+  <button id="gen-lobby-chat-submit"
+    class="button column"
+    type="submit">
+    Send
+  </button>
+</div>
+<div>
+  <button id="join-game-queue-button"
+    class="button column"
+    type="submit">
+    Join Queue
+  </button>
+  <button id="leave-game-queue-button"
+    class="button column"
+    type="submit">
+    Leave Queue
+  </button>
 </div>

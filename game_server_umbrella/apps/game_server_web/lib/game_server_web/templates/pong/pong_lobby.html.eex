@@ -1,4 +1,4 @@
-<div>Welcome to the lobby</div>
+<div>Welcome to the Pong Lobby!</div>
 <div>Users</div>
 <div id="user-list"></div>
 
