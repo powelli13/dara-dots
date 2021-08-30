@@ -1,4 +1,5 @@
 defmodule GameServer.PongGameState do
+  alias __MODULE__
   @paddle_right_limit 0.9
   @paddle_left_limit 0.0
   @paddle_move_step 0.03
@@ -26,18 +27,18 @@ defmodule GameServer.PongGameState do
             top_player_score: 0,
             bot_player_score: 0
 
-  def move_top_paddle(state = %GameServer.PongGameState{}, direction)
+  def move_top_paddle(state = %PongGameState{}, direction)
       when is_atom(direction) do
     new_paddle_x = adjust_paddle_x(state.top_paddle_x, direction)
 
-    %GameServer.PongGameState{state | top_paddle_x: new_paddle_x}
+    %PongGameState{state | top_paddle_x: new_paddle_x}
   end
 
-  def move_bottom_paddle(state = %GameServer.PongGameState{}, direction)
+  def move_bottom_paddle(state = %PongGameState{}, direction)
       when is_atom(direction) do
     new_paddle_x = adjust_paddle_x(state.bot_paddle_x, direction)
 
-    %GameServer.PongGameState{state | bot_paddle_x: new_paddle_x}
+    %PongGameState{state | bot_paddle_x: new_paddle_x}
   end
 
   defp adjust_paddle_x(paddle_x, direction) do
@@ -66,7 +67,7 @@ defmodule GameServer.PongGameState do
   # should be reset.
   # This is because the message mailbox and timers are in the GenServer which
   # uses this struct.
-  def move_ball(state = %GameServer.PongGameState{}) do
+  def move_ball(state = %PongGameState{}) do
     # Only calculate and update if the ball is set to move
     if not state.ball_moving do
       {state, false}
@@ -75,7 +76,7 @@ defmodule GameServer.PongGameState do
     end
   end
 
-  defp calculate_and_move_ball(state = %GameServer.PongGameState{}) do
+  defp calculate_and_move_ball(state = %PongGameState{}) do
     # check collisions
     {new_theta, player_scored} = check_collisions_and_calculate_theta(state)
 
@@ -94,7 +95,7 @@ defmodule GameServer.PongGameState do
       new_ball_x = state.ball_x + new_ball_x_step
       new_ball_y = state.ball_y + new_ball_y_step
 
-      {%GameServer.PongGameState{
+      {%PongGameState{
          state
          | ball_x: new_ball_x,
            ball_y: new_ball_y,
@@ -105,11 +106,11 @@ defmodule GameServer.PongGameState do
     end
   end
 
-  def start_ball_moving(state = %GameServer.PongGameState{}) do
+  def start_ball_moving(state = %PongGameState{}) do
     %{state | ball_moving: true}
   end
 
-  defp check_collisions_and_calculate_theta(state = %GameServer.PongGameState{}) do
+  defp check_collisions_and_calculate_theta(state = %PongGameState{}) do
     cond do
       collide_left?(state.ball_x) ->
         {reflect_left_wall(state.ball_theta), :no_score}
@@ -176,24 +177,24 @@ defmodule GameServer.PongGameState do
     Enum.concat(45..135, 225..315) |> Enum.random()
   end
 
-  defp score_goal(state = %GameServer.PongGameState{}, player_scored) do
+  defp score_goal(state = %PongGameState{}, player_scored) do
     case player_scored do
       :top_scored ->
-        %GameServer.PongGameState{
+        %PongGameState{
           state
           | top_player_score: state.top_player_score + 1
         }
 
       :bot_scored ->
-        %GameServer.PongGameState{
+        %PongGameState{
           state
           | bot_player_score: state.bot_player_score + 1
         }
     end
   end
 
-  def reset_ball_position_and_speed(state = %GameServer.PongGameState{}) do
-    %GameServer.PongGameState{
+  def reset_ball_position_and_speed(state = %PongGameState{}) do
+    %PongGameState{
       state
       | ball_x: @starting_ball_x,
         ball_y: @starting_ball_y,
