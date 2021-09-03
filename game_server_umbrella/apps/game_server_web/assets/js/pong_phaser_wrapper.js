@@ -54,7 +54,7 @@ let PongPhaserWrapper = {
       .receive("error", reason => console.log("join failed", reason));
 
     // Setup display dimension
-    const boardWidth = 500;
+    const boardWidth = 375;
     const boardHeight = 500;
 
     // Paddle width is ten percent of the board width
@@ -143,7 +143,7 @@ let PongPhaserWrapper = {
         movingLeft = false;
       });
 
-      rightMoveClick = this.add.sprite(465, boardHeight / 2, "right_move_arrow").setInteractive();
+      rightMoveClick = this.add.sprite(boardWidth - 35, boardHeight / 2, "right_move_arrow").setInteractive();
       rightMoveClick.alpha = 0.35;
       rightMoveClick.on("pointerdown", function (pointer) {
         movingRight = true;
