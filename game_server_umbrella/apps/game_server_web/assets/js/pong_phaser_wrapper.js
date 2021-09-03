@@ -84,9 +84,12 @@ let PongPhaserWrapper = {
 
     // Setup game objects
     let whiteGraphics;
+    let grayGraphics;
     let blueGraphics;
     let redGraphics;
     
+    let leftMoveClick;
+    let rightMoveClick;
     let topPaddle;
     let botPaddle;
     let ball;
@@ -100,6 +103,7 @@ let PongPhaserWrapper = {
       this.add.image(boardWidth, boardHeight, "background");
 
       whiteGraphics = this.add.graphics({ fillStyle: { color: 0xfefefe } });
+      grayGraphics = this.add.graphics({ fillStyle: { color: 0xd3d3d3, alpha: 0.5 } });
       blueGraphics = this.add.graphics({ fillStyle: { color: 0x1a8dff } });
       redGraphics = this.add.graphics({ fillStyle: { color: 0xff1a1a } });
 
@@ -120,13 +124,38 @@ let PongPhaserWrapper = {
       ball = new Phaser.Geom.Circle(250, 250, 12.5);
       whiteGraphics.fillCircleShape(ball);
 
+      // Initialize the clickers used to move the ball, needed for mobile play
+      leftMoveClick = new Phaser.Geom.Rectangle(
+        5,
+        5,
+        25,
+        boardHeight * 0.9
+      );
+
+      rightMoveClick = new Phaser.Geom.Rectangle(
+        470,
+        5,
+        25,
+        boardHeight * 0.9
+      );
+
       // Bind the arrow keys to moving the rectangle
       this.input.keyboard.on('keydown-LEFT', function (event) {
         gameChannel.push("move_paddle_left", {})
           .receive("error", e => e.console.log(e));
       });
 
+      leftMoveClick.on('pointerdown', function (event) {
+        gameChannel.push("move_paddle_left", {})
+          .receive("error", e => e.console.log(e));
+      });
+
       this.input.keyboard.on('keydown-RIGHT', function (event) {
+        gameChannel.push("move_paddle_right", {})
+          .receive("error", e => e.console.log(e));
+      });
+
+      rightMoveClick.on('pointerdown', function (event) {
         gameChannel.push("move_paddle_right", {})
           .receive("error", e => e.console.log(e));
       });
@@ -138,13 +167,16 @@ let PongPhaserWrapper = {
     }
 
     function redrawGameObjects() {
-        whiteGraphics.clear();
-        blueGraphics.clear();
-        redGraphics.clear();
+      whiteGraphics.clear();
+      grayGraphics.clear();
+      blueGraphics.clear();
+      redGraphics.clear();
 
-        whiteGraphics.fillCircleShape(ball);
-        blueGraphics.fillRectShape(topPaddle);
-        redGraphics.fillRectShape(botPaddle);
+      whiteGraphics.fillCircleShape(ball);
+      blueGraphics.fillRectShape(topPaddle);
+      redGraphics.fillRectShape(botPaddle);
+      grayGraphics.fillRectShape(leftMoveClick);
+      grayGraphics.fillRectShape(rightMoveClick);
     }
 
     function moveBall(ballX, ballY) {
