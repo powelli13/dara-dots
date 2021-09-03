@@ -96,6 +96,8 @@ let PongPhaserWrapper = {
 
     function preload () {
       this.load.image("background", "game_images/background.jpg");
+      this.load.image("left_move_arrow", "game_images/left_move_arrow.png");
+      this.load.image("right_move_arrow", "game_images/right_move_arrow.png");
     }
 
     function create () {
@@ -125,19 +127,19 @@ let PongPhaserWrapper = {
       whiteGraphics.fillCircleShape(ball);
 
       // Initialize the clickers used to move the ball, needed for mobile play
-      leftMoveClick = new Phaser.Geom.Rectangle(
-        5,
-        5,
-        25,
-        boardHeight * 0.9
-      );
+      leftMoveClick = this.add.sprite(35, boardHeight / 2, "left_move_arrow").setInteractive();
+      leftMoveClick.alpha = 0.35;
+      leftMoveClick.on("pointerup", function (pointer) {
+        gameChannel.push("move_paddle_left", {})
+          .receive("error", e => e.console.log(e));
+      });
 
-      rightMoveClick = new Phaser.Geom.Rectangle(
-        470,
-        5,
-        25,
-        boardHeight * 0.9
-      );
+      rightMoveClick = this.add.sprite(465, boardHeight / 2, "right_move_arrow").setInteractive();
+      rightMoveClick.alpha = 0.35;
+      rightMoveClick.on("pointerup", function (pointer) {
+        gameChannel.push("move_paddle_right", {})
+          .receive("error", e => e.console.log(e));
+      });
 
       // Bind the arrow keys to moving the rectangle
       this.input.keyboard.on('keydown-LEFT', function (event) {
@@ -145,17 +147,7 @@ let PongPhaserWrapper = {
           .receive("error", e => e.console.log(e));
       });
 
-      leftMoveClick.on('pointerdown', function (event) {
-        gameChannel.push("move_paddle_left", {})
-          .receive("error", e => e.console.log(e));
-      });
-
       this.input.keyboard.on('keydown-RIGHT', function (event) {
-        gameChannel.push("move_paddle_right", {})
-          .receive("error", e => e.console.log(e));
-      });
-
-      rightMoveClick.on('pointerdown', function (event) {
         gameChannel.push("move_paddle_right", {})
           .receive("error", e => e.console.log(e));
       });
@@ -168,15 +160,12 @@ let PongPhaserWrapper = {
 
     function redrawGameObjects() {
       whiteGraphics.clear();
-      grayGraphics.clear();
       blueGraphics.clear();
       redGraphics.clear();
 
       whiteGraphics.fillCircleShape(ball);
       blueGraphics.fillRectShape(topPaddle);
       redGraphics.fillRectShape(botPaddle);
-      grayGraphics.fillRectShape(leftMoveClick);
-      grayGraphics.fillRectShape(rightMoveClick);
     }
 
     function moveBall(ballX, ballY) {
