@@ -88,8 +88,12 @@ let PongPhaserWrapper = {
     let blueGraphics;
     let redGraphics;
     
+    // Sprites and bools to allow for moving by clicking the arrows
     let leftMoveClick;
     let rightMoveClick;
+    let movingLeft = false;
+    let movingRight = false;
+    
     let topPaddle;
     let botPaddle;
     let ball;
@@ -129,16 +133,26 @@ let PongPhaserWrapper = {
       // Initialize the clickers used to move the ball, needed for mobile play
       leftMoveClick = this.add.sprite(35, boardHeight / 2, "left_move_arrow").setInteractive();
       leftMoveClick.alpha = 0.35;
+      leftMoveClick.on("pointerdown", function (pointer) {
+        movingLeft = true;
+      });
       leftMoveClick.on("pointerup", function (pointer) {
-        gameChannel.push("move_paddle_left", {})
-          .receive("error", e => e.console.log(e));
+        movingLeft = false;
+      });
+      leftMoveClick.on("pointerout", function (pointer) {
+        movingLeft = false;
       });
 
       rightMoveClick = this.add.sprite(465, boardHeight / 2, "right_move_arrow").setInteractive();
       rightMoveClick.alpha = 0.35;
+      rightMoveClick.on("pointerdown", function (pointer) {
+        movingRight = true;
+      });
       rightMoveClick.on("pointerup", function (pointer) {
-        gameChannel.push("move_paddle_right", {})
-          .receive("error", e => e.console.log(e));
+        movingRight = false
+      });
+      rightMoveClick.on("pointerout", function (pointer) {
+        movingRight = false;
       });
 
       // Bind the arrow keys to moving the rectangle
@@ -156,6 +170,17 @@ let PongPhaserWrapper = {
     }
 
     function update () {
+      if (movingLeft)
+      {
+        gameChannel.push("move_paddle_left", {})
+          .receive("error", e => e.console.log(e));
+      }
+
+      if (movingRight)
+      {
+        gameChannel.push("move_paddle_right", {})
+          .receive("error", e => e.console.log(e));
+      }
     }
 
     function redrawGameObjects() {
