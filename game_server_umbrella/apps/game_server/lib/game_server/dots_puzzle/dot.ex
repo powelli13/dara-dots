@@ -5,11 +5,10 @@ defmodule GameServer.Dot do
   Defaults to not being empty, and not a home or destination dot for any piece.
   """
   alias __MODULE__
-  defstruct [
-    home_piece: :none,
-    destination_piece: :none,
-    stamp: :empty
-  ]
+
+  defstruct home_piece: :none,
+            destination_piece: :none,
+            stamp: :empty
 
   @doc """
   Creates a new dot that will act as the home dot for the given piece.

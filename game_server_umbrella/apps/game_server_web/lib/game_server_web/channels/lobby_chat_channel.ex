@@ -16,19 +16,6 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
     {:ok, socket}
   end
 
-  def handle_info(:after_join, socket) do
-    push(socket, "presence_state", GameServerWeb.Presence.list(socket))
-
-    {:ok, _} =
-      GameServerWeb.Presence.track(
-        socket,
-        socket.assigns.username,
-        %{device: "browser"}
-      )
-
-    {:noreply, socket}
-  end
-
   # Handles commands to join game queues from the client
   def handle_in("join_queue", _, socket) do
     case socket.assigns.lobby_name do
@@ -78,6 +65,19 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
         }
       )
     end
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:after_join, socket) do
+    push(socket, "presence_state", GameServerWeb.Presence.list(socket))
+
+    {:ok, _} =
+      GameServerWeb.Presence.track(
+        socket,
+        socket.assigns.username,
+        %{device: "browser"}
+      )
 
     {:noreply, socket}
   end
