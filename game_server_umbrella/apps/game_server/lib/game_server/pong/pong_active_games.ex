@@ -11,6 +11,10 @@ defmodule GameServer.PongActiveGames do
     GenServer.cast(__MODULE__, {:add_game, game_id})
   end
 
+  def remove_game(game_id) do
+    GenServer.cast(__MODULE__, {:remove_game, game_id})
+  end
+
   def get_active_games() do
     GenServer.call(__MODULE__, :get_games)
   end
@@ -34,6 +38,11 @@ defmodule GameServer.PongActiveGames do
   @impl GenServer
   def handle_cast({:add_game, game_id}, games) do
     {:noreply, MapSet.put(games, game_id)}
+  end
+
+  @impl GenServer
+  def handle_cast({:remove_game, game_id}, games) do
+    {:noreply, MapSet.delete(games, game_id)}
   end
 
   @impl GenServer

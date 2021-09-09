@@ -54,7 +54,7 @@ let PongSpectator = {
       .receive("error", reason => console.log("join failed", reason));
 
     // Setup display dimension
-    const boardWidth = 500;
+    const boardWidth = 375;
     const boardHeight = 500;
 
     // Paddle width is ten percent of the board width

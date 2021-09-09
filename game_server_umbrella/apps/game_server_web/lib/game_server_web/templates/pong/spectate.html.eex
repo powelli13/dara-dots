@@ -2,5 +2,7 @@
 
 <div id="pong-spectator"></div>
 
+<%= link("Return to Lobby", to: Routes.pong_path(@conn, :lobby)) %>
+
 <div id="scoreboard"></div>
 <div id="announcement"></div>
