@@ -22,19 +22,16 @@ defmodule GameServer.DaraDotsGame do
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
-      dots: [
-        [0.5, 0.5, @open_dot],
-        [0.4, 0.5, @open_dot],
-        [0.3, 0.5, @open_dot],
-        [0.6, 0.5, @open_dot],
-        [0.7, 0.5, @open_dot],
-        [0.5, 0.4, @open_dot],
-        [0.5, 0.3, @open_dot],
-        [0.5, 0.6, @open_dot]
-      ]
+      dots: build_dots_board()
     }
 
     {:ok, initial_state}
+  end
+
+  defp build_dots_board() do
+    Enum.map(1..9, fn n -> Enum.map(1..9, fn i -> {n / 10, i / 10} end) end)
+    |> List.flatten()
+    |> Enum.map(fn {row, col} -> [row, col, @open_dot] end)
   end
 
   @impl GenServer
