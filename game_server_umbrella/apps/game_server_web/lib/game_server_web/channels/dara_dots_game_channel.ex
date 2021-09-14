@@ -13,7 +13,8 @@ defmodule GameServerWeb.DaraDotsGameChannel do
       socket,
       "game_state",
       %{
-        dots: game_state.dots
+        dots: game_state.dots,
+        circleCoord: game_state.circle_coord
       }
     )
 

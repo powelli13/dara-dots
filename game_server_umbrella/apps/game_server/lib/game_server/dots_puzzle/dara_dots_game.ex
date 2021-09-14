@@ -1,10 +1,12 @@
 defmodule GameServer.DaraDotsGame do
   use GenServer
   alias Phoenix.PubSub
+  alias GameServer.Coordinate
 
   @broadcast_frequency 70
 
   @open_dot " "
+  @circle_piece "C"
 
   def start(id) do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
@@ -22,7 +24,10 @@ defmodule GameServer.DaraDotsGame do
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
-      dots: build_dots_board()
+      dots: build_dots_board(),
+      # TODO use coordinates internally and transform when broadcasting
+      # circle_coord: Coordinate.new(2, 2)
+      circle_coord: [0.2, 0.2]
     }
 
     {:ok, initial_state}

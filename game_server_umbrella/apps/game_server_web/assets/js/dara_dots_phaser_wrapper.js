@@ -25,8 +25,9 @@ let DaraDotsPhaserWrapper = {
   initPhaserGame(gameChannel) {
     // Setup channel listeners
     gameChannel.on("game_state",
-    ({dots}) => {
+    ({dots, circleCoord}) => {
       drawBoardState(dots);
+      drawCirclePiece(circleCoord);
     });
 
     gameChannel.join()
@@ -59,6 +60,7 @@ let DaraDotsPhaserWrapper = {
 
     // Setup game objects
     let grayGraphics;
+    let blueGraphics;
     let emptyDot;
 
     let game = new Phaser.Game(config);
@@ -72,9 +74,10 @@ let DaraDotsPhaserWrapper = {
       this.add.image(boardWidth, boardHeight, "background");
 
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
+      blueGraphics = this.add.graphics({ fillStyle: {color: 0x0080ff } });
 
-      emptyDot = new Phaser.Geom.Circle(250, 250, 2);
-      grayGraphics.fillCircleShape(emptyDot);
+      //emptyDot = new Phaser.Geom.Circle(250, 250, 2);
+      //grayGraphics.fillCircleShape(emptyDot);
 
       this.input.mouse.disableContextMenu();
     }
@@ -94,6 +97,17 @@ let DaraDotsPhaserWrapper = {
           new Phaser.Geom.Circle(x, y, 2)
         );
       });
+    }
+
+    function drawCirclePiece(circleCoord) {
+      blueGraphics.clear();
+
+      const x = percentWidthToPixels(circleCoord[0]);
+      const y = percentHeightToPixels(circleCoord[1]);
+
+      blueGraphics.fillCircleShape(
+        new Phaser.Geom.Circle(x, y, 12)
+      );
     }
 
     // The server stores object positions as relative percentages
