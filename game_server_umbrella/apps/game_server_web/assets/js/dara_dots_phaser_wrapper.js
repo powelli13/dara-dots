@@ -25,9 +25,10 @@ let DaraDotsPhaserWrapper = {
   initPhaserGame(gameChannel) {
     // Setup channel listeners
     gameChannel.on("game_state",
-    ({dots, circleCoord}) => {
+    ({dots, circleCoord, movableDots}) => {
       drawBoardState(dots);
       drawCirclePiece(circleCoord);
+      highlightMovableDots(movableDots);
     });
 
     gameChannel.join()
@@ -61,6 +62,7 @@ let DaraDotsPhaserWrapper = {
     // Setup game objects
     let grayGraphics;
     let blueGraphics;
+    let movableDotGraphics;
     let emptyDot;
 
     let game = new Phaser.Game(config);
@@ -75,9 +77,7 @@ let DaraDotsPhaserWrapper = {
 
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
       blueGraphics = this.add.graphics({ fillStyle: {color: 0x0080ff } });
-
-      //emptyDot = new Phaser.Geom.Circle(250, 250, 2);
-      //grayGraphics.fillCircleShape(emptyDot);
+      movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
 
       this.input.mouse.disableContextMenu();
     }
@@ -108,6 +108,19 @@ let DaraDotsPhaserWrapper = {
       blueGraphics.fillCircleShape(
         new Phaser.Geom.Circle(x, y, 12)
       );
+    }
+
+    function highlightMovableDots(movableDots) {
+      movableDotGraphics.clear();
+
+      movableDots.forEach((v, i) => {
+        const x = percentWidthToPixels(v[0]);
+        const y = percentHeightToPixels(v[1]);
+
+        movableDotGraphics.fillCircleShape(
+          new Phaser.Geom.Circle(x, y, 8)
+        );
+      });
     }
 
     // The server stores object positions as relative percentages

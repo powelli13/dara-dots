@@ -48,11 +48,28 @@ defmodule GameServer.DaraDotsGame do
     {:noreply, state}
   end
 
+  # retrieve the coordinates that are accessible to a piece at the given coords
+  defp get_movable_coords(coords) do
+    # TODO come up with a more elegant way to do this
+    # change these to no use percentages, instead use coords
+    [x, y] = coords
+    offsets = [[0.1, 0], [-0.1, 0], [0, 0.1], [0, -0.1]]
+
+    Enum.map(offsets, fn [ox, oy] -> [x + ox, y + oy] end)
+  end
+
   defp broadcast_game_state(state) do
+    # generate the game state to be broadcast
+    state_to_broadcast = %{
+      dots: state.dots,
+      circle_coord: state.circle_coord,
+      circle_movable_coords: get_movable_coords(state.circle_coord)
+    }
+
     PubSub.broadcast(
       GameServer.PubSub,
       "dara_dots_game:#{state.game_id}",
-      {:new_game_state, state}
+      {:new_game_state, state_to_broadcast}
     )
   end
 end
