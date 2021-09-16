@@ -1,5 +1,6 @@
 defmodule GameServer.PongActiveGames do
   use GenServer
+  alias GameServer.PongGame
 
   @moduledoc """
   Keeps track of the active Pong Games to display them in the
@@ -47,6 +48,19 @@ defmodule GameServer.PongActiveGames do
 
   @impl GenServer
   def handle_call(:get_games, _sender, games) do
-    {:reply, MapSet.to_list(games), games}
+    {
+      :reply,
+      games
+      |> MapSet.to_list()
+      |> Enum.map(fn game_id ->
+        {
+          top_player,
+          bot_player
+        } = PongGame.get_player_names(game_id)
+
+        {game_id, top_player, bot_player}
+      end),
+      games
+    }
   end
 end

@@ -1,7 +1,11 @@
 <div>Active Games</div>
 
 <ol>
-  <%= for game <- @games do %>
-    <li><%= link("View game", to: Routes.pong_path(@conn, :spectate, id: game)) %></li>
+  <%= for {game_id, cross_player, circle_player} <- @games do %>
+    <li>
+      <%= link(
+        "View #{cross_player} vs #{circle_player}",
+        to: Routes.pong_path(@conn, :spectate, id: game_id)) %>
+    </li>
   <% end %>
 </ol>

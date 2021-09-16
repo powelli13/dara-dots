@@ -31,6 +31,10 @@ defmodule GameServer.PongGame do
     GenServer.call(via_tuple(game_id), :get_player_positions)
   end
 
+  def get_player_names(game_id) do
+    GenServer.call(via_tuple(game_id), :get_player_names)
+  end
+
   def start(id) do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
@@ -133,6 +137,7 @@ defmodule GameServer.PongGame do
     # The player that didn't leave is the winner
     {top_player, bot_player} = {state.top_paddle_player_id, state.bot_paddle_player_id}
 
+    # TODO this fails when a spectator leaves?
     case player_id do
       ^top_player ->
         broadcast_game_winner(state, state.bot_paddle_player_name)
@@ -151,6 +156,18 @@ defmodule GameServer.PongGame do
       %{
         top_player_id: state.top_paddle_player_id,
         bot_player_id: state.bot_paddle_player_id
+      },
+      state
+    }
+  end
+
+  @impl GenServer
+  def handle_call(:get_player_names, _, state) do
+    {
+      :reply,
+      {
+        state.top_paddle_player_name,
+        state.bot_paddle_player_name
       },
       state
     }
