@@ -53,6 +53,8 @@ defmodule GameServer.PongActiveGames do
       games
       |> MapSet.to_list()
       |> Enum.map(fn game_id ->
+        # TODO make this more robust so it handles when there is no game
+        # when the ID is stale this is an unhandled exit
         {
           top_player,
           bot_player

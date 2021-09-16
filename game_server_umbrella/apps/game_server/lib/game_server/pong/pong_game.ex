@@ -137,16 +137,19 @@ defmodule GameServer.PongGame do
     # The player that didn't leave is the winner
     {top_player, bot_player} = {state.top_paddle_player_id, state.bot_paddle_player_id}
 
-    # TODO this fails when a spectator leaves?
     case player_id do
       ^top_player ->
         broadcast_game_winner(state, state.bot_paddle_player_name)
+        {:stop, :normal, state}
 
       ^bot_player ->
         broadcast_game_winner(state, state.top_paddle_player_name)
-    end
+        {:stop, :normal, state}
 
-    {:stop, :normal, state}
+      # This represents a spectator leaving, so do nothing
+      _ ->
+        {:noreply, state}
+    end
   end
 
   @impl GenServer
