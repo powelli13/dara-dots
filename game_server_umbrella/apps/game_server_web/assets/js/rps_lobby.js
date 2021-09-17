@@ -6,7 +6,7 @@ let RpsLobbyChat = {
   init(socket, element) {
     if (!element) { return; }
 
-    socket.connect();
+    socket.connect({token: window.userToken});
 
     this.onReady(socket);
   },
@@ -25,7 +25,7 @@ let RpsLobbyChat = {
 
     let lobbyChannel = socket.channel(`rps_lobby:1`, () => {
       const username = "anon" + Math.floor(Math.random() * 1000);
-      window.localStorage.setItem("dara-username", username);
+      window.localStorage.setItem("player_name", username);
       return {username: username};
     });
 
@@ -47,7 +47,7 @@ let RpsLobbyChat = {
 
     // Add the player to the queue.
     joinQueueButton.addEventListener("click", e => {
-      lobbyChannel.push("join_queue", {player_name: window.localStorage.getItem("dara-username")})
+      lobbyChannel.push("join_queue", {player_name: window.localStorage.getItem("player_name")})
       .receive("error", e => e.console.log(e));
       joinQueueButton.disabled = true;
     });

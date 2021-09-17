@@ -7,7 +7,7 @@ let RpsGame = {
     if (!params.has(urlParam)) { return; }
     if (!document.getElementById("game-message-container")) { return; }
 
-    socket.connect();
+    socket.connect({token: window.userToken});
 
     this.onReady(socket, params.get(urlParam));
   },
