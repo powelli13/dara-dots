@@ -5,7 +5,6 @@ defmodule GameServerWeb.TttLobbyChannel do
   """
   use GameServerWeb, :channel
 
-  # TODO consider removing lobby id?
   def join("ttt_lobby:" <> lobby_id, %{"username" => username}, socket) do
     socket =
       socket

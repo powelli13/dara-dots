@@ -24,6 +24,14 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
           socket.assigns.player_id,
           socket.assigns.username
         )
+
+      "ttt" ->
+        IO.puts "ttt joining queue"
+        IO.inspect socket.assigns.player_id
+        GameServer.TttPlayerQueue.add_player(
+          socket.assigns.player_id,
+          socket.assigns.username
+        )
     end
 
     {:noreply, socket}
@@ -34,6 +42,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
     case socket.assigns.lobby_name do
       "pong" ->
         GameServer.PongPlayerQueue.remove_player(socket.assigns.player_id)
+
+      "ttt" ->
+        GameServer.TttPlayerQueue.remove_player(socket.assigns.player_id)
     end
 
     {:noreply, socket}
@@ -88,6 +99,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
     case socket.assigns.lobby_name do
       "pong" ->
         GameServer.PongPlayerQueue.remove_player(socket.assigns.player_id)
+
+      "ttt" ->
+        GameServer.TttPlayerQueue.remove_player(socket.assigns.player_id)
     end
 
     reason
@@ -97,6 +111,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
     case socket.assigns.lobby_name do
       "pong" ->
         "pong-game"
+
+      "ttt" ->
+        "ttt-game"
     end
   end
 end

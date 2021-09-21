@@ -53,8 +53,8 @@ RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));
 RpsGame.init(socket, "rps_id");
 
 // Initialize the Tic Tac Toe game wrapper and lobby chat
-TttLobbyChat.init(socket, document.getElementById("ttt-lobby-chat-container"));
-TttPhaserWrapper.init(socket, "ttt_id");
+//TttLobbyChat.init(socket, document.getElementById("ttt-lobby-chat-container"));
+TttPhaserWrapper.init(socket, "id");
 
 // Initialize the Pong game wrapper and spectator
 PongPhaserWrapper.init(socket, "phaser-pong-wrapper");

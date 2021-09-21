@@ -14,6 +14,10 @@ defmodule GameServer.TttPlayerQueue do
     GenServer.cast(__MODULE__, {:add_player, player_id, player_name})
   end
 
+  def remove_player(player_id) do
+    GenServer.cast(__MODULE__, {:remove_player, player_id})
+  end
+
   @impl GenServer
   def init(_) do
     # TODO necessary if it is registered as the module?
@@ -42,6 +46,12 @@ defmodule GameServer.TttPlayerQueue do
 
     {:noreply, updated_map_set}
   end
+
+  @impl GenServer
+  def handle_cast({:remove_player, player_id}, map_set) do
+    {:noreply, map_set |> remove_player(player_id)}
+  end
+
 
   defp get_two_earliest_player_ids_and_names(map_set) do
     [{first_id, first_name, _}, {second_id, second_name, _}] =
@@ -96,7 +106,7 @@ defmodule GameServer.TttPlayerQueue do
       # Inform the lobby channels that the players are in a game together
       PubSub.broadcast(
         GameServer.PubSub,
-        "ttt_lobby:1",
+        "lobby_chat:ttt",
         {:start_game, first_player_id, second_player_id, new_game_id}
       )
 
