@@ -1,6 +1,6 @@
 <h4>Welcome to the Tic Tac Toe Game Lobby!</h4>
-<div>Users</div>
-<div id="user-list"></div>
+<button type="button" class="collapsible">Users in Lobby</button>
+<div id="user-list" class="collapsible-content"></div>
 
 <div id="gen-lobby-chat-container"
     class="chat-history"

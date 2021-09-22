@@ -39,7 +39,7 @@ let GenLobbyChat = {
     let presence = new Presence(lobbyChannel);
     presence.onSync(() => {
       userList.innerHTML = presence.list((username, _) => {
-        return `<li>${username}</li>`;
+        return `<div>${username}</div>`;
       }).join("");
     });
 
