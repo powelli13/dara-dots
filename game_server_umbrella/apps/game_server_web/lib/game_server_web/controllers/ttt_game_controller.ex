@@ -14,8 +14,6 @@ defmodule GameServerWeb.TttGameController do
   end
 
   def lobby(conn, _params) do
-    render(conn, "ttt_lobby.html" game_name: "Tic Tac Toe", lobby_name: "ttt")
-    # TODO find a way to make the generic lobby be in a different folder
-    #render(conn, "generic_lobby.html", game_name: "Tic Tac Toe Test!!", lobby_name: "ttt")
+    render(conn, "ttt_lobby.html", game_name: "Tic Tac Toe", lobby_name: "ttt")
   end
 end
