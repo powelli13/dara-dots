@@ -63,6 +63,7 @@ PongSpectator.init(socket, "pong-spectator");
 // Initialize the Dara Dots wrapper
 DaraDotsPhaserWrapper.init(socket, "phaser-puzzle-wrapper");
 
+// TODO move this into separate files
 // Sets up the onclick listeners for collapsible lists
 let coll = document.getElementsByClassName("collapsible");
 
