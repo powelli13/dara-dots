@@ -2,6 +2,6 @@
 <div><em>X moves first.</em></div>
 <div id="game-alerts"></div>
 
-<div id="phaser-wrapper"></div>
+<div id="ttt-phaser-wrapper"></div>
 
 <%= link("Return to Lobby", to: Routes.ttt_game_path(@conn, :lobby), id: "lobby-link", class: "d-none") %>

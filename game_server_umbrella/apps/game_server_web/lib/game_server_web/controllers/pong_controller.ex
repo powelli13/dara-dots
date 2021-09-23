@@ -9,6 +9,8 @@ defmodule GameServerWeb.PongController do
     render(
       conn,
       "pong_lobby.html",
+      game_name: "Pong",
+      lobby_name: "pong",
       active_games: GameServer.PongActiveGames.get_active_games()
     )
   end

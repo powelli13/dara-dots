@@ -1,15 +1,17 @@
 import Phaser from "phaser";
 
 let TttPhaserWrapper = {
-  init(socket, urlParam) {
+  init(socket, gameElemId) {
+    // Ensure that we only load Tic Tac Toe Phaser on the correct pages
+    let gameElement = document.getElementById(gameElemId);
+    if (gameElement == null) { return; }
+
     let params = new URLSearchParams(document.location.search);
-    // TODO this causes TTT board to show on the RPS screen as well
-    // need to have a better differentiation
-    if (!params.has(urlParam)) { return; }
+    if (!params.has('id')) { return; }
 
     socket.connect({token: window.userToken});
 
-    this.onReady(socket, params.get(urlParam));
+    this.onReady(socket, params.get('id'));
   },
 
   onReady(socket, gameId) {

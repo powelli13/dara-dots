@@ -26,8 +26,6 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
         )
 
       "ttt" ->
-        IO.puts "ttt joining queue"
-        IO.inspect socket.assigns.player_id
         GameServer.TttPlayerQueue.add_player(
           socket.assigns.player_id,
           socket.assigns.username

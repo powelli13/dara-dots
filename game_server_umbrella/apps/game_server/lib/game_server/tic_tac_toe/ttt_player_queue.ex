@@ -52,7 +52,6 @@ defmodule GameServer.TttPlayerQueue do
     {:noreply, map_set |> remove_player(player_id)}
   end
 
-
   defp get_two_earliest_player_ids_and_names(map_set) do
     [{first_id, first_name, _}, {second_id, second_name, _}] =
       map_set
