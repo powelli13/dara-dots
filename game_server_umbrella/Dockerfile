@@ -4,6 +4,11 @@ FROM bitwalker/alpine-elixir-phoenix:latest
 #To build and run:
 #docker build . --tag {image name} --build-arg key={key value}
 #docker run --name {container name} -p {port mapping e.g. 4040(host):80(container)} {image name, from above}
+
+# TODO make this automated in git somehow
+#To deploy to azure:
+# docker build . --tag {registry name}.azurecr.io/{image name}:latest
+# docker push {tag defined above}
 WORKDIR /app
 
 #ARG key
