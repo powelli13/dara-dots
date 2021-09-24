@@ -50,9 +50,6 @@ Presentation slides:
     - great for chat, games or anything that requires real time communication
 	- today we'll take a look at how they are used in the Phoenix framework and how I used them to make a multiplayer game
 
-6. Future of WebSockets
-    - get online
-
 
 Walk through code files
 lobby_chat.js
@@ -77,4 +74,4 @@ tic_tac_toe.ex
 	- game logic
 	- broadcasts are picked up by channels
 
-TODO same files for Pong?
+Same files for pong
