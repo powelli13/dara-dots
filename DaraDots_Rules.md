@@ -1,6 +1,6 @@
 
-# dara-dots
-Using Phaser 3 to implement a game idea I have.
+# Competitive dara-dots
+## These original rules were for a competitive version of Dara Dots.
 
 Below is an evolving description of the game and rules:
 This is mainly a brain dump right now. Better formatting
