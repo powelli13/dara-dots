@@ -6,7 +6,6 @@ defmodule GameServer.PongPlayerQueue do
   """
   use GenServer
   alias Phoenix.PubSub
-  alias GameServer.PongGameSupervisor
   alias GameServer.PongGame
 
   def add_player(player_id, player_name) do

@@ -223,8 +223,6 @@ defmodule GameServer.PongGame do
   end
 
   defp broadcast_game_winner(state, winner_name) do
-    # TODO even after the game ends, through score or someone leaving
-    # the ball updates continue to be sent out
     GameServer.PongActiveGames.remove_game(state.game_id)
 
     PubSub.broadcast(

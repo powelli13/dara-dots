@@ -20,4 +20,15 @@ defmodule GameServer.PongPlayerQueueTest do
 
     assert queue_size == 0
   end
+
+  test "cannot add the same player id to the queue" do
+    PongPlayerQueue.add_player("123", "test")
+    PongPlayerQueue.add_player("123", "test")
+    PongPlayerQueue.add_player("123", "test")
+    PongPlayerQueue.add_player("123", "test")
+
+    queue_size = PongPlayerQueue.get_queue_size()
+
+    assert queue_size == 1
+  end
 end

@@ -6,7 +6,6 @@ defmodule GameServer.PongActiveGames do
   Keeps track of the active Pong Games to display them in the
   lobby so that other players can view the game.
   """
-  # TODO how to remove games?
   # TODO could we use presence for this?
   def add_active_game(game_id) do
     GenServer.cast(__MODULE__, {:add_game, game_id})
@@ -20,9 +19,6 @@ defmodule GameServer.PongActiveGames do
     GenServer.call(__MODULE__, :get_games)
   end
 
-  # TODO add remove game that is called when the pong game is over
-
-  # TODO this may be better done as a supervisor over the PongGameSupervisors
   # I will need to do more research
   @impl GenServer
   def init(_) do
