@@ -1,12 +1,11 @@
 defmodule GameServer.DaraDotsGame do
   use GenServer
   alias Phoenix.PubSub
-  alias GameServer.Coordinate
+  alias GameServer.{Coordinate, Piece}
 
   @broadcast_frequency 70
 
   @open_dot " "
-  @circle_piece "C"
 
   def start(id) do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
@@ -24,11 +23,15 @@ defmodule GameServer.DaraDotsGame do
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
-      dots: build_dots_board(),
-      # TODO use coordinates internally and transform when broadcasting
-      # circle_coord: Coordinate.new(2, 2)
-      circle_coord: [0.2, 0.2]
+      dots: build_dots_board()
     }
+
+    # Setup the initial pieces
+    {:ok, circle_piece} = Piece.new(:circle, Coordinate.new(2, 2))
+    initial_state = %{initial_state | circle_piece => circle_piece}
+
+    IO.puts "initial state"
+    IO.inspect initial_state
 
     {:ok, initial_state}
   end
@@ -51,8 +54,8 @@ defmodule GameServer.DaraDotsGame do
   # retrieve the coordinates that are accessible to a piece at the given coords
   defp get_movable_coords(coords) do
     # TODO come up with a more elegant way to do this
-    # change these to no use percentages, instead use coords
-    [x, y] = coords
+    # change these to not use percentages, instead use coords
+    [x, y] = coord_to_percent(coords)
     offsets = [[0.1, 0], [-0.1, 0], [0, 0.1], [0, -0.1]]
 
     Enum.map(offsets, fn [ox, oy] -> [x + ox, y + oy] end)
@@ -62,8 +65,8 @@ defmodule GameServer.DaraDotsGame do
     # generate the game state to be broadcast
     state_to_broadcast = %{
       dots: state.dots,
-      circle_coord: state.circle_coord,
-      circle_movable_coords: get_movable_coords(state.circle_coord)
+      circle_coord: state.cirlce_piece.coord |> coord_to_percent,
+      circle_movable_coords: get_movable_coords(state.circle_piece.coord)
     }
 
     PubSub.broadcast(
@@ -71,5 +74,9 @@ defmodule GameServer.DaraDotsGame do
       "dara_dots_game:#{state.game_id}",
       {:new_game_state, state_to_broadcast}
     )
+  end
+
+  defp coord_to_percent(%Coordinate{} = coord) do
+    [coord.row / 10, coord.col / 10]
   end
 end
