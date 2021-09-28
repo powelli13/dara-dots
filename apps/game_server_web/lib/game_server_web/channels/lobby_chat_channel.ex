@@ -112,6 +112,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "ttt" ->
         "ttt-game"
+
+      "dots-puzzle" ->
+        "dots-puzzle"
     end
   end
 end
