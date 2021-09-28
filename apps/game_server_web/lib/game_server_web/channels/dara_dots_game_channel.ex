@@ -5,13 +5,10 @@ defmodule GameServerWeb.DaraDotsGameChannel do
     # TODO move this into the queue
     GameServer.DaraDotsGame.start(game_id)
 
-    IO.inspect "!!!!!!!!!!!## player joining dots game channel"
-
     {:ok, socket}
   end
 
   def handle_info({:new_game_state, game_state}, socket) do
-    IO.puts "dots puzzle broadcasting in channel"
     push(
       socket,
       "game_state",

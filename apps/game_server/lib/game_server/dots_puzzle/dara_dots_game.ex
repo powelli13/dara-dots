@@ -8,7 +8,6 @@ defmodule GameServer.DaraDotsGame do
   @open_dot " "
 
   def start(id) do
-    IO.puts "starting dots puzzle game"
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
 
@@ -18,9 +17,6 @@ defmodule GameServer.DaraDotsGame do
 
   @impl GenServer
   def init(game_id) do
-    IO.puts "beginning init"
-    # Start the regular state broadcasting
-
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
@@ -28,12 +24,11 @@ defmodule GameServer.DaraDotsGame do
     }
 
     # Setup the initial pieces
-    {:ok, circle_piece} = Piece.new(:circle, Coordinate.new(2, 2))
-    initial_state = %{initial_state | circle_piece => circle_piece}
+    {:ok, circle_start_coord} = Coordinate.new(2, 2)
+    {:ok, circle_piece} = Piece.new(:circle, circle_start_coord)
+    initial_state = Map.put(initial_state, :circle_piece, circle_piece)
 
-    IO.puts "!!!!!!!!!!!!  initial state"
-    IO.inspect initial_state
-
+    # Start the regular state broadcasting
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
     {:ok, initial_state}
@@ -66,10 +61,9 @@ defmodule GameServer.DaraDotsGame do
 
   defp broadcast_game_state(state) do
     # generate the game state to be broadcast
-    IO.inspect "BROADCASTING DOTS PUZZLE"
     state_to_broadcast = %{
       dots: state.dots,
-      circle_coord: state.cirlce_piece.coord |> coord_to_percent,
+      circle_coord: state.circle_piece.coord |> coord_to_percent,
       circle_movable_coords: get_movable_coords(state.circle_piece.coord)
     }
 
