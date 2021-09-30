@@ -20,30 +20,17 @@ defmodule GameServer.DaraDotsGame do
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id
-      #board: Board.new()
-      # dots: build_dots_board()
     }
 
     # Setup the initial pieces
     {:ok, board} = Board.new()
     initial_state = Map.put(initial_state, :board, board)
 
-    # TODO move these onto the board
-    {:ok, circle_start_coord} = Coordinate.new(2, 2)
-    {:ok, circle_piece} = Piece.new(:circle, circle_start_coord)
-    initial_state = Map.put(initial_state, :circle_piece, circle_piece)
-
     # Start the regular state broadcasting
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
     {:ok, initial_state}
   end
-
-  # defp build_dots_board() do
-  # Enum.map(1..9, fn n -> Enum.map(1..9, fn i -> {n / 10, i / 10} end) end)
-  # |> List.flatten()
-  # |> Enum.map(fn {row, col} -> [row, col, @open_dot] end)
-  # end
 
   @impl GenServer
   def handle_info(:broadcast_game_state, state) do
@@ -72,8 +59,8 @@ defmodule GameServer.DaraDotsGame do
           state.board.dot_coords,
           fn coord -> coord_to_percent_with_open(coord) end
         ),
-      circle_coord: state.circle_piece.coord |> coord_to_percent,
-      circle_movable_coords: get_movable_coords(state.circle_piece.coord)
+      circle_coord: state.board.circle_piece.coord |> coord_to_percent,
+      circle_movable_coords: get_movable_coords(state.board.circle_piece.coord)
     }
 
     PubSub.broadcast(
@@ -87,6 +74,8 @@ defmodule GameServer.DaraDotsGame do
     [coord.row / 10, coord.col / 10]
   end
 
+  # TODO make the coordinates know if they are open or not
+  # move this logic into board.ex as well
   defp coord_to_percent_with_open(%Coordinate{} = coord) do
     [coord.row / 10, coord.col / 10, @open_dot]
   end
