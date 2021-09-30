@@ -1,7 +1,7 @@
 defmodule GameServer.DaraDotsGame do
   use GenServer
   alias Phoenix.PubSub
-  alias GameServer.{Coordinate, Piece}
+  alias GameServer.{Board, Coordinate, Piece}
 
   @broadcast_frequency 70
 
@@ -19,11 +19,16 @@ defmodule GameServer.DaraDotsGame do
   def init(game_id) do
     # Distances are represented as percentages for the board to display
     initial_state = %{
-      game_id: game_id,
-      dots: build_dots_board()
+      game_id: game_id
+      #board: Board.new()
+      # dots: build_dots_board()
     }
 
     # Setup the initial pieces
+    {:ok, board} = Board.new()
+    initial_state = Map.put(initial_state, :board, board)
+
+    # TODO move these onto the board
     {:ok, circle_start_coord} = Coordinate.new(2, 2)
     {:ok, circle_piece} = Piece.new(:circle, circle_start_coord)
     initial_state = Map.put(initial_state, :circle_piece, circle_piece)
@@ -34,11 +39,11 @@ defmodule GameServer.DaraDotsGame do
     {:ok, initial_state}
   end
 
-  defp build_dots_board() do
-    Enum.map(1..9, fn n -> Enum.map(1..9, fn i -> {n / 10, i / 10} end) end)
-    |> List.flatten()
-    |> Enum.map(fn {row, col} -> [row, col, @open_dot] end)
-  end
+  # defp build_dots_board() do
+  # Enum.map(1..9, fn n -> Enum.map(1..9, fn i -> {n / 10, i / 10} end) end)
+  # |> List.flatten()
+  # |> Enum.map(fn {row, col} -> [row, col, @open_dot] end)
+  # end
 
   @impl GenServer
   def handle_info(:broadcast_game_state, state) do
@@ -62,7 +67,11 @@ defmodule GameServer.DaraDotsGame do
   defp broadcast_game_state(state) do
     # generate the game state to be broadcast
     state_to_broadcast = %{
-      dots: state.dots,
+      dots:
+        Enum.map(
+          state.board.dot_coords,
+          fn coord -> coord_to_percent_with_open(coord) end
+        ),
       circle_coord: state.circle_piece.coord |> coord_to_percent,
       circle_movable_coords: get_movable_coords(state.circle_piece.coord)
     }
@@ -76,5 +85,9 @@ defmodule GameServer.DaraDotsGame do
 
   defp coord_to_percent(%Coordinate{} = coord) do
     [coord.row / 10, coord.col / 10]
+  end
+
+  defp coord_to_percent_with_open(%Coordinate{} = coord) do
+    [coord.row / 10, coord.col / 10, @open_dot]
   end
 end
