@@ -1,12 +1,12 @@
 defmodule GameServer.Board do
   alias __MODULE__
-  alias GameServer.{Coordinate, Piece}
+  alias GameServer.{Coordinate, SquarePiece}
 
   defstruct [:circle_piece, dot_coords: MapSet.new()]
 
   def new() do
     {:ok, circle_start_coord} = Coordinate.new(2, 2)
-    {:ok, circle_piece} = Piece.new(:circle, circle_start_coord)
+    {:ok, circle_piece} = SquarePiece.new(circle_start_coord)
 
     {:ok,
      %Board{
@@ -16,7 +16,7 @@ defmodule GameServer.Board do
   end
 
   defp build_grid_coords() do
-    Enum.map(1..9, fn n -> Enum.map(1..9, fn i -> {n, i} end) end)
+    Enum.map(1..5, fn n -> Enum.map(1..5, fn i -> {n, i} end) end)
     |> List.flatten()
     |> Enum.map(fn {row, col} ->
       {:ok, coord} = Coordinate.new(row, col)
