@@ -40,6 +40,7 @@ let DaraDotsPhaserWrapper = {
     // Setup display dimension
     const boardWidth = 500;
     const boardHeight = 500;
+    const boardBuffer = 75;
 
     // Setup Phaser game
     let config = {
@@ -89,12 +90,11 @@ let DaraDotsPhaserWrapper = {
       grayGraphics.clear();
 
       dots.forEach((v, i) => {
-        // TODO delineate type of dots using v[2]
-        const x = percentWidthToPixels(v[0]);
-        const y = percentHeightToPixels(v[1]);
+        const x = rowCoordinateToPixels(v[0]);
+        const y = colCoordinateToPixels(v[1]);
 
         grayGraphics.fillCircleShape(
-          new Phaser.Geom.Circle(x, y, 2)
+          new Phaser.Geom.Circle(x, y, 4)
         );
       });
     }
@@ -102,8 +102,8 @@ let DaraDotsPhaserWrapper = {
     function drawCirclePiece(circleCoord) {
       blueGraphics.clear();
 
-      const x = percentWidthToPixels(circleCoord[0]);
-      const y = percentHeightToPixels(circleCoord[1]);
+      const x = rowCoordinateToPixels(circleCoord[0]);
+      const y = colCoordinateToPixels(circleCoord[1]);
 
       blueGraphics.fillCircleShape(
         new Phaser.Geom.Circle(x, y, 12)
@@ -114,8 +114,8 @@ let DaraDotsPhaserWrapper = {
       movableDotGraphics.clear();
 
       movableDots.forEach((v, i) => {
-        const x = percentWidthToPixels(v[0]);
-        const y = percentHeightToPixels(v[1]);
+        const x = rowCoordinateToPixels(v[0]);
+        const y = colCoordinateToPixels(v[1]);
 
         movableDotGraphics.fillCircleShape(
           new Phaser.Geom.Circle(x, y, 8)
@@ -126,12 +126,12 @@ let DaraDotsPhaserWrapper = {
     // The server stores object positions as relative percentages
     // of the total game space. These functions are used to convert
     // server values into the percentage for the client board position.
-    function percentWidthToPixels(percentage) {
-      return boardWidth * percentage;
+    function rowCoordinateToPixels(rowCoord) {
+      return (boardWidth - boardBuffer) * (rowCoord / 5);
     }
 
-    function percentHeightToPixels(percentage) {
-      return boardHeight * percentage;
+    function colCoordinateToPixels(colCoord) {
+      return (boardHeight - boardBuffer) * (colCoord / 5);
     }
   }
 };
