@@ -5,8 +5,6 @@ defmodule GameServer.DaraDotsGame do
 
   @broadcast_frequency 70
 
-  @open_dot " "
-
   def start(id) do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
@@ -41,26 +39,15 @@ defmodule GameServer.DaraDotsGame do
     {:noreply, state}
   end
 
-  # retrieve the coordinates that are accessible to a piece at the given coords
-  #defp get_movable_coords(coords) do
-    # TODO come up with a more elegant way to do this
-    # change these to not use percentages, instead use coords
-    #[x, y] = coord_to_percent(coords)
-    #offsets = [[0.1, 0], [-0.1, 0], [0, 0.1], [0, -0.1]]
-
-    #Enum.map(offsets, fn [ox, oy] -> [x + ox, y + oy] end)
-  #end
-
   defp broadcast_game_state(state) do
     # generate the game state to be broadcast
     state_to_broadcast = %{
       dots:
         Enum.map(
           state.board.dot_coords,
-          fn coord -> coord_to_percent_with_open(coord) end
+          fn coord -> coord |> coord_to_percent end
         ),
       circle_coord: state.board.circle_piece.coord |> coord_to_percent
-      #circle_movable_coords: get_movable_coords(state.board.circle_piece.coord)
     }
 
     PubSub.broadcast(
@@ -72,11 +59,5 @@ defmodule GameServer.DaraDotsGame do
 
   defp coord_to_percent(%Coordinate{} = coord) do
     [coord.row, coord.col]
-  end
-
-  # TODO make the coordinates know if they are open or not
-  # move this logic into board.ex as well
-  defp coord_to_percent_with_open(%Coordinate{} = coord) do
-    [coord.row, coord.col, @open_dot]
   end
 end
