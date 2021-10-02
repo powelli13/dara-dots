@@ -21,7 +21,8 @@ Squares can create links between columns. Links can be used to change the column
 If a Triangle is in the home row of a player then their opponent scores one point.
 
 #### Triangle Collision
-TODO
+Triangles are placed in a queue with priority based on when they entered the board. At the end of each turn the Triangle pieces advance up or down the column with the number of dots oved being equal to their speed.
+If a Triangle collides with a Triangle moving in the opposite direction, then the Triangle that was placed earlier on the board is preserved and the other Triangle is removed from the board.
 
 ### Squares
 Each player has two Square pieces. The Squares move orthogonally one dot at a time. When a Square moves across columns it creates a link between the columns. If a Triangle moving up or down a certain column encounters a link then they will move to the other column, change directions and increase their speed.
