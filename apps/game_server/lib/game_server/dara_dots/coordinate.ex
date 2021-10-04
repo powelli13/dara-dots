@@ -1,4 +1,4 @@
-defmodule GameServer.Coordinate do
+defmodule GameServer.DaraDots.Coordinate do
   @moduledoc """
   Data structure that maintains a single position
   on the board. A coordinate represents the position

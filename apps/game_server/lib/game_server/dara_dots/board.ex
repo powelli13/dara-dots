@@ -1,12 +1,12 @@
-defmodule GameServer.Board do
+defmodule GameServer.DaraDots.Board do
   alias __MODULE__
-  alias GameServer.{Coordinate, SquarePiece}
+  alias GameServer.DaraDots.{Coordinate, LinkerPiece}
 
   defstruct [:circle_piece, dot_coords: MapSet.new()]
 
   def new() do
     {:ok, circle_start_coord} = Coordinate.new(2, 2)
-    {:ok, circle_piece} = SquarePiece.new(circle_start_coord)
+    {:ok, circle_piece} = LinkerPiece.new(circle_start_coord)
 
     {:ok,
      %Board{

@@ -3,7 +3,7 @@ defmodule GameServerWeb.DaraDotsGameChannel do
 
   def join("dara_dots_game:" <> game_id, _params, socket) do
     # TODO move this into the queue
-    GameServer.DaraDotsGame.start(game_id)
+    GameServer.DaraDots.DaraDotsGame.start(game_id)
 
     {:ok, socket}
   end
