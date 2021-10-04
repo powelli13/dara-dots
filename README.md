@@ -4,7 +4,7 @@ This web app has some multiplayer games, including Tic Tac Toe and Pong. These g
 ## LipSync
 Lip Sync is a competition in which performing teams dance and lip sync along to a playing song. The Lip Sync lobby is used to facilitate Lip Sync competitions. It allows for friendly chatting, registering your team with a YouTube video link and then starting the performance and enjoying the fun!
 
-## DaraDots
+## DaraDots Puzzle Idea
 DaraDots is cooperative puzzle game with concepts still being developed. The current working draft of the rules can be found [here](https://github.com/powelli13/dara-dots/blob/master/dara_dots_puzzle_rules.md).
 
 ## Getting Started

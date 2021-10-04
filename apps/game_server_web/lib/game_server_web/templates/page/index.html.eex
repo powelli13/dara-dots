@@ -21,7 +21,7 @@
       Join a game lobby to chat and play
     </div>
     <ul>
-      <li><%= link "Dots Puzzle", to: Routes.dots_puzzle_path(@conn, :lobby) %></li>
+      <li><%= link "Dara Dots", to: Routes.dara_dots_path(@conn, :lobby) %></li>
       <li><%= link "Tic Tac Toe", to: Routes.ttt_game_path(@conn, :lobby) %></li>
       <li><%= link "Pong", to: Routes.pong_path(@conn, :lobby) %></li>
       <li><%= link "Lip Sync Battle", to: Routes.lobby_path(@conn, :landing) %></li>

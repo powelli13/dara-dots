@@ -1,4 +1,4 @@
-defmodule GameServerWeb.DotsPuzzleController do
+defmodule GameServerWeb.DaraDotsController do
   use GameServerWeb, :controller
 
   def lobby(conn, _params) do
@@ -6,6 +6,6 @@ defmodule GameServerWeb.DotsPuzzleController do
   end
 
   def puzzle(conn, _params) do
-    render(conn, "puzzle.html")
+    render(conn, "game.html")
   end
 end

@@ -1,11 +1,11 @@
-<div>Welcome to the Dara Dots Puzzle Lobby!</div>
+<div>Welcome to the Dara Dots Lobby!</div>
 
 <div>Users</div>
 <div id="user-list"></div>
 
 <div id="gen-lobby-chat-container"
     class="chat-history"
-    data-lobby-name="dots-puzzle">
+    data-lobby-name="dara-dots">
 </div>
 
 <div>
@@ -20,7 +20,7 @@
   </button>
 </div>
 <div>
-  <%= link "Test the Game", to: Routes.dots_puzzle_path(@conn, :puzzle) %>
+  <%= link "Test the Game", to: Routes.dara_dots_path(@conn, :game) %>
 </div>
 <div>
   <button id="join-game-queue-button"
