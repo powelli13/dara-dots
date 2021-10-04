@@ -5,7 +5,7 @@ defmodule GameServerWeb.DaraDotsController do
     render(conn, "lobby.html")
   end
 
-  def puzzle(conn, _params) do
+  def game(conn, _params) do
     render(conn, "game.html")
   end
 end
