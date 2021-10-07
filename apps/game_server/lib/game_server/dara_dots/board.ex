@@ -8,22 +8,18 @@ defmodule GameServer.DaraDots.Board do
     :bot_linker_alpha,
     :bot_linker_beta,
     :circle_piece,
-    dot_coords: MapSet.new()]
+    dot_coords: MapSet.new()
+  ]
 
   def new() do
-    with 
-      {:ok, circle_start_coord} <- Coordinate.new(2, 2),
-      {:ok, circle_piece} <- LinkerPiece.new(circle_start_coord)
-    do
+    with {:ok, circle_start_coord} <- Coordinate.new(2, 2),
+         {:ok, circle_piece} <- LinkerPiece.new(circle_start_coord) do
       {:ok,
-      %Board{
-        circle_piece: circle_piece,
-        dot_coords: MapSet.new(build_grid_coords())
-      }}
-    else
-      {:error, "Failed to initialize the board"}
+       %Board{
+         circle_piece: circle_piece,
+         dot_coords: MapSet.new(build_grid_coords())
+       }}
     end
-
   end
 
   defp build_grid_coords() do
