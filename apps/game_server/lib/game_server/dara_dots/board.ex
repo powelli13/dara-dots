@@ -2,17 +2,28 @@ defmodule GameServer.DaraDots.Board do
   alias __MODULE__
   alias GameServer.DaraDots.{Coordinate, LinkerPiece}
 
-  defstruct [:circle_piece, dot_coords: MapSet.new()]
+  defstruct [
+    :top_linker_alpha,
+    :top_linker_beta,
+    :bot_linker_alpha,
+    :bot_linker_beta,
+    :circle_piece,
+    dot_coords: MapSet.new()]
 
   def new() do
-    {:ok, circle_start_coord} = Coordinate.new(2, 2)
-    {:ok, circle_piece} = LinkerPiece.new(circle_start_coord)
+    with 
+      {:ok, circle_start_coord} <- Coordinate.new(2, 2),
+      {:ok, circle_piece} <- LinkerPiece.new(circle_start_coord)
+    do
+      {:ok,
+      %Board{
+        circle_piece: circle_piece,
+        dot_coords: MapSet.new(build_grid_coords())
+      }}
+    else
+      {:error, "Failed to initialize the board"}
+    end
 
-    {:ok,
-     %Board{
-       circle_piece: circle_piece,
-       dot_coords: MapSet.new(build_grid_coords())
-     }}
   end
 
   defp build_grid_coords() do
