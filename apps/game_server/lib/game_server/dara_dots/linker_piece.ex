@@ -2,7 +2,7 @@ defmodule GameServer.DaraDots.LinkerPiece do
   alias __MODULE__
   alias GameServer.DaraDots.Coordinate
 
-  defstruct [:coord, link_coords: nil, possible_moves: MapSet.new()]
+  defstruct [:coord, link_coords: nil]
 
   def new(start_coord) do
     {:ok, %LinkerPiece{coord: start_coord}}

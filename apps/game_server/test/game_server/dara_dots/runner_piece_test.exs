@@ -61,4 +61,22 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
 
     assert dec_runner.speed == 1
   end
+
+  test "reverse facing going up should go down" do
+    with {:ok, coord} <- Coordinate.new(1, 1),
+         {:ok, up_runner} <- RunnerPiece.new(coord, :up) do
+      down_runner = RunnerPiece.reverse_facing(up_runner)
+
+      assert down_runner.facing == :down
+    end
+  end
+
+  test "reverse facing going down should go up" do
+    with {:ok, coord} <- Coordinate.new(1, 1),
+         {:ok, down_runner} <- RunnerPiece.new(coord, :down) do
+      up_runner = RunnerPiece.reverse_facing(down_runner)
+
+      assert up_runner.facing == :up
+    end
+  end
 end

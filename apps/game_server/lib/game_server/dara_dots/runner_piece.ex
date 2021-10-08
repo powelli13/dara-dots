@@ -3,7 +3,7 @@ defmodule GameServer.DaraDots.RunnerPiece do
 
   defstruct [:coord, :facing, speed: 1]
 
-  def new(start_coord, facing) do
+  def new(start_coord, facing) when is_atom(facing) do
     {:ok, %RunnerPiece{coord: start_coord, facing: facing}}
   end
 
@@ -24,6 +24,16 @@ defmodule GameServer.DaraDots.RunnerPiece do
 
       true ->
         runner
+    end
+  end
+
+  def reverse_facing(%RunnerPiece{} = runner) do
+    case runner.facing do
+      :up ->
+        %RunnerPiece{runner | facing: :down}
+
+      _ ->
+        %RunnerPiece{runner | facing: :up}
     end
   end
 end

@@ -8,6 +8,7 @@ defmodule GameServer.DaraDots.Board do
     :bot_linker_alpha,
     :bot_linker_beta,
     :circle_piece,
+    :runner_pieces,
     dot_coords: MapSet.new()
   ]
 
