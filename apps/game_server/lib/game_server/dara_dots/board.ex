@@ -31,4 +31,14 @@ defmodule GameServer.DaraDots.Board do
       coord
     end)
   end
+
+  # Determine movable nodes for a square
+
+  # Move a square and update its link
+
+  # Advance all Triangles, check for and take links, resolve collisions
+    # check for scoring when moving
+    # check for victory
+
+  # Allow for placement of triangles
 end
