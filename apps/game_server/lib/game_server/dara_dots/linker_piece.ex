@@ -26,4 +26,8 @@ defmodule GameServer.DaraDots.LinkerPiece do
   def remove_link(%LinkerPiece{} = linker) do
     %LinkerPiece{linker | link_coords: nil}
   end
+
+  def move(%LinkerPiece{} = linker, %Coordinate{} = coord) do
+    %LinkerPiece{linker | coord: coord}
+  end
 end

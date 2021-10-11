@@ -79,4 +79,16 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
       assert up_runner.facing == :up
     end
   end
+
+  test "move should update coord" do
+    with {:ok, start_coord} <- Coordinate.new(1, 1),
+         {dest_row, dest_col} <- {1, 2},
+         {:ok, dest_coord} <- Coordinate.new(dest_row, dest_col),
+         {:ok, runner} <- RunnerPiece.new(start_coord, :down) do
+      moved_runner = RunnerPiece.move(runner, dest_coord)
+
+      assert moved_runner.coord.row == dest_row
+      assert moved_runner.coord.col == dest_col
+    end
+  end
 end

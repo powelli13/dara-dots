@@ -1,5 +1,6 @@
 defmodule GameServer.DaraDots.RunnerPiece do
   alias __MODULE__
+  alias GameServer.DaraDots.Coordinate
 
   defstruct [:coord, :facing, speed: 1]
 
@@ -35,5 +36,9 @@ defmodule GameServer.DaraDots.RunnerPiece do
       _ ->
         %RunnerPiece{runner | facing: :up}
     end
+  end
+
+  def move(%RunnerPiece{} = runner, %Coordinate{} = coord) do
+    %RunnerPiece{runner | coord: coord}
   end
 end

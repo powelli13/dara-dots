@@ -37,4 +37,18 @@ defmodule GameServer.DaraDots.LinkerPieceTest do
 
     assert linker.link_coords == nil
   end
+
+  test "move should update coordinate" do
+    {:ok, start_coord} = Coordinate.new(1, 1)
+
+    {dest_row, dest_col} = {1, 2}
+    {:ok, dest_coord} = Coordinate.new(dest_row, dest_col)
+
+    {:ok, linker} = LinkerPiece.new(start_coord)
+
+    moved_linker = LinkerPiece.move(linker, dest_coord)
+
+    assert moved_linker.coord.row == dest_row
+    assert moved_linker.coord.col == dest_col
+  end
 end
