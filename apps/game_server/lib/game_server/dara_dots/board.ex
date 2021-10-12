@@ -1,6 +1,6 @@
 defmodule GameServer.DaraDots.Board do
   alias __MODULE__
-  alias GameServer.DaraDots.{Coordinate, LinkerPiece}
+  alias GameServer.DaraDots.{Coordinate, LinkerPiece, RunnerPiece}
 
   defstruct [
     :top_linker_alpha,
@@ -8,7 +8,9 @@ defmodule GameServer.DaraDots.Board do
     :bot_linker_alpha,
     :bot_linker_beta,
     :circle_piece,
-    :runner_pieces,
+    # Used to save the age of the triangles as they are added to the board
+    runner_timer: 0,
+    runner_pieces: Map.new(),
     dot_coords: MapSet.new()
   ]
 
@@ -36,9 +38,31 @@ defmodule GameServer.DaraDots.Board do
 
   # Move a square and update its link
 
-  # Advance all Triangles, check for and take links, resolve collisions
-    # check for scoring when moving
-    # check for victory
+  # Advance all Runners, check for and take links, resolve collisions
+  # check for scoring when moving
+  # check for victory
 
-  # Allow for placement of triangles
+  # Allow for placement of Runners
+  def place_runner(%Board{} = board, %Coordinate{row: 1} = coord) do
+    place_runner(board, coord, :up)
+  end
+
+  def place_runner(%Board{} = board, %Coordinate{row: 5} = coord) do
+    place_runner(board, coord, :down)
+  end
+
+  defp place_runner(%Board{} = board, %Coordinate{} = coord, facing) do
+    with {:ok, new_runner} <- RunnerPiece.new(coord, facing) do
+      %Board{
+        board
+        | runner_pieces:
+            Map.put(
+              board.runner_pieces,
+              board.runner_timer,
+              new_runner
+            ),
+          runner_timer: board.runner_timer + 1
+      }
+    end
+  end
 end
