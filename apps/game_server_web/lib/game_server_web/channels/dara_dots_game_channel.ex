@@ -14,7 +14,7 @@ defmodule GameServerWeb.DaraDotsGameChannel do
       "game_state",
       %{
         dots: game_state.dots,
-        circleCoord: game_state.circle_coord
+        linkerCoord: game_state.circle_coord
       }
     )
 

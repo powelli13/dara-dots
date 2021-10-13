@@ -25,10 +25,10 @@ let DaraDotsPhaserWrapper = {
   initPhaserGame(gameChannel) {
     // Setup channel listeners
     gameChannel.on("game_state",
-    ({dots, circleCoord, movableDots}) => {
+    ({dots, linkerCoord}) => {
       drawBoardState(dots);
-      drawCirclePiece(circleCoord);
-      highlightMovableDots(movableDots);
+      drawLinkerPiece(linkerCoord);
+      //highlightMovableDots(movableDots);
     });
 
     gameChannel.join()
@@ -99,14 +99,14 @@ let DaraDotsPhaserWrapper = {
       });
     }
 
-    function drawCirclePiece(circleCoord) {
+    function drawLinkerPiece(linkerCoord) {
       blueGraphics.clear();
 
-      const x = rowCoordinateToPixels(circleCoord[0]);
-      const y = colCoordinateToPixels(circleCoord[1]);
+      const x = rowCoordinateToPixels(linkerCoord[0]);
+      const y = colCoordinateToPixels(linkerCoord[1]);
 
-      blueGraphics.fillCircleShape(
-        new Phaser.Geom.Circle(x, y, 12)
+      blueGraphics.fillRectShape(
+        new Phaser.Geom.Rectangle(x-12, y-12, 24, 24)
       );
     }
 
