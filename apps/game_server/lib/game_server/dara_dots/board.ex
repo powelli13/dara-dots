@@ -7,7 +7,6 @@ defmodule GameServer.DaraDots.Board do
     :top_linker_beta,
     :bot_linker_alpha,
     :bot_linker_beta,
-    :circle_piece,
     # Used to save the age of the triangles as they are added to the board
     runner_timer: 0,
     runner_pieces: Map.new(),
@@ -15,11 +14,20 @@ defmodule GameServer.DaraDots.Board do
   ]
 
   def new() do
-    with {:ok, circle_start_coord} <- Coordinate.new(2, 2),
-         {:ok, circle_piece} <- LinkerPiece.new(circle_start_coord) do
+    with {:ok, bot_alpha_coord} <- Coordinate.new(1, 2),
+         {:ok, bot_beta_coord} <- Coordinate.new(1, 4),
+         {:ok, top_alpha_coord} <- Coordinate.new(5, 2),
+         {:ok, top_beta_coord} <- Coordinate.new(5, 4),
+         {:ok, bot_alpha} <- LinkerPiece.new(bot_alpha_coord),
+         {:ok, bot_beta} <- LinkerPiece.new(bot_beta_coord),
+         {:ok, top_alpha} <- LinkerPiece.new(top_alpha_coord),
+         {:ok, top_beta} <- LinkerPiece.new(top_beta_coord) do
       {:ok,
        %Board{
-         circle_piece: circle_piece,
+         bot_linker_alpha: bot_alpha,
+         bot_linker_beta: bot_beta,
+         top_linker_alpha: top_alpha,
+         top_linker_beta: top_beta,
          dot_coords: MapSet.new(build_grid_coords())
        }}
     end
@@ -35,6 +43,8 @@ defmodule GameServer.DaraDots.Board do
   end
 
   # Determine movable nodes for a square
+  # def get_movable_coords(%Board{} = board, %) do
+  # end
 
   # Move a square and update its link
 

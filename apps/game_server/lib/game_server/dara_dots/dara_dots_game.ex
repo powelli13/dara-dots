@@ -47,7 +47,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
           state.board.dot_coords,
           fn coord -> coord |> coord_to_percent end
         ),
-      circle_coord: state.board.circle_piece.coord |> coord_to_percent
+      bot_alpha: state.board.bot_linker_alpha.coord,
+      bot_beta: state.board.bot_linker_beta.coord,
+      top_alpha: state.board.top_linker_alpha.coord,
+      top_beta: state.board.top_linker_beta.coord
     }
 
     PubSub.broadcast(

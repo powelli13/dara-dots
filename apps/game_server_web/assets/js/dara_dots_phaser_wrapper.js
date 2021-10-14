@@ -25,9 +25,12 @@ let DaraDotsPhaserWrapper = {
   initPhaserGame(gameChannel) {
     // Setup channel listeners
     gameChannel.on("game_state",
-    ({dots, linkerCoord}) => {
+    ({dots, topAlphaCoord, topBetaCoord, botAlphaCoord, botBetaCoord}) => {
       drawBoardState(dots);
-      drawLinkerPiece(linkerCoord);
+      drawLinkerPiece(topAlphaCoord, redGraphics);
+      drawLinkerPiece(topBetaCoord, redGraphics);
+      drawLinkerPiece(botAlphaCoord, blueGraphics);
+      drawLinkerPiece(botBetaCoord, blueGraphics);
       //highlightMovableDots(movableDots);
     });
 
@@ -62,6 +65,7 @@ let DaraDotsPhaserWrapper = {
 
     // Setup game objects
     let grayGraphics;
+    let redGraphics;
     let blueGraphics;
     let movableDotGraphics;
     let emptyDot;
@@ -78,6 +82,7 @@ let DaraDotsPhaserWrapper = {
 
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
       blueGraphics = this.add.graphics({ fillStyle: {color: 0x0080ff } });
+      redGraphics = this.add.graphics({ fillStyle: {color: 0xe60000} });
       movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
 
       this.input.mouse.disableContextMenu();
@@ -90,8 +95,8 @@ let DaraDotsPhaserWrapper = {
       grayGraphics.clear();
 
       dots.forEach((v, i) => {
-        const x = rowCoordinateToPixels(v[0]);
-        const y = colCoordinateToPixels(v[1]);
+        const x = rowCoordinateToPixels(v[1]);
+        const y = colCoordinateToPixels(v[0]);
 
         grayGraphics.fillCircleShape(
           new Phaser.Geom.Circle(x, y, 4)
@@ -99,11 +104,11 @@ let DaraDotsPhaserWrapper = {
       });
     }
 
-    function drawLinkerPiece(linkerCoord) {
+    function drawLinkerPiece(linkerCoord, graphics) {
       blueGraphics.clear();
 
-      const x = rowCoordinateToPixels(linkerCoord[0]);
-      const y = colCoordinateToPixels(linkerCoord[1]);
+      const x = rowCoordinateToPixels(linkerCoord[1]);
+      const y = colCoordinateToPixels(linkerCoord[0]);
 
       blueGraphics.fillRectShape(
         new Phaser.Geom.Rectangle(x-12, y-12, 24, 24)
