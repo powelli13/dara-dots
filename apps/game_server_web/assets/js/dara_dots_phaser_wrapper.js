@@ -26,6 +26,9 @@ let DaraDotsPhaserWrapper = {
     // Setup channel listeners
     gameChannel.on("game_state",
     ({dots, topAlphaCoord, topBetaCoord, botAlphaCoord, botBetaCoord}) => {
+      blueGraphics.clear();
+      redGraphics.clear();
+
       drawBoardState(dots);
       drawLinkerPiece(topAlphaCoord, redGraphics);
       drawLinkerPiece(topBetaCoord, redGraphics);
@@ -105,12 +108,10 @@ let DaraDotsPhaserWrapper = {
     }
 
     function drawLinkerPiece(linkerCoord, graphics) {
-      blueGraphics.clear();
-
       const x = rowCoordinateToPixels(linkerCoord[1]);
       const y = colCoordinateToPixels(linkerCoord[0]);
 
-      blueGraphics.fillRectShape(
+      graphics.fillRectShape(
         new Phaser.Geom.Rectangle(x-12, y-12, 24, 24)
       );
     }
