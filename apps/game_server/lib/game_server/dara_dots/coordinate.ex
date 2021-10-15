@@ -13,7 +13,7 @@ defmodule GameServer.DaraDots.Coordinate do
   defstruct row: 0,
             col: 0
 
-  def new(row, col) when row in (@row_range) and col in (@col_range) do
+  def new(row, col) when row in @row_range and col in @col_range do
     {:ok, %Coordinate{row: row, col: col}}
   end
 
