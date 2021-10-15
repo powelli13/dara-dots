@@ -7,6 +7,7 @@ defmodule GameServer.DaraDots.Board do
     :top_linker_beta,
     :bot_linker_alpha,
     :bot_linker_beta,
+
     # Used to save the age of the triangles as they are added to the board
     runner_timer: 0,
     runner_pieces: Map.new(),
@@ -43,8 +44,37 @@ defmodule GameServer.DaraDots.Board do
   end
 
   # Determine movable nodes for a square
-  # def get_movable_coords(%Board{} = board, %) do
-  # end
+  def get_movable_coords(%Board{} = board, piece) when is_atom(piece) do
+    # Ensure that this is one of the linker keys
+    curr = board[piece].coord
+
+    # Orthogonal rows
+    rows_set =
+      Enum.reduce([-1, 1], MapSet.new(), fn d, ms ->
+        case Coordinate.new(curr.row + d, curr.col) do
+          {:ok, new_coord} ->
+            MapSet.put(ms, new_coord)
+
+          {:error, _error} ->
+            ms
+        end
+      end)
+
+    # Orthogonal columns
+    cols_set =
+      Enum.reduce([-1, 1], MapSet.new(), fn d, ms ->
+        case Coordinate.new(curr.row, curr.col + d) do
+          {:ok, new_coord} ->
+            MapSet.put(ms, new_coord)
+
+          {:error, _error} ->
+            ms
+        end
+      end)
+
+    # Return the movable coords
+    MapSet.union(rows_set, cols_set)
+  end
 
   # Move a square and update its link
 

@@ -25,7 +25,12 @@ let DaraDotsPhaserWrapper = {
   initPhaserGame(gameChannel) {
     // Setup channel listeners
     gameChannel.on("game_state",
-    ({dots, topAlphaCoord, topBetaCoord, botAlphaCoord, botBetaCoord}) => {
+    ({dots,
+      topAlphaCoord,
+      topBetaCoord,
+      botAlphaCoord,
+      botBetaCoord,
+      movableDots}) => {
       blueGraphics.clear();
       redGraphics.clear();
 
@@ -34,7 +39,7 @@ let DaraDotsPhaserWrapper = {
       drawLinkerPiece(topBetaCoord, redGraphics);
       drawLinkerPiece(botAlphaCoord, blueGraphics);
       drawLinkerPiece(botBetaCoord, blueGraphics);
-      //highlightMovableDots(movableDots);
+      highlightMovableDots(movableDots);
     });
 
     gameChannel.join()
