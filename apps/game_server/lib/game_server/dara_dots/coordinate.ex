@@ -6,8 +6,8 @@ defmodule GameServer.DaraDots.Coordinate do
   """
   alias __MODULE__
 
-  @row_range 0..4
-  @col_range 0..4
+  @row_range 1..5
+  @col_range 1..5
 
   @enforce_keys [:row, :col]
   defstruct row: 0,

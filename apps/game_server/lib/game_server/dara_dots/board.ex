@@ -44,9 +44,9 @@ defmodule GameServer.DaraDots.Board do
   end
 
   # Determine movable nodes for a square
-  def get_movable_coords(%Board{} = board, piece) when is_atom(piece) do
-    # Ensure that this is one of the linker keys
-    curr = board[piece].coord
+  def get_movable_coords(%Board{} = board, %LinkerPiece{} = linker) do
+    # TODO Ensure that this is one of the linker keys
+    curr = linker.coord
 
     # Orthogonal rows
     rows_set =
