@@ -126,8 +126,8 @@ let DaraDotsPhaserWrapper = {
       movableDotGraphics.clear();
 
       movableDots.forEach((v, i) => {
-        const x = rowCoordinateToPixels(v[0]);
-        const y = colCoordinateToPixels(v[1]);
+        const x = rowCoordinateToPixels(v[1]);
+        const y = colCoordinateToPixels(v[0]);
 
         movableDotGraphics.fillCircleShape(
           new Phaser.Geom.Circle(x, y, 8)
