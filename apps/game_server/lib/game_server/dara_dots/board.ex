@@ -103,7 +103,6 @@ defmodule GameServer.DaraDots.Board do
   # end
 
   # Advance all Runners, check for and take links, resolve collisions
-  # check for scoring when moving
   # check for victory
 
   # Allow for placement of Runners
