@@ -51,10 +51,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       bot_beta: state.board.bot_linker_beta.coord |> coord_to_percent,
       top_alpha: state.board.top_linker_alpha.coord |> coord_to_percent,
       top_beta: state.board.top_linker_beta.coord |> coord_to_percent,
-      movable_dots: Enum.map(
-        Board.get_movable_coords(state.board, state.board.top_linker_beta) |> MapSet.to_list(),
-        fn coord -> coord_to_percent(coord) end
-      )
+      movable_dots:
+        Enum.map(
+          Board.get_movable_coords(state.board, :top_linker_beta) |> MapSet.to_list(),
+          fn coord -> coord_to_percent(coord) end
+        )
     }
 
     PubSub.broadcast(

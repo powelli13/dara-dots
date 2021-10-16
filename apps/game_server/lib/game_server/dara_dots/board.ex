@@ -16,8 +16,8 @@ defmodule GameServer.DaraDots.Board do
 
   def new() do
     with {:ok, bot_alpha_coord} <- Coordinate.new(1, 2),
-         {:ok, bot_beta_coord} <- Coordinate.new(1, 4),
-         {:ok, top_alpha_coord} <- Coordinate.new(5, 2),
+         {:ok, bot_beta_coord} <- Coordinate.new(1, 3),
+         {:ok, top_alpha_coord} <- Coordinate.new(5, 3),
          {:ok, top_beta_coord} <- Coordinate.new(5, 4),
          {:ok, bot_alpha} <- LinkerPiece.new(bot_alpha_coord),
          {:ok, bot_beta} <- LinkerPiece.new(bot_beta_coord),
@@ -44,9 +44,27 @@ defmodule GameServer.DaraDots.Board do
   end
 
   # Determine movable nodes for a square
-  def get_movable_coords(%Board{} = board, %LinkerPiece{} = linker) do
-    # TODO Ensure that this is one of the linker keys
-    curr = linker.coord
+  def get_movable_coords(%Board{} = board, piece_key) when is_atom(piece_key) do
+    # Get possible nodes for the chosen piece
+    curr_possibles = get_possible_move_coords(board, piece_key)
+
+    other_keys = MapSet.difference(get_linker_piece_keys(), MapSet.new([piece_key]))
+
+    # Get the possible nodes for other linker pieces
+    other_linker_coords =
+      Enum.map(other_keys, fn key ->
+        {:ok, other_piece} = Map.fetch(board, key)
+        other_piece.coord
+      end)
+      |> MapSet.new()
+
+    MapSet.difference(curr_possibles, other_linker_coords)
+  end
+
+  defp get_possible_move_coords(%Board{} = board, piece_key) when is_atom(piece_key) do
+    {:ok, piece} = Map.fetch(board, piece_key)
+
+    curr = piece.coord
 
     # Orthogonal rows
     rows_set =
@@ -72,11 +90,17 @@ defmodule GameServer.DaraDots.Board do
         end
       end)
 
-    # Return the movable coords
+    # Return movable nodes
     MapSet.union(rows_set, cols_set)
   end
 
+  defp get_linker_piece_keys(),
+    do: MapSet.new([:top_linker_alpha, :top_linker_beta, :bot_linker_alpha, :bot_linker_beta])
+
   # Move a square and update its link
+  def move_linker(%Board{} = board, %LinkerPiece{} = linker, %Coordinate{} = dest_coord) do
+    board
+  end
 
   # Advance all Runners, check for and take links, resolve collisions
   # check for scoring when moving
