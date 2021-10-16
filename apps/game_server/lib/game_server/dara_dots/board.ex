@@ -98,9 +98,9 @@ defmodule GameServer.DaraDots.Board do
     do: MapSet.new([:top_linker_alpha, :top_linker_beta, :bot_linker_alpha, :bot_linker_beta])
 
   # Move a square and update its link
-  def move_linker(%Board{} = board, %LinkerPiece{} = linker, %Coordinate{} = dest_coord) do
-    board
-  end
+  # def move_linker(%Board{} = board, %LinkerPiece{} = linker, %Coordinate{} = dest_coord) do
+  # board
+  # end
 
   # Advance all Runners, check for and take links, resolve collisions
   # check for scoring when moving

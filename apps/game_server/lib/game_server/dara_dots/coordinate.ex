@@ -6,8 +6,14 @@ defmodule GameServer.DaraDots.Coordinate do
   """
   alias __MODULE__
 
-  @row_range 1..5
-  @col_range 1..5
+  @min_row 1
+  @max_row 5
+
+  @min_col 1
+  @max_col 5
+
+  @row_range @min_row..@max_row
+  @col_range @min_col..@max_col
 
   @enforce_keys [:row, :col]
   defstruct row: 0,
@@ -20,4 +26,13 @@ defmodule GameServer.DaraDots.Coordinate do
   def new(_row, _col) do
     {:error, :invalid_coordinate}
   end
+
+  # Min and max rows are used to determine when a runner piece scores
+  def get_min_row(), do: @min_row
+
+  def get_max_row(), do: @max_row
+
+  def get_min_col(), do: @min_col
+
+  def get_max_col(), do: @max_col
 end
