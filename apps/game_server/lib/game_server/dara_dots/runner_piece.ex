@@ -91,7 +91,7 @@ defmodule GameServer.DaraDots.RunnerPiece do
   end
 
   defp advance_link(%RunnerPiece{} = runner, hit_links, link_coords, trip_speed) do
-    current_link = hd(hit_links |> MapSet.to_list())
+    current_link = hd(hit_links) |> MapSet.to_list()
 
     # TODO it would be nice to use MapSet.difference here
     # but Coordinate doesn't implement Enumerable so we can't

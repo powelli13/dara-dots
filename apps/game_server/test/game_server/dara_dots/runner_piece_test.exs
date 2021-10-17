@@ -131,4 +131,50 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
       assert moved_runner.coord.row == start_coord.row - runner.speed
     end
   end
+
+  test "advance up should change direction and follow link" do
+    with {:ok, runner_coord} <- Coordinate.new(2, 2),
+         {:ok, link_first} <- Coordinate.new(2, 2),
+         {:ok, link_second} <- Coordinate.new(2, 3),
+         {:ok, runner} <- RunnerPiece.new(runner_coord, :up) do
+      link_coords = [MapSet.new([link_first, link_second])]
+      {was_goal, moved_runner} = RunnerPiece.advance(runner, link_coords)
+
+      assert was_goal == :no_goal
+      assert Coordinate.equal?(moved_runner.coord, link_second)
+      assert moved_runner.facing == :down
+      assert moved_runner.speed == runner.speed + 1
+    end
+  end
+
+  test "advance down should change direction and follow link" do
+    with {:ok, runner_coord} <- Coordinate.new(4, 4),
+         {:ok, link_first} <- Coordinate.new(4, 4),
+         {:ok, link_second} <- Coordinate.new(4, 5),
+         {:ok, runner} <- RunnerPiece.new(runner_coord, :down) do
+      link_coords = [MapSet.new([link_first, link_second])]
+      {was_goal, moved_runner} = RunnerPiece.advance(runner, link_coords)
+
+      assert was_goal == :no_goal
+      assert Coordinate.equal?(moved_runner.coord, link_second)
+      assert moved_runner.facing == :up
+      assert moved_runner.speed == runner.speed + 1
+    end
+  end
+
+  test "advance should not take link when not on link" do
+    with {:ok, runner_coord} <- Coordinate.new(3, 3),
+         {:ok, link_first} <- Coordinate.new(4, 4),
+         {:ok, link_second} <- Coordinate.new(4, 5),
+         {:ok, runner} <- RunnerPiece.new(runner_coord, :up) do
+      link_coords = [MapSet.new([link_first, link_second])]
+      {was_goal, moved_runner} = RunnerPiece.advance(runner, link_coords)
+
+      assert was_goal == :no_goal
+      assert moved_runner.coord.row == 4
+      assert moved_runner.coord.col == 3
+      assert moved_runner.facing == :up
+      assert moved_runner.speed == runner.speed
+    end
+  end
 end
