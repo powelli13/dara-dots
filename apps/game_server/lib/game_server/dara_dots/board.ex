@@ -99,13 +99,19 @@ defmodule GameServer.DaraDots.Board do
   defp get_linker_piece_keys(),
     do: MapSet.new([:top_linker_alpha, :top_linker_beta, :bot_linker_alpha, :bot_linker_beta])
 
-  # Move a square and update its link
-  # def move_linker(%Board{} = board, %LinkerPiece{} = linker, %Coordinate{} = dest_coord) do
-  # board
-  # end
+  # Move a linker and update its link
+  def move_linker(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
+    movable_coords = get_movable_coords(board, linker_key)
 
-  # Advance all Runners, check for and take links, resolve collisions
-  # check for victory
+    if MapSet.member?(movable_coords, dest_coord) do
+      with {:ok, linker} <- Map.fetch(board, linker_key) do
+        moved_linker = LinkerPiece.move(linker, dest_coord)
+        Map.put(board, linker_key, moved_linker)
+      end
+    else
+      board
+    end
+  end
 
   # Allow for placement of Runners
   def place_runner(%Board{} = board, %Coordinate{row: 1} = coord) do
@@ -140,9 +146,18 @@ defmodule GameServer.DaraDots.Board do
   end
 
   def advance_runners(%Board{} = board) do
-    # get link coords
-    # iterate over runners
-    # give them link coords
+    all_link_coords = get_all_link_coords(board)
+
+    # check for victory
+    # TODO find a way to gracefully advance runners in turn and check for scoring
+    # if we want to advance by age we need to sort by runner_timer ascending
+    board.runner_pieces
+    |> Enum.map(fn runner ->
+      # TODO check for goals in here
+      RunnerPiece.advance(runner, all_link_coords)
+    end)
+
+    board
   end
 
   defp get_all_link_coords(%Board{} = board) do
