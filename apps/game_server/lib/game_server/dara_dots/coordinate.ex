@@ -27,6 +27,10 @@ defmodule GameServer.DaraDots.Coordinate do
     {:error, :invalid_coordinate}
   end
 
+  def equal?(%Coordinate{} = coord, %Coordinate{} = other) do
+    coord.row == other.row && coord.col == other.col
+  end
+
   # Min and max rows are used to determine when a runner piece scores
   def get_min_row(), do: @min_row
 

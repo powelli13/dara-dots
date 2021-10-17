@@ -7,6 +7,8 @@ defmodule GameServer.DaraDots.Board do
     :top_linker_beta,
     :bot_linker_alpha,
     :bot_linker_beta,
+    top_player_score: 0,
+    bot_player_score: 0,
 
     # Used to save the age of the triangles as they are added to the board
     runner_timer: 0,
@@ -127,5 +129,27 @@ defmodule GameServer.DaraDots.Board do
           runner_timer: board.runner_timer + 1
       }
     end
+  end
+
+  def score_goal(%Board{} = board, :top_goal) do
+    %Board{board | bot_player_score: board.bot_player_score + 1}
+  end
+
+  def score_goal(%Board{} = board, :bot_goal) do
+    %Board{board | top_player_score: board.top_player_score + 1}
+  end
+
+  def advance_runners(%Board{} = board) do
+    # get link coords
+    # iterate over runners
+    # give them link coords
+  end
+
+  defp get_all_link_coords(%Board{} = board) do
+    get_linker_piece_keys()
+    |> Enum.map(fn key ->
+      {:ok, piece} = Map.fetch(board, key)
+      piece.link_coords
+    end)
   end
 end
