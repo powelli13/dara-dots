@@ -171,8 +171,8 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
       {was_goal, moved_runner} = RunnerPiece.advance(runner, link_coords)
 
       assert was_goal == :no_goal
-      assert moved_runner.coord.row == 4
-      assert moved_runner.coord.col == 3
+      assert moved_runner.coord.row == runner_coord.row + 1
+      assert moved_runner.coord.col == runner_coord.col
       assert moved_runner.facing == :up
       assert moved_runner.speed == runner.speed
     end
