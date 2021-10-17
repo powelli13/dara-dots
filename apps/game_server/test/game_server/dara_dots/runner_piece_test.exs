@@ -95,7 +95,7 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
   test "advancing up should score when in range" do
     with {:ok, start_coord} <- Coordinate.new(5, 1),
          {:ok, runner} <- RunnerPiece.new(start_coord, :up) do
-      {was_goal, goal, _moved_runner} = RunnerPiece.advance(runner)
+      {was_goal, goal, _moved_runner} = RunnerPiece.advance(runner, [])
 
       assert was_goal == :goal
       assert goal == :top_goal
@@ -105,7 +105,7 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
   test "advancing up should not score when out of range" do
     with {:ok, start_coord} <- Coordinate.new(1, 1),
          {:ok, runner} <- RunnerPiece.new(start_coord, :up) do
-      {was_goal, moved_runner} = RunnerPiece.advance(runner)
+      {was_goal, moved_runner} = RunnerPiece.advance(runner, [])
 
       assert was_goal == :no_goal
       assert moved_runner.coord.row == start_coord.row + runner.speed
@@ -115,7 +115,7 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
   test "advancing down should score when in range" do
     with {:ok, start_coord} <- Coordinate.new(1, 1),
          {:ok, runner} <- RunnerPiece.new(start_coord, :down) do
-      {was_goal, goal, _moved_runner} = RunnerPiece.advance(runner)
+      {was_goal, goal, _moved_runner} = RunnerPiece.advance(runner, [])
 
       assert was_goal == :goal
       assert goal == :bot_goal
@@ -125,7 +125,7 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
   test "advancing down should not score when out of range" do
     with {:ok, start_coord} <- Coordinate.new(5, 1),
          {:ok, runner} <- RunnerPiece.new(start_coord, :down) do
-      {was_goal, moved_runner} = RunnerPiece.advance(runner)
+      {was_goal, moved_runner} = RunnerPiece.advance(runner, [])
 
       assert was_goal == :no_goal
       assert moved_runner.coord.row == start_coord.row - runner.speed

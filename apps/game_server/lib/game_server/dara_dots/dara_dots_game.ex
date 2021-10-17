@@ -1,7 +1,7 @@
 defmodule GameServer.DaraDots.DaraDotsGame do
   use GenServer
   alias Phoenix.PubSub
-  alias GameServer.DaraDots.{Board, Coordinate, SquarePiece}
+  alias GameServer.DaraDots.{Board, Coordinate}
 
   @broadcast_frequency 70
 

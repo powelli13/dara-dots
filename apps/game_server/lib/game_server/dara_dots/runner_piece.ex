@@ -55,7 +55,7 @@ defmodule GameServer.DaraDots.RunnerPiece do
   end
 
   # TODO problem with this implementation the runner will immediately move back on the link
-  defp advance_step(%RunnerPiece{} = runner, link_coords, trip_speed) do
+  defp advance_step(%RunnerPiece{} = runner, link_coords, trip_speed) when trip_speed > 0 do
     # Determine if the runner is currently on a link
     current_links =
       link_coords
@@ -86,7 +86,7 @@ defmodule GameServer.DaraDots.RunnerPiece do
     end
   end
 
-  defp advance_step(%RunnerPiece{} = runner, link_coords, 0) do
+  defp advance_step(%RunnerPiece{} = runner, _link_coords, 0) do
     {:no_goal, runner}
   end
 
