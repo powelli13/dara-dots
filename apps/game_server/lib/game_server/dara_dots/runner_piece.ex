@@ -2,7 +2,9 @@ defmodule GameServer.DaraDots.RunnerPiece do
   alias __MODULE__
   alias GameServer.DaraDots.Coordinate
 
-  defstruct [:coord, :facing, speed: 1]
+  # last_step_link keeps track of whether the most recent move
+  # was on a link to avoid taking the same link twice
+  defstruct [:coord, :facing, speed: 1, last_step_link: false]
 
   def new(start_coord, facing) when is_atom(facing) do
     {:ok, %RunnerPiece{coord: start_coord, facing: facing}}
@@ -42,19 +44,18 @@ defmodule GameServer.DaraDots.RunnerPiece do
     %RunnerPiece{runner | coord: coord}
   end
 
-  # for runner:
-  # use current speed for starting speed
-  # check for link on current coord
-  # if link then move to other link coord and dec working speed
-  # change facing
-  # else advance up or down row depending on facing and dec working speed
-  # continue until working speed is 0
+  defp moved_link(%RunnerPiece{} = runner) do
+    %RunnerPiece{runner | last_step_link: true}
+  end
+
+  defp moved_standard(%RunnerPiece{} = runner) do
+    %RunnerPiece{runner | last_step_link: false}
+  end
 
   def advance(%RunnerPiece{} = runner, link_coords) do
     advance_step(runner, link_coords, runner.speed)
   end
 
-  # TODO problem with this implementation the runner will immediately move back on the link
   defp advance_step(%RunnerPiece{} = runner, link_coords, trip_speed) when trip_speed > 0 do
     # Determine if the runner is currently on a link
     current_links =
@@ -67,22 +68,16 @@ defmodule GameServer.DaraDots.RunnerPiece do
       # Not on a link so use standard advancing
       # Standard advancing may score so check that
       [] ->
-        advanced_result = advance_standard(runner)
-
-        # if no goal keep advancing with decrimented speed
-        # otherwise return goal
-        case advanced_result do
-          {:no_goal, new_runner} ->
-            advance_step(new_runner, link_coords, trip_speed - 1)
-
-          {:goal, scored_goal, new_runner} ->
-            {:goal, scored_goal, new_runner}
-        end
+        handle_advance_standard(runner, link_coords, trip_speed)
 
       # On a link so we cross it, increase runner speed,
       # and change facing
       hit_links ->
-        advance_link(runner, hit_links, link_coords, trip_speed)
+        if not runner.last_step_link do
+          advance_link(runner, hit_links, link_coords, trip_speed)
+        else
+          handle_advance_standard(runner, link_coords, trip_speed)
+        end
     end
   end
 
@@ -107,9 +102,26 @@ defmodule GameServer.DaraDots.RunnerPiece do
     # Keep advancing with less speed for the trip
     runner
     |> move(other_coord)
+    |> moved_link()
     |> reverse_facing()
     |> increase_speed()
     |> advance_step(link_coords, trip_speed - 1)
+  end
+
+  # if no goal keep advancing with decrimented speed
+  # otherwise return goal
+  defp handle_advance_standard(
+         %RunnerPiece{} = runner,
+         link_coords,
+         trip_speed
+       ) do
+    case advance_standard(runner) do
+      {:no_goal, new_runner} ->
+        advance_step(new_runner, link_coords, trip_speed - 1)
+
+      {:goal, scored_goal, new_runner} ->
+        {:goal, scored_goal, new_runner}
+    end
   end
 
   defp advance_standard(%RunnerPiece{} = runner) do
@@ -125,22 +137,26 @@ defmodule GameServer.DaraDots.RunnerPiece do
   defp advance_up(%RunnerPiece{} = runner) do
     new_row = runner.coord.row + 1
 
+    new_runner = moved_standard(runner)
+
     if new_row > Coordinate.get_max_row() do
-      {:goal, :top_goal, runner}
+      {:goal, :top_goal, new_runner}
     else
-      {:ok, new_coord} = Coordinate.new(new_row, runner.coord.col)
-      {:no_goal, move(runner, new_coord)}
+      {:ok, new_coord} = Coordinate.new(new_row, new_runner.coord.col)
+      {:no_goal, move(new_runner, new_coord)}
     end
   end
 
   defp advance_down(%RunnerPiece{} = runner) do
     new_row = runner.coord.row - 1
 
+    new_runner = moved_standard(runner)
+
     if new_row < Coordinate.get_min_row() do
-      {:goal, :bot_goal, runner}
+      {:goal, :bot_goal, new_runner}
     else
-      {:ok, new_coord} = Coordinate.new(new_row, runner.coord.col)
-      {:no_goal, move(runner, new_coord)}
+      {:ok, new_coord} = Coordinate.new(new_row, new_runner.coord.col)
+      {:no_goal, move(new_runner, new_coord)}
     end
   end
 end
