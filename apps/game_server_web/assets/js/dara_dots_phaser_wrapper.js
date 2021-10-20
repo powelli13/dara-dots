@@ -34,12 +34,16 @@ let DaraDotsPhaserWrapper = {
       movableDots}) => {
       blueGraphics.clear();
       redGraphics.clear();
+      yellowGraphics.clear();
 
       drawBoardState(dots);
       drawLinkerPiece(topAlphaCoord, redGraphics);
       drawLinkerPiece(topBetaCoord, redGraphics);
       drawLinkerPiece(botAlphaCoord, blueGraphics);
       drawLinkerPiece(botBetaCoord, blueGraphics);
+
+      drawRunnerPiece([3, 3], yellowGraphics);
+
       highlightMovableDots(movableDots);
     });
 
@@ -53,6 +57,8 @@ let DaraDotsPhaserWrapper = {
     const boardWidth = 500;
     const boardHeight = 500;
     const boardBuffer = 75;
+
+    const triangleBuffer = 12;
 
     // Setup Phaser game
     let config = {
@@ -76,6 +82,7 @@ let DaraDotsPhaserWrapper = {
     let grayGraphics;
     let redGraphics;
     let blueGraphics;
+    let yellowGraphics;
     let movableDotGraphics;
     let emptyDot;
 
@@ -92,6 +99,7 @@ let DaraDotsPhaserWrapper = {
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
       blueGraphics = this.add.graphics({ fillStyle: {color: 0x0080ff } });
       redGraphics = this.add.graphics({ fillStyle: {color: 0xe60000} });
+      yellowGraphics = this.add.graphics({ fillStyle: {color: 0xffff00} });
       movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
 
       this.input.mouse.disableContextMenu();
@@ -120,6 +128,20 @@ let DaraDotsPhaserWrapper = {
       graphics.fillRectShape(
         new Phaser.Geom.Rectangle(x-12, y-12, 24, 24)
       );
+    }
+
+    function drawRunnerPiece(runnerCoord, graphics) {
+      const cx = rowCoordinateToPixels(runnerCoord[1]);
+      const cy = colCoordinateToPixels(runnerCoord[0]);
+
+      const x1 = cx - triangleBuffer;
+      const y1 = cy + triangleBuffer;
+      const x2 = cx + triangleBuffer;
+      const y2 = cy + triangleBuffer;
+      const x3 = cx;
+      const y3 = cy - triangleBuffer;
+
+      graphics.fillTriangle(x1, y1, x2, y2, x3, y3);
     }
 
     function highlightMovableDots(movableDots) {
