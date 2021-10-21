@@ -31,7 +31,8 @@ let DaraDotsPhaserWrapper = {
       topBetaCoord,
       botAlphaCoord,
       botBetaCoord,
-      movableDots}) => {
+      movableDots,
+      runnerPieces}) => {
       blueGraphics.clear();
       redGraphics.clear();
       yellowGraphics.clear();
@@ -42,7 +43,7 @@ let DaraDotsPhaserWrapper = {
       drawLinkerPiece(botAlphaCoord, blueGraphics);
       drawLinkerPiece(botBetaCoord, blueGraphics);
 
-      drawRunnerPiece([3, 3], yellowGraphics);
+      drawRunnerPieces(runnerPieces, yellowGraphics);
 
       highlightMovableDots(movableDots);
     });
@@ -130,18 +131,20 @@ let DaraDotsPhaserWrapper = {
       );
     }
 
-    function drawRunnerPiece(runnerCoord, graphics) {
-      const cx = rowCoordinateToPixels(runnerCoord[1]);
-      const cy = colCoordinateToPixels(runnerCoord[0]);
+    function drawRunnerPieces(runnerCoords, graphics) {
+      runnerCoords.forEach((r, _) => {
+        const cx = rowCoordinateToPixels(r[1]);
+        const cy = colCoordinateToPixels(r[0]);
 
-      const x1 = cx - triangleBuffer;
-      const y1 = cy + triangleBuffer;
-      const x2 = cx + triangleBuffer;
-      const y2 = cy + triangleBuffer;
-      const x3 = cx;
-      const y3 = cy - triangleBuffer;
+        const x1 = cx - triangleBuffer;
+        const y1 = cy + triangleBuffer;
+        const x2 = cx + triangleBuffer;
+        const y2 = cy + triangleBuffer;
+        const x3 = cx;
+        const y3 = cy - triangleBuffer;
 
-      graphics.fillTriangle(x1, y1, x2, y2, x3, y3);
+        graphics.fillTriangle(x1, y1, x2, y2, x3, y3);
+      });
     }
 
     function highlightMovableDots(movableDots) {

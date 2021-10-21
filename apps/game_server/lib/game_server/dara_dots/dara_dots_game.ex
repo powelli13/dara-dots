@@ -55,6 +55,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         Enum.map(
           Board.get_movable_coords(state.board, :top_linker_beta) |> MapSet.to_list(),
           fn coord -> coord_to_percent(coord) end
+        ),
+      runner_pieces:
+        Enum.map(
+          MapSet.to_list(state.board.runner_pieces),
+          fn runner -> coord_to_percent(runner.coord) end
         )
     }
 
@@ -65,6 +70,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     )
   end
 
+  # TODO rename this and put it on the Coordinate class
   defp coord_to_percent(%Coordinate{} = coord) do
     [coord.row, coord.col]
   end

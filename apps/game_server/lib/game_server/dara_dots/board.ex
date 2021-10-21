@@ -17,6 +17,10 @@ defmodule GameServer.DaraDots.Board do
   ]
 
   def new() do
+    # These are only for initial visual testing
+    {:ok, test_runner_coord} = Coordinate.new(4, 2)
+    {:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
+
     with {:ok, bot_alpha_coord} <- Coordinate.new(1, 2),
          {:ok, bot_beta_coord} <- Coordinate.new(1, 3),
          {:ok, top_alpha_coord} <- Coordinate.new(5, 3),
@@ -31,7 +35,8 @@ defmodule GameServer.DaraDots.Board do
          bot_linker_beta: bot_beta,
          top_linker_alpha: top_alpha,
          top_linker_beta: top_beta,
-         dot_coords: MapSet.new(build_grid_coords())
+         dot_coords: MapSet.new(build_grid_coords()),
+         runner_pieces: MapSet.new([test_runner])
        }}
     end
   end
