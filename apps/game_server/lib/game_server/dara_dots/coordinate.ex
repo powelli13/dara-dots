@@ -31,6 +31,11 @@ defmodule GameServer.DaraDots.Coordinate do
     coord.row == other.row && coord.col == other.col
   end
 
+  # Used to transform the Coordinate into a list to be broadcast by the channels
+  def to_list(%Coordinate{} = coord) do
+    [coord.row, coord.col]
+  end
+
   # Min and max rows are used to determine when a runner piece scores
   def get_min_row(), do: @min_row
 

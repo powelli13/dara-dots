@@ -45,21 +45,21 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       dots:
         Enum.map(
           state.board.dot_coords,
-          fn coord -> coord |> coord_to_percent end
+          fn coord -> coord |> Coordinate.to_list end
         ),
-      bot_alpha: state.board.bot_linker_alpha.coord |> coord_to_percent,
-      bot_beta: state.board.bot_linker_beta.coord |> coord_to_percent,
-      top_alpha: state.board.top_linker_alpha.coord |> coord_to_percent,
-      top_beta: state.board.top_linker_beta.coord |> coord_to_percent,
+      bot_alpha: state.board.bot_linker_alpha.coord |> Coordinate.to_list,
+      bot_beta: state.board.bot_linker_beta.coord |> Coordinate.to_list,
+      top_alpha: state.board.top_linker_alpha.coord |> Coordinate.to_list,
+      top_beta: state.board.top_linker_beta.coord |> Coordinate.to_list,
       movable_dots:
         Enum.map(
           Board.get_movable_coords(state.board, :top_linker_beta) |> MapSet.to_list(),
-          fn coord -> coord_to_percent(coord) end
+          fn coord -> Coordinate.to_list(coord) end
         ),
       runner_pieces:
         Enum.map(
           MapSet.to_list(state.board.runner_pieces),
-          fn runner -> coord_to_percent(runner.coord) end
+          fn runner -> Coordinate.to_list(runner.coord) end
         )
     }
 
@@ -68,10 +68,5 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       "dara_dots_game:#{state.game_id}",
       {:new_game_state, state_to_broadcast}
     )
-  end
-
-  # TODO rename this and put it on the Coordinate class
-  defp coord_to_percent(%Coordinate{} = coord) do
-    [coord.row, coord.col]
   end
 end
