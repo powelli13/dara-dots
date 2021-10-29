@@ -9,6 +9,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
 
+  def select_piece(piece) do
+    GenServer.cast(__MODULE__, {:select_piece, piece})
+  end
+
   defp via_tuple(id) do
     {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
   end
@@ -17,7 +21,8 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   def init(game_id) do
     # Distances are represented as percentages for the board to display
     initial_state = %{
-      game_id: game_id
+      game_id: game_id,
+      selected_piece: :top_linker_beta
     }
 
     # Setup the initial pieces
@@ -39,6 +44,14 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     {:noreply, state}
   end
 
+  @impl GenServer
+  def handle_cast({:select_piece, piece}, state) do
+    # TODO will want to use player IDs and check if they can move
+    # which turn is it, etc.
+
+    {:noreply, state}
+  end
+
   defp broadcast_game_state(state) do
     # generate the game state to be broadcast
     state_to_broadcast = %{
@@ -53,7 +66,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       top_beta: state.board.top_linker_beta.coord |> Coordinate.to_list,
       movable_dots:
         Enum.map(
-          Board.get_movable_coords(state.board, :top_linker_beta) |> MapSet.to_list(),
+          Board.get_movable_coords(state.board, state.selected_piece) |> MapSet.to_list(),
           fn coord -> Coordinate.to_list(coord) end
         ),
       runner_pieces:
