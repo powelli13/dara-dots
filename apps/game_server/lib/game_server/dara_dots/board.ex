@@ -105,7 +105,22 @@ defmodule GameServer.DaraDots.Board do
     do: MapSet.new([:top_linker_alpha, :top_linker_beta, :bot_linker_alpha, :bot_linker_beta])
 
   # Move a linker and update its link
-  def move_linker(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
+  def move_linker_and_link(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
+    movable_coords = get_movable_coords(board, linker_key)
+
+    if MapSet.member?(movable_coords, dest_coord) do
+      with {:ok, linker} <- Map.fetch(board, linker_key) do
+        moved_linker =
+          LinkerPiece.move(linker, dest_coord)
+          |> LinkerPiece.set_link(linker.coord, dest_coord)
+        Map.put(board, linker_key, moved_linker)
+      end
+    else
+      board
+    end
+  end
+
+  def move_linker_no_link(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
     movable_coords = get_movable_coords(board, linker_key)
 
     if MapSet.member?(movable_coords, dest_coord) do
