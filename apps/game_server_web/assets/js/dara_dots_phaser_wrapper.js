@@ -33,15 +33,20 @@ let DaraDotsPhaserWrapper = {
       botBetaCoord,
       movableDots,
       runnerPieces}) => {
-      blueGraphics.clear();
-      redGraphics.clear();
+      //blueGraphics.clear();
+      //redGraphics.clear();
       yellowGraphics.clear();
 
       drawBoardState(dots);
-      drawLinkerPiece(topAlphaCoord, redGraphics);
-      drawLinkerPiece(topBetaCoord, redGraphics);
-      drawLinkerPiece(botAlphaCoord, blueGraphics);
-      drawLinkerPiece(botBetaCoord, blueGraphics);
+
+      updateLinkerCoord(redAlphaLinker, topAlphaCoord);
+      updateLinkerCoord(redBetaLinker, topBetaCoord);
+      updateLinkerCoord(blueAlphaLinker, botAlphaCoord);
+      updateLinkerCoord(blueBetaLinker, botBetaCoord);
+      //drawLinkerPiece(topAlphaCoord, redGraphics);
+      //drawLinkerPiece(topBetaCoord, redGraphics);
+      //drawLinkerPiece(botAlphaCoord, blueGraphics);
+      //drawLinkerPiece(botBetaCoord, blueGraphics);
 
       drawRunnerPieces(runnerPieces, yellowGraphics);
 
@@ -81,16 +86,22 @@ let DaraDotsPhaserWrapper = {
 
     // Setup game objects
     let grayGraphics;
-    let redGraphics;
-    let blueGraphics;
     let yellowGraphics;
     let movableDotGraphics;
     let emptyDot;
+
+    // Sprites for Pieces
+    let redAlphaLinker;
+    let redBetaLinker;
+    let blueAlphaLinker;
+    let blueBetaLinker;
 
     let game = new Phaser.Game(config);
 
     function preload () {
       this.load.image("background", "game_images/background.jpg");
+      this.load.image("red_linker", "game_images/red_linker.png");
+      this.load.image("blue_linker", "game_images/blue_linker.png");
     }
 
     function create () {
@@ -98,10 +109,19 @@ let DaraDotsPhaserWrapper = {
       this.add.image(boardWidth, boardHeight, "background");
 
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
-      blueGraphics = this.add.graphics({ fillStyle: {color: 0x0080ff } });
-      redGraphics = this.add.graphics({ fillStyle: {color: 0xe60000} });
       yellowGraphics = this.add.graphics({ fillStyle: {color: 0xffff00} });
       movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
+
+      // Setup Pieces
+      redAlphaLinker = this.add.sprite(0, 0, "red_linker");//.setInteractive();
+      redBetaLinker = this.add.sprite(0, 0, "red_linker");
+
+      blueAlphaLinker = this.add.sprite(0, 0, "blue_linker");
+      blueBetaLinker = this.add.sprite(0, 0, "blue_linker");
+        //blankSpace.on("pointerup", function (pointer) {
+          //gameChannel.push("submit_move", {"move_index": i})
+            //.receive("error", e => e.console.log(e));
+        //});
 
       this.input.mouse.disableContextMenu();
     }
@@ -122,13 +142,14 @@ let DaraDotsPhaserWrapper = {
       });
     }
 
-    function drawLinkerPiece(linkerCoord, graphics) {
-      const x = rowCoordinateToPixels(linkerCoord[1]);
-      const y = colCoordinateToPixels(linkerCoord[0]);
+    function updateLinkerCoord(linkerSprite, coord) {
+      const x = rowCoordinateToPixels(coord[1]);
+      const y = colCoordinateToPixels(coord[0]);
 
-      graphics.fillRectShape(
-        new Phaser.Geom.Rectangle(x-12, y-12, 24, 24)
-      );
+      // TODO update link if applicable
+
+      linkerSprite.x = x;
+      linkerSprite.y = y;
     }
 
     function drawRunnerPieces(runnerCoords, graphics) {
