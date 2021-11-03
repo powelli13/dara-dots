@@ -6,7 +6,7 @@ defmodule GameServerWeb.DaraDotsGameChannel do
     # put Player ID on the socket.assigns
     GameServer.DaraDots.DaraDotsGame.start(game_id)
 
-    {:ok, socket}
+    {:ok, socket |> assign(:game_id, game_id)}
   end
 
   def handle_in("select_piece", %{"piece" => piece}, socket) do
@@ -27,7 +27,7 @@ defmodule GameServerWeb.DaraDotsGameChannel do
           :bot_linker_beta
       end
 
-    GameServer.DaraDots.DaraDotsGame.select_piece(piece_to_select)
+    GameServer.DaraDots.DaraDotsGame.select_piece(socket.assigns[:game_id], piece_to_select)
 
     {:noreply, socket}
   end

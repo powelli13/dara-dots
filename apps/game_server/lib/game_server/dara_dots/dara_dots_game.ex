@@ -3,15 +3,20 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   alias Phoenix.PubSub
   alias GameServer.DaraDots.{Board, Coordinate}
 
-  @broadcast_frequency 70
+  @broadcast_frequency 500
 
   def start(id) do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
 
-  def select_piece(piece) do
+  def select_piece(id, piece) do
     IO.inspect "selecting a piece"
-    GenServer.cast(__MODULE__, {:select_piece, piece})
+    IO.inspect piece
+    GenServer.cast(via_tuple(id), {:select_piece, piece})
+  end
+
+  def get_selected_piece(id) do
+    GenServer.call(via_tuple(id), :get_selected_piece)
   end
 
   defp via_tuple(id) do
@@ -20,6 +25,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def init(game_id) do
+    IO.inspect "INIT the dara dots game"
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
@@ -51,13 +57,18 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     # which turn is it, etc.
     IO.puts "!!!!!!!!!!!!!!!! piece"
     IO.inspect piece
-    movable_dots = 
-      Enum.map(
-        Board.get_movable_coords(state.board, piece) |> MapSet.to_list(),
-        fn coord -> Coordinate.to_list(coord) end
-      )
 
-    {:noreply, %{state | selected_piece: piece, movable_dots: movable_dots}}
+    {:noreply, %{state | selected_piece: piece}}
+  end
+
+  @impl GenServer
+  def handle_call(:get_movable_dots, _, state) do
+    {:reply, state.movable_dots, state}
+  end
+
+  @impl GenServer
+  def handle_call(:get_selected_piece, _, state) do
+    {:reply, state.selected_piece, state}
   end
 
   defp broadcast_game_state(state) do
