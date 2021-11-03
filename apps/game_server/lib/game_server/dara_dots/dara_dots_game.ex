@@ -3,15 +3,13 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   alias Phoenix.PubSub
   alias GameServer.DaraDots.{Board, Coordinate}
 
-  @broadcast_frequency 500
+  @broadcast_frequency 70
 
   def start(id) do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
 
   def select_piece(id, piece) do
-    IO.inspect "selecting a piece"
-    IO.inspect piece
     GenServer.cast(via_tuple(id), {:select_piece, piece})
   end
 
@@ -25,7 +23,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def init(game_id) do
-    IO.inspect "INIT the dara dots game"
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
@@ -55,9 +52,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   def handle_cast({:select_piece, piece}, state) do
     # TODO will want to use player IDs and check if they can move
     # which turn is it, etc.
-    IO.puts "!!!!!!!!!!!!!!!! piece"
-    IO.inspect piece
-
     {:noreply, %{state | selected_piece: piece}}
   end
 

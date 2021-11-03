@@ -10,8 +10,6 @@ defmodule GameServerWeb.DaraDotsGameChannel do
   end
 
   def handle_in("select_piece", %{"piece" => piece}, socket) do
-    IO.puts "?????????? selecting piece"
-    IO.inspect piece
     piece_to_select =
       case piece do
         "top_alpha" ->
