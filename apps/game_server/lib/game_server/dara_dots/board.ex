@@ -113,6 +113,7 @@ defmodule GameServer.DaraDots.Board do
         moved_linker =
           LinkerPiece.move(linker, dest_coord)
           |> LinkerPiece.set_link(linker.coord, dest_coord)
+
         Map.put(board, linker_key, moved_linker)
       end
     else

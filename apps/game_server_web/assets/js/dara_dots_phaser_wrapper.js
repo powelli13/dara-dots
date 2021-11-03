@@ -33,20 +33,18 @@ let DaraDotsPhaserWrapper = {
       botBetaCoord,
       movableDots,
       runnerPieces}) => {
-      //blueGraphics.clear();
-      //redGraphics.clear();
       yellowGraphics.clear();
 
       drawBoardState(dots);
 
-      updateLinkerCoord(redAlphaLinker, topAlphaCoord);
-      updateLinkerCoord(redBetaLinker, topBetaCoord);
-      updateLinkerCoord(blueAlphaLinker, botAlphaCoord);
-      updateLinkerCoord(blueBetaLinker, botBetaCoord);
-      //drawLinkerPiece(topAlphaCoord, redGraphics);
-      //drawLinkerPiece(topBetaCoord, redGraphics);
-      //drawLinkerPiece(botAlphaCoord, blueGraphics);
-      //drawLinkerPiece(botBetaCoord, blueGraphics);
+      if (redAlphaLinker !== undefined)
+        updateLinkerCoord(redAlphaLinker, topAlphaCoord);
+      if (redBetaLinker !== undefined)
+        updateLinkerCoord(redBetaLinker, topBetaCoord);
+      if (blueAlphaLinker !== undefined)
+        updateLinkerCoord(blueAlphaLinker, botAlphaCoord);
+      if (blueBetaLinker !== undefined)
+        updateLinkerCoord(blueBetaLinker, botBetaCoord);
 
       drawRunnerPieces(runnerPieces, yellowGraphics);
 
@@ -113,15 +111,29 @@ let DaraDotsPhaserWrapper = {
       movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
 
       // Setup Pieces
-      redAlphaLinker = this.add.sprite(0, 0, "red_linker");//.setInteractive();
-      redBetaLinker = this.add.sprite(0, 0, "red_linker");
+      redAlphaLinker = this.add.sprite(0, 0, "red_linker").setInteractive();
+      redAlphaLinker.on("pointerup", function (_) {
+        gameChannel.push("select_piece", {"piece": "top_alpha"})
+          .receive("error", e => e.console.log(e));
+      });
 
-      blueAlphaLinker = this.add.sprite(0, 0, "blue_linker");
-      blueBetaLinker = this.add.sprite(0, 0, "blue_linker");
-        //blankSpace.on("pointerup", function (pointer) {
-          //gameChannel.push("submit_move", {"move_index": i})
-            //.receive("error", e => e.console.log(e));
-        //});
+      redBetaLinker = this.add.sprite(0, 0, "red_linker").setInteractive();
+      redBetaLinker.on("pointerup", function (_) {
+        gameChannel.push("select_piece", {"piece": "top_beta"})
+          .receive("error", e => e.console.log(e));
+      });
+
+      blueAlphaLinker = this.add.sprite(0, 0, "blue_linker").setInteractive();
+      blueAlphaLinker.on("pointerup", function (_) {
+        gameChannel.push("select_piece", {"piece": "bot_alpha"})
+          .receive("error", e => e.console.log(e));
+      });
+
+      blueBetaLinker = this.add.sprite(0, 0, "blue_linker").setInteractive();
+      blueBetaLinker.on("pointerup", function (_) {
+        gameChannel.push("select_piece", {"piece": "bot_beta"})
+          .receive("error", e => e.console.log(e));
+      });
 
       this.input.mouse.disableContextMenu();
     }

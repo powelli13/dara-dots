@@ -10,6 +10,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   def select_piece(piece) do
+    IO.inspect "selecting a piece"
     GenServer.cast(__MODULE__, {:select_piece, piece})
   end
 
@@ -48,8 +49,15 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   def handle_cast({:select_piece, piece}, state) do
     # TODO will want to use player IDs and check if they can move
     # which turn is it, etc.
+    IO.puts "!!!!!!!!!!!!!!!! piece"
+    IO.inspect piece
+    movable_dots = 
+      Enum.map(
+        Board.get_movable_coords(state.board, piece) |> MapSet.to_list(),
+        fn coord -> Coordinate.to_list(coord) end
+      )
 
-    {:noreply, state}
+    {:noreply, %{state | selected_piece: piece, movable_dots: movable_dots}}
   end
 
   defp broadcast_game_state(state) do
@@ -58,12 +66,12 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       dots:
         Enum.map(
           state.board.dot_coords,
-          fn coord -> coord |> Coordinate.to_list end
+          fn coord -> coord |> Coordinate.to_list() end
         ),
-      bot_alpha: state.board.bot_linker_alpha.coord |> Coordinate.to_list,
-      bot_beta: state.board.bot_linker_beta.coord |> Coordinate.to_list,
-      top_alpha: state.board.top_linker_alpha.coord |> Coordinate.to_list,
-      top_beta: state.board.top_linker_beta.coord |> Coordinate.to_list,
+      bot_alpha: state.board.bot_linker_alpha.coord |> Coordinate.to_list(),
+      bot_beta: state.board.bot_linker_beta.coord |> Coordinate.to_list(),
+      top_alpha: state.board.top_linker_alpha.coord |> Coordinate.to_list(),
+      top_beta: state.board.top_linker_beta.coord |> Coordinate.to_list(),
       movable_dots:
         Enum.map(
           Board.get_movable_coords(state.board, state.selected_piece) |> MapSet.to_list(),

@@ -3,9 +3,33 @@ defmodule GameServerWeb.DaraDotsGameChannel do
 
   def join("dara_dots_game:" <> game_id, _params, socket) do
     # TODO move this into the queue
+    # put Player ID on the socket.assigns
     GameServer.DaraDots.DaraDotsGame.start(game_id)
 
     {:ok, socket}
+  end
+
+  def handle_in("select_piece", %{"piece" => piece}, socket) do
+    IO.puts "?????????? selecting piece"
+    IO.inspect piece
+    piece_to_select =
+      case piece do
+        "top_alpha" ->
+          :top_linker_alpha
+
+        "top_beta" ->
+          :top_linker_beta
+
+        "bot_alpha" ->
+          :bot_linker_alpha
+
+        "bot_beta" ->
+          :bot_linker_beta
+      end
+
+    GameServer.DaraDots.DaraDotsGame.select_piece(piece_to_select)
+
+    {:noreply, socket}
   end
 
   def handle_info({:new_game_state, game_state}, socket) do
