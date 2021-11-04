@@ -48,6 +48,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "ttt" ->
         GameServer.TttPlayerQueue.remove_player(socket.assigns.player_id)
+
+      "rps" ->
+        nil
     end
 
     {:noreply, socket}
@@ -105,6 +108,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "ttt" ->
         GameServer.TttPlayerQueue.remove_player(socket.assigns.player_id)
+      
+      "rps" ->
+        nil
     end
 
     reason
@@ -117,6 +123,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "ttt" ->
         "ttt-game"
+
+      "rps" ->
+        "rps-game"
 
       "dara-dots" ->
         "dara-dots"

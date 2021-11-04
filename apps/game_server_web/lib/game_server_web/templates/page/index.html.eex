@@ -25,7 +25,7 @@
       <li><%= link "Tic Tac Toe", to: Routes.ttt_game_path(@conn, :lobby) %></li>
       <li><%= link "Pong", to: Routes.pong_path(@conn, :lobby) %></li>
       <li><%= link "Lip Sync Battle", to: Routes.lobby_path(@conn, :landing) %></li>
-      <li><%= link "Rock Paper Scissors", to: Routes.game_path(@conn, :lobby) %></li>
+      <li><%= link "Rock Paper Scissors", to: Routes.rps_game_path(@conn, :lobby) %></li>
     </ul>
   </article>
 </section>

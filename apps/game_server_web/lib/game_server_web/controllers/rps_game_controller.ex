@@ -7,7 +7,7 @@ defmodule GameServerWeb.RpsGameController do
         render(conn, "index.html")
 
       :error ->
-        redirect(conn, to: Routes.game_path(conn, :lobby))
+        redirect(conn, to: Routes.rps_game_path(conn, :lobby))
     end
   end
 
