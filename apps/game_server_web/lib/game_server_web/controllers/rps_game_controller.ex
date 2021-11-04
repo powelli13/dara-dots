@@ -1,4 +1,4 @@
-defmodule GameServerWeb.GameController do
+defmodule GameServerWeb.RpsGameController do
   use GameServerWeb, :controller
 
   def index(conn, params) do
@@ -12,6 +12,6 @@ defmodule GameServerWeb.GameController do
   end
 
   def lobby(conn, _params) do
-    render(conn, "rps_lobby.html")
+    render(conn, "rps_lobby.html", game_name: "Rock Paper Scissors", lobby_name: "rps")
   end
 end
