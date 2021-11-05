@@ -93,6 +93,7 @@ let DaraDotsPhaserWrapper = {
     let redBetaLinker;
     let blueAlphaLinker;
     let blueBetaLinker;
+    let highlightDots = {};
 
     let game = new Phaser.Game(config);
 
@@ -100,6 +101,7 @@ let DaraDotsPhaserWrapper = {
       this.load.image("background", "game_images/background.jpg");
       this.load.image("red_linker", "game_images/red_linker.png");
       this.load.image("blue_linker", "game_images/blue_linker.png");
+      this.load.image("highlight_dot", "game_images/highlight_dot.png");
     }
 
     function create () {
@@ -134,6 +136,16 @@ let DaraDotsPhaserWrapper = {
         gameChannel.push("select_piece", {"piece": "bot_beta"})
           .receive("error", e => e.console.log(e));
       });
+
+      // Create four sprites to use when highlighting squares
+      for (let i = 0; i < 4; i++) {
+        // TODO set the alpha to remove hight background
+        let hDot = this.add.sprite(-24, -24, "highlight_dot");
+        // set interactive
+        // TODO will need to send the correct coordinates when clicked
+        // may need to use the dots for this
+        highlightDots[i] = hDot;
+      }
 
       this.input.mouse.disableContextMenu();
     }
@@ -181,15 +193,20 @@ let DaraDotsPhaserWrapper = {
     }
 
     function highlightMovableDots(movableDots) {
-      movableDotGraphics.clear();
-
       movableDots.forEach((v, i) => {
         const x = rowCoordinateToPixels(v[1]);
         const y = colCoordinateToPixels(v[0]);
 
-        movableDotGraphics.fillCircleShape(
-          new Phaser.Geom.Circle(x, y, 8)
-        );
+        // TODO may have to remove these sprites
+        //let movableDot = game.add.sprite(x, y, "highlight_dot");
+        //setInteractive()
+        //on("pointerup", function(_) {gameChannel.push})
+        //movableDot.alpha = 0.5;
+        if (i < 4) {
+          let hDot = highlightDots[i];
+          hDot.x = x;
+          hDot.y = y;
+        }
       });
     }
 
