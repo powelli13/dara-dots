@@ -68,6 +68,10 @@ defmodule GameServer.DaraDots.Board do
     MapSet.difference(curr_possibles, other_linker_coords)
   end
 
+  defp get_possible_move_coords(%Board{} = _board, :none) do
+    MapSet.new()
+  end
+
   defp get_possible_move_coords(%Board{} = board, piece_key) when is_atom(piece_key) do
     {:ok, piece} = Map.fetch(board, piece_key)
 

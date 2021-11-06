@@ -26,7 +26,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
-      selected_piece: :top_linker_beta
+      selected_piece: :none
     }
 
     # Setup the initial pieces
