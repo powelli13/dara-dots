@@ -140,7 +140,7 @@ let DaraDotsPhaserWrapper = {
       // Create four sprites to use when highlighting squares
       for (let i = 0; i < 4; i++) {
         // TODO set the alpha to remove hight background
-        let hDot = this.add.sprite(-24, -24, "highlight_dot");
+        let hDot = this.add.sprite(-24, -24, "highlight_dot").setInteractive();
         // set interactive
         // TODO will need to send the correct coordinates when clicked
         // may need to use the dots for this
@@ -194,18 +194,20 @@ let DaraDotsPhaserWrapper = {
 
     function highlightMovableDots(movableDots) {
       movableDots.forEach((v, i) => {
-        const x = rowCoordinateToPixels(v[1]);
-        const y = colCoordinateToPixels(v[0]);
+        const row = v[1];
+        const col = v[0];
+        const x = rowCoordinateToPixels(row);
+        const y = colCoordinateToPixels(col);
 
-        // TODO may have to remove these sprites
-        //let movableDot = game.add.sprite(x, y, "highlight_dot");
-        //setInteractive()
-        //on("pointerup", function(_) {gameChannel.push})
-        //movableDot.alpha = 0.5;
         if (i < 4) {
           let hDot = highlightDots[i];
           hDot.x = x;
           hDot.y = y;
+
+          hDot.on("pointerup", function (_) {
+            gameChannel.push("submit_move", {"row": row, "col": col})
+              .receive("error", e => e.console.log(e));
+          });
         }
       });
     }

@@ -108,6 +108,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "ttt" ->
         GameServer.TttPlayerQueue.remove_player(socket.assigns.player_id)
+
+      "dara-dots" ->
+        nil
       
       "rps" ->
         nil

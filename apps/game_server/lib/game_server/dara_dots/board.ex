@@ -125,6 +125,10 @@ defmodule GameServer.DaraDots.Board do
     end
   end
 
+  def move_linker_and_link(%Board{} = board, :none, %Coordinate{} = _coord) do
+    board
+  end
+
   def move_linker_no_link(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
     movable_coords = get_movable_coords(board, linker_key)
 
@@ -136,6 +140,10 @@ defmodule GameServer.DaraDots.Board do
     else
       board
     end
+  end
+
+  def move_linker_no_link(%Board{} = board, :none, %Coordinate{} = _coord) do
+    board
   end
 
   # Allow for placement of Runners

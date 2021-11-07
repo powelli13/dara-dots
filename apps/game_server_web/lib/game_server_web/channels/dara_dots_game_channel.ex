@@ -30,6 +30,13 @@ defmodule GameServerWeb.DaraDotsGameChannel do
     {:noreply, socket}
   end
 
+  def handle_in("submit_move", %{"row" => row, "col" => col}, socket) do
+    IO.inspect "!!!!!!!!!!!!!!! handling submit move!!!!!!!!!!!"
+    GameServer.DaraDots.DaraDotsGame.submit_move(socket.assigns[:game_id], row, col)
+
+    {:noreply, socket}
+  end
+
   def handle_info({:new_game_state, game_state}, socket) do
     push(
       socket,

@@ -17,6 +17,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.call(via_tuple(id), :get_selected_piece)
   end
 
+  def submit_move(id, row, col) do
+    IO.inspect "submitted a move!!!"
+    GenServer.cast(via_tuple(id), {:submit_move, row, col})
+  end
+
   defp via_tuple(id) do
     {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
   end
@@ -53,6 +58,14 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     # TODO will want to use player IDs and check if they can move
     # which turn is it, etc.
     {:noreply, %{state | selected_piece: piece}}
+  end
+
+  @impl GenServer
+  def handle_cast({:submit_move, row, col}, state) do
+    {:ok, dest_coord} = Coordinate.new(row, col)
+    moved_board = Board.move_linker_no_link(state.board, state.selected_piece, dest_coord)
+
+    {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end
 
   @impl GenServer
