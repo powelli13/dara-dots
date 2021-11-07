@@ -63,6 +63,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_cast({:submit_move, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
+    IO.inspect "!!?!??!? selected piece"
+    IO.inspect state.selected_piece
+
     moved_board = Board.move_linker_no_link(state.board, state.selected_piece, dest_coord)
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}

@@ -193,7 +193,11 @@ let DaraDotsPhaserWrapper = {
     }
 
     function highlightMovableDots(movableDots) {
+      // Used to move unused highlight dot sprites offscreen
+      let lastUsedHighlightIndex = -1;
+
       movableDots.forEach((v, i) => {
+        lastUsedHighlightIndex = i;
         const row = v[1];
         const col = v[0];
         const x = rowCoordinateToPixels(row);
@@ -204,12 +208,23 @@ let DaraDotsPhaserWrapper = {
           hDot.x = x;
           hDot.y = y;
 
+          // TODO i think this is adding the function multiple times
+          // we'll need a different object to maintain the coordinates
           hDot.on("pointerup", function (_) {
             gameChannel.push("submit_move", {"row": row, "col": col})
               .receive("error", e => e.console.log(e));
           });
         }
       });
+
+      // We didn't use all sprites, or there were no movable dots
+      if (lastUsedHighlightIndex < 3 || lastUsedHighlightIndex == -1) {
+        for (let i = lastUsedHighlightIndex + 1; i < 4; i++) {
+          let hDot = highlightDots[i];
+          hDot.x = -24;
+          hDot.y = -24;
+        }
+      }
     }
 
     // The server stores object positions as relative percentages
