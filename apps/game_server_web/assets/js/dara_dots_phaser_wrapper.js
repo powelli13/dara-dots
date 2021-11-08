@@ -242,8 +242,6 @@ let DaraDotsPhaserWrapper = {
 
     function colCoordinateToPixels(colCoord) {
       return (boardHeight - boardBuffer) * (colCoord / 5);
-      //let diff = (boardHeight - boardBuffer) * (colCoord / 5);
-      //return boardHeight - diff;
     }
   }
 };

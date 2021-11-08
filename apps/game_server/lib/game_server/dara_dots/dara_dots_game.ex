@@ -18,7 +18,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   def submit_move(id, row, col) do
-    IO.inspect "submitted a move!!!"
     GenServer.cast(via_tuple(id), {:submit_move, row, col})
   end
 
@@ -63,8 +62,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_cast({:submit_move, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
-    IO.inspect "!!?!??!? selected piece"
-    IO.inspect state.selected_piece
 
     moved_board = Board.move_linker_no_link(state.board, state.selected_piece, dest_coord)
 
