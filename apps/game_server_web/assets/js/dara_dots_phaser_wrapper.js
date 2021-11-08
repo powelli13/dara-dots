@@ -94,6 +94,7 @@ let DaraDotsPhaserWrapper = {
     let blueAlphaLinker;
     let blueBetaLinker;
     let highlightDots = {};
+    let highlightCoords = {};
 
     let game = new Phaser.Game(config);
 
@@ -141,10 +142,18 @@ let DaraDotsPhaserWrapper = {
       for (let i = 0; i < 4; i++) {
         // TODO set the alpha to remove hight background
         let hDot = this.add.sprite(-24, -24, "highlight_dot").setInteractive();
-        // set interactive
+        hDot.on("pointerup", function (_) {
+          if (highlightCoords[i] !== undefined && highlightCoords[i].length == 2) {
+            gameChannel.push("submit_move",
+                {"row": highlightCoords[i][0], "col": highlightCoords[i][1]})
+              .receive("error", e => e.console.log(e));
+          }
+        });
+
         // TODO will need to send the correct coordinates when clicked
         // may need to use the dots for this
         highlightDots[i] = hDot;
+        highlightCoords[i] = [];
       }
 
       this.input.mouse.disableContextMenu();
@@ -208,12 +217,7 @@ let DaraDotsPhaserWrapper = {
           hDot.x = x;
           hDot.y = y;
 
-          // TODO i think this is adding the function multiple times
-          // we'll need a different object to maintain the coordinates
-          hDot.on("pointerup", function (_) {
-            gameChannel.push("submit_move", {"row": row, "col": col})
-              .receive("error", e => e.console.log(e));
-          });
+          highlightCoords[i] = [row, col];
         }
       });
 
@@ -223,6 +227,8 @@ let DaraDotsPhaserWrapper = {
           let hDot = highlightDots[i];
           hDot.x = -24;
           hDot.y = -24;
+
+          highlightCoords[i] = [];
         }
       }
     }
