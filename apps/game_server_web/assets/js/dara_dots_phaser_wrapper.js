@@ -209,8 +209,8 @@ let DaraDotsPhaserWrapper = {
         lastUsedHighlightIndex = i;
         const row = v[0];
         const col = v[1];
-        const x = rowCoordinateToPixels(row);
-        const y = colCoordinateToPixels(col);
+        const y = rowCoordinateToPixels(row);
+        const x = colCoordinateToPixels(col);
 
         if (i < 4) {
           let hDot = highlightDots[i];
@@ -241,9 +241,9 @@ let DaraDotsPhaserWrapper = {
     }
 
     function colCoordinateToPixels(colCoord) {
-      //return (boardHeight - boardBuffer) * (colCoord / 5);
-      let diff = (boardHeight - boardBuffer) * (colCoord / 5);
-      return boardHeight - diff;
+      return (boardHeight - boardBuffer) * (colCoord / 5);
+      //let diff = (boardHeight - boardBuffer) * (colCoord / 5);
+      //return boardHeight - diff;
     }
   }
 };

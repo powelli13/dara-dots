@@ -22,8 +22,8 @@ defmodule GameServer.DaraDots.Board do
     {:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
 
     with {:ok, bot_alpha_coord} <- Coordinate.new(1, 2),
-         {:ok, bot_beta_coord} <- Coordinate.new(1, 3),
-         {:ok, top_alpha_coord} <- Coordinate.new(5, 3),
+         {:ok, bot_beta_coord} <- Coordinate.new(1, 4),
+         {:ok, top_alpha_coord} <- Coordinate.new(5, 2),
          {:ok, top_beta_coord} <- Coordinate.new(5, 4),
          {:ok, bot_alpha} <- LinkerPiece.new(bot_alpha_coord),
          {:ok, bot_beta} <- LinkerPiece.new(bot_beta_coord),
