@@ -132,12 +132,20 @@ defmodule GameServer.DaraDots.Board do
   def move_linker_no_link(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
     movable_coords = get_movable_coords(board, linker_key)
 
+    IO.inspect "movable_coords"
+    IO.inspect movable_coords
+
+    IO.inspect "dest_coord"
+    IO.inspect dest_coord
+
     if MapSet.member?(movable_coords, dest_coord) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
+        IO.inspect "moving the linker"
         moved_linker = LinkerPiece.move(linker, dest_coord)
         Map.put(board, linker_key, moved_linker)
       end
     else
+      IO.inspect "no move!!!"
       board
     end
   end

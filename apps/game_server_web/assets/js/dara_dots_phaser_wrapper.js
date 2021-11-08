@@ -207,8 +207,8 @@ let DaraDotsPhaserWrapper = {
 
       movableDots.forEach((v, i) => {
         lastUsedHighlightIndex = i;
-        const row = v[1];
-        const col = v[0];
+        const row = v[0];
+        const col = v[1];
         const x = rowCoordinateToPixels(row);
         const y = colCoordinateToPixels(col);
 
@@ -241,7 +241,9 @@ let DaraDotsPhaserWrapper = {
     }
 
     function colCoordinateToPixels(colCoord) {
-      return (boardHeight - boardBuffer) * (colCoord / 5);
+      //return (boardHeight - boardBuffer) * (colCoord / 5);
+      let diff = (boardHeight - boardBuffer) * (colCoord / 5);
+      return boardHeight - diff;
     }
   }
 };
