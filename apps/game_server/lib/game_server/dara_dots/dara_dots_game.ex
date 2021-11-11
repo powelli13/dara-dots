@@ -87,13 +87,13 @@ defmodule GameServer.DaraDots.DaraDotsGame do
           fn coord -> coord |> Coordinate.to_list() end
         ),
       bot_alpha: state.board.bot_linker_alpha.coord |> Coordinate.to_list(),
-      bot_alpha_link: none,
+      bot_alpha_link: :none,
       bot_beta: state.board.bot_linker_beta.coord |> Coordinate.to_list(),
-      bot_beta_link: none,
+      bot_beta_link: :none,
       top_alpha: state.board.top_linker_alpha.coord |> Coordinate.to_list(),
-      top_alpha_link: none,
+      top_alpha_link: :none,
       top_beta: state.board.top_linker_beta.coord |> Coordinate.to_list(),
-      top_beta_link: none,
+      top_beta_link: :none,
       movable_dots:
         Enum.map(
           Board.get_movable_coords(state.board, state.selected_piece) |> MapSet.to_list(),

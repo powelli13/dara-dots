@@ -19,23 +19,24 @@ defmodule GameServer.RockPaperScissors do
   Receives the move for the given player_name.
   move should be either :rock, :paper or :scissors.
   """
-  def enter_move(game_pid, player_name, move) when is_atom(move) do
-    GenServer.cast(game_pid, {:player_move, player_name, move})
+  # TODO change these to be player_id
+  def enter_move(game_id, player_name, move) when is_atom(move) do
+    GenServer.cast(via_tuple(game_id), {:player_move, player_name, move})
   end
 
   @doc """
   Attempts to add a new player to the game.
   """
-  def add_player(game_pid, player_name) when is_binary(player_name) do
-    GenServer.cast(game_pid, {:add_player, player_name})
+  def add_player(game_id, player_name) when is_binary(player_name) do
+    GenServer.cast(via_tuple(game_id), {:add_player, player_name})
   end
 
-  def get_player_names(game_pid) do
-    GenServer.call(game_pid, :get_player_names)
+  def get_player_names(game_id) do
+    GenServer.call(via_tuple(game_id), :get_player_names)
   end
 
-  def get_player_moves(game_pid) do
-    GenServer.call(game_pid, :get_player_moves)
+  def get_player_moves(game_id) do
+    GenServer.call(via_tuple(game_id), :get_player_moves)
   end
 
   def start_link(game_id) do
@@ -43,6 +44,10 @@ defmodule GameServer.RockPaperScissors do
       __MODULE__,
       game_id
     )
+  end
+
+  defp via_tuple(id) do
+    {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
   end
 
   @impl GenServer

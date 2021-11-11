@@ -27,7 +27,7 @@ defmodule GameServerWeb.Router do
     post "/lobby", LobbyController, :create
     post "/lobby/register", LobbyController, :register
 
-    get "/game", RpsGameController, :index
+    get "/rps-game", RpsGameController, :index
     get "/rps-game-lobby", RpsGameController, :lobby
 
     get "/ttt-game", TttGameController, :index

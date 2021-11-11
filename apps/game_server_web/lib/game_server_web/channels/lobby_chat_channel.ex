@@ -33,6 +33,7 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "rps" ->
         GameServer.RpsPlayerQueue.add_player(
+          socket.assigns.player_id,
           socket.assigns.username
         )
     end

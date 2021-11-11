@@ -2,7 +2,7 @@ defmodule GameServerWeb.RpsGameController do
   use GameServerWeb, :controller
 
   def index(conn, params) do
-    case Map.fetch(params, "rps_id") do
+    case Map.fetch(params, "id") do
       {:ok, _game_id} ->
         render(conn, "index.html")
 

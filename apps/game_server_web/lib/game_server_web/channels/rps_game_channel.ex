@@ -48,14 +48,8 @@ defmodule GameServerWeb.RpsGameChannel do
       |> String.downcase()
       |> String.to_atom()
 
-    [{game_pid, _}] =
-      Registry.lookup(
-        GameServer.Registry,
-        {GameServer.RockPaperScissors, socket.assigns.game_id}
-      )
-
     RockPaperScissors.enter_move(
-      game_pid,
+      socket.assigns.game_id,
       socket.assigns.username,
       move
     )

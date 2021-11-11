@@ -1,7 +1,7 @@
 defmodule GameServer.RpsPlayerQueue do
   @moduledoc """
   Queue used to monitor players that are ready to play
-  and start games when two or more players are ready.
+  and start Rock Paper Scissors games when two or more players are ready.
   """
   use GenServer
   alias Phoenix.PubSub
@@ -9,17 +9,19 @@ defmodule GameServer.RpsPlayerQueue do
   alias GameServer.RockPaperScissors
 
   # adds the player to the queue
-  def add_player(player_name) do
-    GenServer.cast(__MODULE__, {:add_player, player_name})
+  def add_player(player_id, player_name) do
+    GenServer.cast(__MODULE__, {:add_player, player_id, player_name})
+  end
+
+  def remove_player(player_id) do
+    GenServer.cast(__MODULE__, {:remove_player, player_id})
   end
 
   @impl GenServer
   def init(_) do
-    # TODO necessary if it is registered as the module?
     Registry.register(GameServer.Registry, __MODULE__, %{})
 
-    # Erlang language queue is used here
-    {:ok, :queue.new()}
+    {:ok, MapSet.new()}
   end
 
   def start_link(opts) do
@@ -28,33 +30,85 @@ defmodule GameServer.RpsPlayerQueue do
   end
 
   @impl GenServer
-  def handle_cast({:add_player, player_name}, queue) do
-    new_queue = :queue.in(player_name, queue)
+  def handle_cast({:add_player, player_id, player_name}, map_set) do
+    updated_map_set =
+      unless already_in_queue?(map_set, player_id) do
+        new_map_set = MapSet.put(map_set, {player_id, player_name, System.system_time(:second)})
 
-    if :queue.len(new_queue) >= 2 do
-      {{:value, first_player}, new_queue} = :queue.out(new_queue)
-      {{:value, second_player}, new_queue} = :queue.out(new_queue)
+        # check for starting the game
+        check_start_game(new_map_set)
+      else
+        map_set
+      end
 
+    {:noreply, updated_map_set}
+  end
+
+  @impl GenServer
+  def handle_cast({:remove_player, player_id}, map_set) do
+    {:noreply, map_set |> remove_player(player_id)}
+  end
+
+  defp get_two_earliest_player_ids_and_names(map_set) do
+    [{first_id, first_name, _}, {second_id, second_name, _}] =
+      map_set
+      |> MapSet.to_list()
+      |> Enum.sort(fn {_, _, a_time}, {_, _, b_time} -> a_time <= b_time end)
+      |> Enum.take(2)
+
+    {{first_id, first_name}, {second_id, second_name}}
+  end
+
+  defp already_in_queue?(map_set, new_id) do
+    map_set
+    |> MapSet.to_list()
+    |> Enum.map(fn {n, _, _} -> n end)
+    |> Enum.any?(fn n -> n == new_id end)
+  end
+
+  defp check_start_game(map_set) do
+    if MapSet.size(map_set) >= 2 do
+      # grab two players in queue longest
+      {
+        {first_player_id, first_player_name},
+        {second_player_id, second_player_name}
+      } = get_two_earliest_player_ids_and_names(map_set)
+
+      # delete those players from the map set
+      new_map_set =
+        map_set
+        |> remove_player(first_player_id)
+        |> remove_player(second_player_id)
+
+      # start new game with player names
       # Generate the new random unique game id
       new_game_id = UUID.uuid4() |> String.split("-") |> hd
 
       # Start game GenServer and add players
-      start_game_pid = RpsGameSupervisor.find_game(new_game_id)
+      _start_game_pid = RpsGameSupervisor.find_game(new_game_id)
 
-      RockPaperScissors.add_player(start_game_pid, first_player)
-      RockPaperScissors.add_player(start_game_pid, second_player)
+      RockPaperScissors.add_player(new_game_id, first_player_id)
+      RockPaperScissors.add_player(new_game_id, second_player_id)
+
+      r = :rand.uniform()
 
       # Inform the lobby channels that the players are in a game together
       PubSub.broadcast(
         GameServer.PubSub,
-        # TODO
-        "rps_lobby:1",
-        {:start_game, first_player, second_player, new_game_id}
+        "lobby_chat:rps",
+        {:start_game, first_player_id, second_player_id, new_game_id}
       )
 
-      {:noreply, new_queue}
+      new_map_set
     else
-      {:noreply, new_queue}
+      map_set
     end
+  end
+
+  defp remove_player(map_set, deleted_id) do
+    map_set
+    |> MapSet.to_list()
+    |> Enum.filter(fn {n, _, _} -> n != deleted_id end)
+    |> MapSet.new()
   end
 end
