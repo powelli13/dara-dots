@@ -48,7 +48,7 @@ GenLobbyChat.init(socket);
 RpsLobbyChat.init(socket, document.getElementById("rps-lobby-chat-container"));
 
 // Initialize the Game facilitating script
-RpsGame.init(socket, "rps_id");
+RpsGame.init(socket, "id");
 
 // Initialize the Tic Tac Toe game wrapper and lobby chat
 TttPhaserWrapper.init(socket, "ttt-phaser-wrapper");

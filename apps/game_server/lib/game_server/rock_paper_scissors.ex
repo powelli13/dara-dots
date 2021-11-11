@@ -140,7 +140,6 @@ defmodule GameServer.RockPaperScissors do
     case check_victory(game_state) do
       # TODO report win or draw
       {:winner, winner_name} ->
-        # Scoreboard.report_win(winner_name)
         broadcast_game_update(game_state[:game_id], {:game_winner, winner_name})
         Process.send_after(self(), :game_over, 5000)
         {:noreply, game_state}
