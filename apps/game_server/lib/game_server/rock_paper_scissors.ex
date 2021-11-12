@@ -58,6 +58,8 @@ defmodule GameServer.RockPaperScissors do
       :game_id => game_id,
       :player_one_name => nil,
       :player_two_name => nil,
+      :player_one_id => nil,
+      :player_two_id => nil,
       :player_one_move => nil,
       :player_two_move => nil
     }
