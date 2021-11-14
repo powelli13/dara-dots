@@ -39,10 +39,11 @@ defmodule GameServer.RockPaperScissors do
     GenServer.call(via_tuple(game_id), :get_player_moves)
   end
 
-  def start_link(game_id) do
-    GenServer.start_link(
+  def start(game_id) do
+    GenServer.start(
       __MODULE__,
-      game_id
+      game_id,
+      name: via_tuple(game_id)
     )
   end
 
@@ -52,8 +53,6 @@ defmodule GameServer.RockPaperScissors do
 
   @impl GenServer
   def init(game_id) do
-    Registry.register(GameServer.Registry, {__MODULE__, game_id}, game_id)
-
     initial_state = %{
       :game_id => game_id,
       :player_one_name => nil,

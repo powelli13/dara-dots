@@ -6,16 +6,16 @@ defmodule GameServer.RockPaperScissorsTest do
 
   setup do
     game_id = "test_rps_id"
-    {:ok, pid} = GenServer.start_link(GameServer.RockPaperScissors, game_id)
+    {:ok, _pid} = GenServer.start_link(GameServer.RockPaperScissors, game_id)
 
-    {:ok, rps_game_pid: pid, game_id: game_id}
+    {:ok, game_id: game_id}
   end
 
   test "add one player", state do
     test_name = "Rumplestiltskin"
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name)
-    player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
+    RockPaperScissors.add_player(state[:game_id], test_name)
+    player_names = RockPaperScissors.get_player_names(state[:game_id])
 
     assert player_names[:player_one_name] == test_name
   end
@@ -24,10 +24,10 @@ defmodule GameServer.RockPaperScissorsTest do
     test_name_one = "Rumplestiltskin"
     test_name_two = "Pied Piper"
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_one)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_two)
+    RockPaperScissors.add_player(state[:game_id], test_name_one)
+    RockPaperScissors.add_player(state[:game_id], test_name_two)
 
-    player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
+    player_names = RockPaperScissors.get_player_names(state[:game_id])
 
     assert player_names[:player_one_name] == test_name_one
     assert player_names[:player_two_name] == test_name_two
@@ -39,11 +39,11 @@ defmodule GameServer.RockPaperScissorsTest do
 
     test_name_excess = "Do Not Add"
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_one)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_two)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_excess)
+    RockPaperScissors.add_player(state[:game_id], test_name_one)
+    RockPaperScissors.add_player(state[:game_id], test_name_two)
+    RockPaperScissors.add_player(state[:game_id], test_name_excess)
 
-    player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
+    player_names = RockPaperScissors.get_player_names(state[:game_id])
 
     assert player_names[:player_one_name] == test_name_one
     assert player_names[:player_two_name] == test_name_two
@@ -53,12 +53,12 @@ defmodule GameServer.RockPaperScissorsTest do
     test_name_one = "Rumplestiltskin"
     test_name_two = "Pied Piper"
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_one)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_two)
+    RockPaperScissors.add_player(state[:game_id], test_name_one)
+    RockPaperScissors.add_player(state[:game_id], test_name_two)
 
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_name_one, :rock)
+    RockPaperScissors.enter_move(state[:game_id], test_name_one, :rock)
 
-    player_names = RockPaperScissors.get_player_names(state[:rps_game_pid])
+    player_names = RockPaperScissors.get_player_names(state[:game_id])
 
     assert player_names[:player_one_name] == test_name_one
     assert player_names[:player_two_name] == test_name_two
@@ -68,11 +68,11 @@ defmodule GameServer.RockPaperScissorsTest do
     test_name = "PlayerOne"
     test_move = :rock
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name)
+    RockPaperScissors.add_player(state[:game_id], test_name)
 
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_name, test_move)
+    RockPaperScissors.enter_move(state[:game_id], test_name, test_move)
 
-    player_moves = RockPaperScissors.get_player_moves(state[:rps_game_pid])
+    player_moves = RockPaperScissors.get_player_moves(state[:game_id])
 
     assert player_moves[:player_one_move] == test_move
     assert player_moves[:player_two_move] == nil
@@ -90,11 +90,11 @@ defmodule GameServer.RockPaperScissorsTest do
     test_move_one = :rock
     test_move_two = :paper
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_one)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_two)
+    RockPaperScissors.add_player(state[:game_id], test_name_one)
+    RockPaperScissors.add_player(state[:game_id], test_name_two)
 
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_name_one, test_move_one)
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_name_two, test_move_two)
+    RockPaperScissors.enter_move(state[:game_id], test_name_one, test_move_one)
+    RockPaperScissors.enter_move(state[:game_id], test_name_two, test_move_two)
 
     assert_receive {:game_winner, winner_name}
 
@@ -110,11 +110,11 @@ defmodule GameServer.RockPaperScissorsTest do
     test_move_one = :rock
     test_move_two = :rock
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_one)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_name_two)
+    RockPaperScissors.add_player(state[:game_id], test_name_one)
+    RockPaperScissors.add_player(state[:game_id], test_name_two)
 
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_name_one, test_move_one)
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_name_two, test_move_two)
+    RockPaperScissors.enter_move(state[:game_id], test_name_one, test_move_one)
+    RockPaperScissors.enter_move(state[:game_id], test_name_two, test_move_two)
 
     assert_receive :game_drawn
   end
@@ -128,11 +128,11 @@ defmodule GameServer.RockPaperScissorsTest do
     winner_move = :paper
     loser_move = :rock
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_winner)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_loser)
+    RockPaperScissors.add_player(state[:game_id], test_winner)
+    RockPaperScissors.add_player(state[:game_id], test_loser)
 
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
+    RockPaperScissors.enter_move(state[:game_id], test_winner, winner_move)
+    RockPaperScissors.enter_move(state[:game_id], test_loser, loser_move)
 
     assert_receive {:game_winner, winner_name}
 
@@ -148,11 +148,11 @@ defmodule GameServer.RockPaperScissorsTest do
     winner_move = :rock
     loser_move = :scissors
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_winner)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_loser)
+    RockPaperScissors.add_player(state[:game_id], test_winner)
+    RockPaperScissors.add_player(state[:game_id], test_loser)
 
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
+    RockPaperScissors.enter_move(state[:game_id], test_winner, winner_move)
+    RockPaperScissors.enter_move(state[:game_id], test_loser, loser_move)
 
     assert_receive {:game_winner, winner_name}
 
@@ -168,11 +168,11 @@ defmodule GameServer.RockPaperScissorsTest do
     winner_move = :scissors
     loser_move = :paper
 
-    RockPaperScissors.add_player(state[:rps_game_pid], test_winner)
-    RockPaperScissors.add_player(state[:rps_game_pid], test_loser)
+    RockPaperScissors.add_player(state[:game_id], test_winner)
+    RockPaperScissors.add_player(state[:game_id], test_loser)
 
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_winner, winner_move)
-    RockPaperScissors.enter_move(state[:rps_game_pid], test_loser, loser_move)
+    RockPaperScissors.enter_move(state[:game_id], test_winner, winner_move)
+    RockPaperScissors.enter_move(state[:game_id], test_loser, loser_move)
 
     assert_receive {:game_winner, winner_name}
 
