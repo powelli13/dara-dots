@@ -24,6 +24,10 @@ defmodule GameServer.RockPaperScissors do
     GenServer.cast(via_tuple(game_id), {:player_move, player_name, move})
   end
 
+  def enter_move_by_pid(game_pid, player_name, move) when is_atom(move) do
+    GenServer.cast(game_pid, {:player_move, player_name, move})
+  end
+
   @doc """
   Attempts to add a new player to the game.
   """
@@ -31,12 +35,24 @@ defmodule GameServer.RockPaperScissors do
     GenServer.cast(via_tuple(game_id), {:add_player, player_name})
   end
 
+  def add_player_by_pid(game_pid, player_name) when is_binary(player_name) do
+    GenServer.cast(game_pid, {:add_player, player_name})
+  end
+
   def get_player_names(game_id) do
     GenServer.call(via_tuple(game_id), :get_player_names)
   end
 
+  def get_player_names_by_pid(game_pid) do
+    GenServer.call(game_pid, :get_player_names)
+  end
+
   def get_player_moves(game_id) do
     GenServer.call(via_tuple(game_id), :get_player_moves)
+  end
+
+  def get_player_moves_by_pid(game_pid) do
+    GenServer.call(game_pid, :get_player_moves)
   end
 
   def start(game_id) do
