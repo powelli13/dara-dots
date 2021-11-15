@@ -55,8 +55,8 @@ defmodule GameServer.RockPaperScissors do
     GenServer.call(game_pid, :get_player_moves)
   end
 
-  def start(game_id) do
-    GenServer.start(
+  def start_link(game_id) do
+    GenServer.start_link(
       __MODULE__,
       game_id,
       name: via_tuple(game_id)
