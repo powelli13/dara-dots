@@ -168,11 +168,11 @@ defmodule GameServer.RockPaperScissors do
     case check_victory(game_state) do
       {:winner, winner_name} ->
         broadcast_game_update(game_state[:game_id], {:game_winner, winner_name})
-        send(self(), :game_over)
+        Process.send_after(self(), :game_over, 5000)
 
       :draw ->
         broadcast_game_update(game_state[:game_id], :game_drawn)
-        send(self(), :game_over)
+        Process.send_after(self(), :game_over, 5000)
 
       :not_over ->
         broadcast_game_update(game_state[:game_id], :game_continue)
@@ -182,34 +182,24 @@ defmodule GameServer.RockPaperScissors do
   end
 
   defp check_victory(game_state) do
-    IO.inspect "Game state!!"
-    IO.inspect game_state
     %{
       :player_one_name => player_one,
       :player_two_name => player_two,
       :player_one_move => move_one,
       :player_two_move => move_two
     } = game_state
-    IO.inspect player_one
-    IO.inspect player_two
-    IO.inspect move_one
-    IO.inspect move_two
 
     cond do
       is_nil(move_one) || is_nil(move_two) ->
-        IO.inspect "NOT OVER!!!"
         :not_over
 
       move_one == move_two ->
-        IO.inspect "DRAW!!!!!!!"
         :draw
 
       @defeats[move_one] == move_two ->
-        IO.inspect "WINNER!"
         {:winner, player_one}
 
       true ->
-        IO.inspect "WINNER!"
         {:winner, player_two}
     end
   end
