@@ -18,7 +18,7 @@ let RpsGame = {
     let submitMove = document.getElementById("submit-move");
 
     let gameChannel = socket.channel("rps_game:" + gameId, () => {
-      let username = window.localStorage.getItem("dara-username");
+      let username = window.localStorage.getItem("player_name");
       return username 
         ? {username: username}
         : {username: "anon" + Math.floor(Math.random() * 1000)};

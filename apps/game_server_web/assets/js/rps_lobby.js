@@ -80,7 +80,7 @@ let RpsLobbyChat = {
   // Navigate the user to their newly started game.
   navigateToGame({username, game_id}) {
     // TODO improve this by pushing to individual sockets rather than checking usernames
-    if (username == window.localStorage.getItem("dara-username")) {
+    if (username == window.localStorage.getItem("player_name")) {
       window.location.replace(`/game?rps_id=${game_id}`);
     }
   },

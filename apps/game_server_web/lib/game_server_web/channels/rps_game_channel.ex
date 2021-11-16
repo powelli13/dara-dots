@@ -48,6 +48,8 @@ defmodule GameServerWeb.RpsGameChannel do
       |> String.downcase()
       |> String.to_atom()
 
+    IO.inspect "entering move for player"
+    IO.inspect socket.assigns.username
     RockPaperScissors.enter_move(
       socket.assigns.game_id,
       socket.assigns.username,

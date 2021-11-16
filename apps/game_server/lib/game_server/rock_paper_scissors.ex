@@ -14,7 +14,6 @@ defmodule GameServer.RockPaperScissors do
   }
 
   # Client methods
-  # TODO add unique player ids assigned by the server
   @doc """
   Receives the move for the given player_name.
   move should be either :rock, :paper or :scissors.
@@ -31,12 +30,12 @@ defmodule GameServer.RockPaperScissors do
   @doc """
   Attempts to add a new player to the game.
   """
-  def add_player(game_id, player_name) when is_binary(player_name) do
-    GenServer.cast(via_tuple(game_id), {:add_player, player_name})
+  def add_player(game_id, player_name, player_id) when is_binary(player_name) do
+    GenServer.cast(via_tuple(game_id), {:add_player, player_name, player_id})
   end
 
-  def add_player_by_pid(game_pid, player_name) when is_binary(player_name) do
-    GenServer.cast(game_pid, {:add_player, player_name})
+  def add_player_by_pid(game_pid, player_name, player_id) when is_binary(player_name) do
+    GenServer.cast(game_pid, {:add_player, player_name, player_id})
   end
 
   def get_player_names(game_id) do
@@ -117,14 +116,18 @@ defmodule GameServer.RockPaperScissors do
   end
 
   @impl GenServer
-  def handle_cast({:add_player, player_name}, game_state) do
+  def handle_cast({:add_player, player_name, player_id}, game_state) do
     new_state =
       cond do
         is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
-          Map.put(game_state, :player_one_name, player_name)
+          game_state
+          |> Map.put(:player_one_name, player_name)
+          |> Map.put(:player_one_id, player_id)
 
         !is_nil(game_state[:player_one_name]) && is_nil(game_state[:player_two_name]) ->
-          Map.put(game_state, :player_two_name, player_name)
+          game_state
+          |> Map.put(:player_two_name, player_name)
+          |> Map.put(:player_two_id, player_id)
 
         # if both names nil then game is full cannot add player
         true ->
@@ -179,12 +182,16 @@ defmodule GameServer.RockPaperScissors do
   end
 
   defp check_victory(game_state) do
+    IO.inspect "Game state!!"
+    IO.inspect game_state
     %{
       :player_one_name => player_one,
       :player_two_name => player_two,
       :player_one_move => move_one,
       :player_two_move => move_two
     } = game_state
+    IO.inspect player_one
+    IO.inspect player_two
     IO.inspect move_one
     IO.inspect move_two
 
