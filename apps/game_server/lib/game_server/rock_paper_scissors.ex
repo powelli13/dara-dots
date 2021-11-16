@@ -138,38 +138,44 @@ defmodule GameServer.RockPaperScissors do
   def handle_cast({:player_move, player_name, move}, old_game_state) do
     # TODO this does not correctly update, this entire module is pretty gross
     # should be refactored with tests added
-    # should probably handle that using a separate game state struct
     game_state =
-      cond do
-        old_game_state[:player_one_name] == player_name ->
-          Map.put(old_game_state, :player_one_move, move)
+      old_game_state
+      |> make_move(player_name, move)
+      |> check_game_end_and_broadcast()
 
-        old_game_state[:player_two_name] == player_name ->
-          Map.put(old_game_state, :player_two_move, move)
+    {:noreply, game_state}
+  end
 
-        # Not a valid player name
-        true ->
-          old_game_state
-      end
+  defp make_move(game_state, player_name, move) do
+    cond do
+      game_state[:player_one_name] == player_name ->
+        Map.put(game_state, :player_one_move, move)
 
-    # TODO should store more info int he game state struct
+      game_state[:player_two_name] == player_name ->
+        Map.put(game_state, :player_two_move, move)
+
+      # Not a valid player name
+      true ->
+        game_state
+    end
+  end
+
+  defp check_game_end_and_broadcast(game_state) do
     # Check for any winner
     case check_victory(game_state) do
-      # TODO report win or draw
       {:winner, winner_name} ->
         broadcast_game_update(game_state[:game_id], {:game_winner, winner_name})
-        Process.send_after(self(), :game_over, 5000)
-        {:noreply, game_state}
+        send(self(), :game_over)
 
       :draw ->
         broadcast_game_update(game_state[:game_id], :game_drawn)
-        Process.send_after(self(), :game_over, 5000)
-        {:noreply, game_state}
+        send(self(), :game_over)
 
       :not_over ->
         broadcast_game_update(game_state[:game_id], :game_continue)
-        {:noreply, game_state}
     end
+
+    game_state
   end
 
   defp check_victory(game_state) do
@@ -179,18 +185,24 @@ defmodule GameServer.RockPaperScissors do
       :player_one_move => move_one,
       :player_two_move => move_two
     } = game_state
+    IO.inspect move_one
+    IO.inspect move_two
 
     cond do
       is_nil(move_one) || is_nil(move_two) ->
+        IO.inspect "NOT OVER!!!"
         :not_over
 
       move_one == move_two ->
+        IO.inspect "DRAW!!!!!!!"
         :draw
 
       @defeats[move_one] == move_two ->
+        IO.inspect "WINNER!"
         {:winner, player_one}
 
       true ->
+        IO.inspect "WINNER!"
         {:winner, player_two}
     end
   end

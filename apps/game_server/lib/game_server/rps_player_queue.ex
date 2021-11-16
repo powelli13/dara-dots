@@ -70,8 +70,8 @@ defmodule GameServer.RpsPlayerQueue do
     if MapSet.size(map_set) >= 2 do
       # grab two players in queue longest
       {
-        {first_player_id, first_player_name},
-        {second_player_id, second_player_name}
+        {first_player_id, _first_player_name},
+        {second_player_id, _second_player_name}
       } = get_two_earliest_player_ids_and_names(map_set)
 
       # delete those players from the map set
@@ -89,8 +89,6 @@ defmodule GameServer.RpsPlayerQueue do
 
       RockPaperScissors.add_player(new_game_id, first_player_id)
       RockPaperScissors.add_player(new_game_id, second_player_id)
-
-      r = :rand.uniform()
 
       # Inform the lobby channels that the players are in a game together
       PubSub.broadcast(
