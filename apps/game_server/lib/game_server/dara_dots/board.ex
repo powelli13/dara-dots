@@ -36,7 +36,7 @@ defmodule GameServer.DaraDots.Board do
          top_linker_alpha: top_alpha,
          top_linker_beta: top_beta,
          dot_coords: MapSet.new(build_grid_coords()),
-         runner_pieces: MapSet.new([test_runner])
+         runner_pieces: Map.new()
        }}
     end
   end
@@ -131,6 +131,7 @@ defmodule GameServer.DaraDots.Board do
 
   def move_linker_no_link(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
     movable_coords = get_movable_coords(board, linker_key)
+
     if MapSet.member?(movable_coords, dest_coord) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move(linker, dest_coord)
@@ -185,7 +186,7 @@ defmodule GameServer.DaraDots.Board do
     # reduce_while should help with that
     # if we want to advance by age we need to sort by runner_timer ascending
     board.runner_pieces
-    |> Enum.map(fn runner ->
+    |> Enum.map(fn {_entry_time, runner} ->
       # TODO check for goals in here
       RunnerPiece.advance(runner, all_link_coords)
     end)
@@ -198,6 +199,9 @@ defmodule GameServer.DaraDots.Board do
     |> Enum.map(fn key ->
       {:ok, piece} = Map.fetch(board, key)
       piece.link_coords
+    end)
+    |> Enum.filter(fn coord ->
+      coord != nil
     end)
   end
 end

@@ -206,4 +206,14 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
       assert Coordinate.equal?(moved_runner.coord, link_second)
     end
   end
+
+  test "should advance given no links" do
+    with {:ok, runner_coord} <- Coordinate.new(3, 3),
+         {:ok, expected_dest} <- Coordinate.new(4, 3),
+         {:ok, runner} <- RunnerPiece.new(runner_coord, :up) do
+      {_was_goal, moved_runner} = RunnerPiece.advance(runner, [])
+
+      assert Coordinate.equal?(moved_runner.coord, expected_dest)
+    end
+  end
 end

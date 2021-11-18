@@ -112,7 +112,7 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "dara-dots" ->
         nil
-      
+
       "rps" ->
         nil
     end

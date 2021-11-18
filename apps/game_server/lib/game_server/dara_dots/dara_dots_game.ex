@@ -63,7 +63,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   def handle_cast({:submit_move, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
 
-    moved_board = Board.move_linker_no_link(state.board, state.selected_piece, dest_coord)
+    moved_board =
+      state.board
+      |> Board.move_linker_no_link(state.selected_piece, dest_coord)
+      |> Board.advance_runners()
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end
