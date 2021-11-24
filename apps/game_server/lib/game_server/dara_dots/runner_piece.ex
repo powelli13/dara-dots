@@ -56,10 +56,6 @@ defmodule GameServer.DaraDots.RunnerPiece do
     advance_step(runner, link_coords, runner.speed)
   end
 
-  # defp advance_step(%RunnerPiece{} = runner, [], trip_speed) when trip_speed > 0 do
-  # handle_advance_standard(runner, [], trip_speed)
-  # end
-
   defp advance_step(%RunnerPiece{} = runner, link_coords, trip_speed) when trip_speed > 0 do
     # Determine if the runner is currently on a link
     current_links =

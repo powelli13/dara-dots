@@ -11,7 +11,8 @@ defmodule GameServer.DaraDots.Board do
     bot_player_score: 0,
 
     # Used to save the age of the triangles as they are added to the board
-    runner_timer: 0,
+    # TODO consider restructuring the data structures used for runner pieces
+    runner_timer: 2,
     runner_pieces: Map.new(),
     dot_coords: MapSet.new()
   ]
@@ -28,7 +29,11 @@ defmodule GameServer.DaraDots.Board do
          {:ok, bot_alpha} <- LinkerPiece.new(bot_alpha_coord),
          {:ok, bot_beta} <- LinkerPiece.new(bot_beta_coord),
          {:ok, top_alpha} <- LinkerPiece.new(top_alpha_coord),
-         {:ok, top_beta} <- LinkerPiece.new(top_beta_coord) do
+         {:ok, top_beta} <- LinkerPiece.new(top_beta_coord),
+         {:ok, bot_runner_coord} <- Coordinate.new(1, 1),
+         {:ok, top_runner_coord} <- Coordinate.new(5, 5),
+         {:ok, top_runner} <- RunnerPiece.new(top_runner_coord, :down),
+         {:ok, bot_runner} <- RunnerPiece.new(bot_runner_coord, :up) do
       {:ok,
        %Board{
          bot_linker_alpha: bot_alpha,
@@ -36,7 +41,7 @@ defmodule GameServer.DaraDots.Board do
          top_linker_alpha: top_alpha,
          top_linker_beta: top_beta,
          dot_coords: MapSet.new(build_grid_coords()),
-         runner_pieces: Map.new()
+         runner_pieces: %{0 => top_runner, 1 => bot_runner}
        }}
     end
   end
