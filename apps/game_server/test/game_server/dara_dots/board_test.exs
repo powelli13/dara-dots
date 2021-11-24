@@ -51,11 +51,12 @@ defmodule GameServer.DaraDots.BoardTest do
          {:ok, second_coord} <- Coordinate.new(5, 3),
          {:ok, first_expected} <- Coordinate.new(2, 3),
          {:ok, second_expected} <- Coordinate.new(4, 3) do
-      placed_board = 
+      placed_board =
         board
         |> Board.place_runner(first_coord)
         |> Board.place_runner(second_coord)
-      IO.inspect placed_board.runner_pieces
+
+      IO.inspect(placed_board.runner_pieces)
 
       assert Enum.count(placed_board.runner_pieces) == 2
 

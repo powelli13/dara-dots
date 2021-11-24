@@ -185,13 +185,14 @@ defmodule GameServer.DaraDots.Board do
     # TODO find a way to gracefully advance runners in turn and check for scoring
     # reduce_while should help with that
     # if we want to advance by age we need to sort by runner_timer ascending
-    board.runner_pieces
-    |> Enum.map(fn {_entry_time, runner} ->
-      # TODO check for goals in here
-      RunnerPiece.advance(runner, all_link_coords)
-    end)
+    advanced_runners =
+      board.runner_pieces
+      |> Enum.map(fn {_entry_time, runner} ->
+        # TODO check for goals in here
+        RunnerPiece.advance(runner, all_link_coords)
+      end)
 
-    board
+    %{board | runner_pieces: advanced_runners}
   end
 
   defp get_all_link_coords(%Board{} = board) do

@@ -104,8 +104,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         ),
       runner_pieces:
         Enum.map(
-          MapSet.to_list(state.board.runner_pieces),
-          fn runner -> Coordinate.to_list(runner.coord) end
+          #MapSet.to_list(state.board.runner_pieces),
+          state.board.runner_pieces,
+          fn {_ix, runner} -> Coordinate.to_list(runner.coord) end
         )
     }
 
