@@ -4,7 +4,7 @@ defmodule GameServer.DaraDots.BoardTest do
   alias GameServer.DaraDots.{Board, Coordinate, RunnerPiece}
 
   test "placed runner should face up given first row" do
-    with {:ok, board} <- Board.new(),
+    with {:ok, board} <- Board.new_test(),
          {:ok, coord} <- Coordinate.new(1, 1) do
       placed_board = Board.place_runner(board, coord)
 
@@ -15,7 +15,7 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   test "placed runner should face down given last row" do
-    with {:ok, board} <- Board.new(),
+    with {:ok, board} <- Board.new_test(),
          {:ok, coord} <- Coordinate.new(5, 1) do
       placed_board = Board.place_runner(board, coord)
 
@@ -26,7 +26,7 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   test "placing a runner should advance the timer" do
-    with {:ok, board} <- Board.new(),
+    with {:ok, board} <- Board.new_test(),
          {:ok, coord} <- Coordinate.new(1, 1) do
       start_timer = board.runner_timer
 
@@ -37,7 +37,7 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   test "should error if runner placed outside starting rows" do
-    with {:ok, board} <- Board.new(),
+    with {:ok, board} <- Board.new_test(),
          {:ok, coord} <- Coordinate.new(3, 1) do
       assert_raise FunctionClauseError, fn ->
         _ = Board.place_runner(board, coord)
@@ -46,7 +46,7 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   test "advance all runners should move all" do
-    with {:ok, board} <- Board.new(),
+    with {:ok, board} <- Board.new_test(),
          {:ok, first_coord} <- Coordinate.new(1, 3),
          {:ok, second_coord} <- Coordinate.new(5, 3),
          {:ok, first_expected} <- Coordinate.new(2, 3),

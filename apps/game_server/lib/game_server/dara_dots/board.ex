@@ -19,6 +19,23 @@ defmodule GameServer.DaraDots.Board do
 
   def new() do
     # These are only for initial visual testing
+    new_board = create_empty_board()
+
+    {
+      :ok,
+      place_initial_runners(new_board)
+    }
+  end
+
+  # Method to create the initial board with no runners for testing purposes
+  def new_test() do
+    {
+      :ok,
+      create_empty_board()
+    }
+  end
+
+  defp create_empty_board() do
     {:ok, test_runner_coord} = Coordinate.new(4, 2)
     {:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
 
@@ -29,20 +46,26 @@ defmodule GameServer.DaraDots.Board do
          {:ok, bot_alpha} <- LinkerPiece.new(bot_alpha_coord),
          {:ok, bot_beta} <- LinkerPiece.new(bot_beta_coord),
          {:ok, top_alpha} <- LinkerPiece.new(top_alpha_coord),
-         {:ok, top_beta} <- LinkerPiece.new(top_beta_coord),
-         {:ok, bot_runner_coord} <- Coordinate.new(1, 1),
-         {:ok, top_runner_coord} <- Coordinate.new(5, 5),
-         {:ok, top_runner} <- RunnerPiece.new(top_runner_coord, :down),
-         {:ok, bot_runner} <- RunnerPiece.new(bot_runner_coord, :up) do
-      {:ok,
+         {:ok, top_beta} <- LinkerPiece.new(top_beta_coord) do
        %Board{
          bot_linker_alpha: bot_alpha,
          bot_linker_beta: bot_beta,
          top_linker_alpha: top_alpha,
          top_linker_beta: top_beta,
          dot_coords: MapSet.new(build_grid_coords()),
-         runner_pieces: %{0 => top_runner, 1 => bot_runner}
-       }}
+       }
+    end
+  end
+
+  defp place_initial_runners(%Board{} = board) do
+    with {:ok, bot_runner_coord} <- Coordinate.new(1, 1),
+         {:ok, top_runner_coord} <- Coordinate.new(5, 5),
+         {:ok, top_runner} <- RunnerPiece.new(top_runner_coord, :down),
+         {:ok, bot_runner} <- RunnerPiece.new(bot_runner_coord, :up) do
+      %Board{
+        board
+        | runner_pieces: %{0 => top_runner, 1 => bot_runner}
+      }
     end
   end
 
