@@ -56,8 +56,6 @@ defmodule GameServer.DaraDots.BoardTest do
         |> Board.place_runner(first_coord)
         |> Board.place_runner(second_coord)
 
-      IO.inspect(placed_board.runner_pieces)
-
       assert Enum.count(placed_board.runner_pieces) == 2
 
       advanced_board = Board.advance_runners(placed_board)
@@ -72,6 +70,46 @@ defmodule GameServer.DaraDots.BoardTest do
       expected_coords_mapset = MapSet.new([first_expected, second_expected])
 
       assert MapSet.equal?(runner_coords_mapset, expected_coords_mapset)
+    end
+  end
+
+  test "advance bot runner to end should score" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, first_coord} <- Coordinate.new(1, 3) do
+      scored_board =
+        board
+        |> Board.place_runner(first_coord)
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+
+      IO.inspect(scored_board.runner_pieces)
+
+      #assert Enum.count(scored_board.runner_pieces) == 0
+      assert scored_board.top_player_score == 1
+      assert scored_board.bot_player_score == 0
+    end
+  end
+
+  test "advance top runner to end should score" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, first_coord} <- Coordinate.new(5, 3) do
+      scored_board =
+        board
+        |> Board.place_runner(first_coord)
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+        |> Board.advance_runners()
+
+      IO.inspect(scored_board.runner_pieces)
+
+      #assert Enum.count(scored_board.runner_pieces) == 0
+      assert scored_board.top_player_score == 0
+      assert scored_board.bot_player_score == 1
     end
   end
 end
