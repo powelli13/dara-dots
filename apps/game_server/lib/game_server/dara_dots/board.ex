@@ -223,6 +223,15 @@ defmodule GameServer.DaraDots.Board do
     %{board | runner_pieces: advanced_runners}
   end
 
+  defp handle_advanced_runner(%RunnerPiece{} = runner, all_link_coords) do
+    case RunnerPiece.advance(runner, all_link_coords) do
+      {:goal, :top_goal, new_runner} ->
+        nil
+      {:no_goal, new_runner} ->
+        nil
+    end
+  end
+
   defp get_all_link_coords(%Board{} = board) do
     get_linker_piece_keys()
     |> Enum.map(fn key ->
