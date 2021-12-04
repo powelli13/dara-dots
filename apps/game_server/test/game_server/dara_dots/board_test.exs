@@ -87,7 +87,7 @@ defmodule GameServer.DaraDots.BoardTest do
 
       IO.inspect(scored_board.runner_pieces)
 
-      #assert Enum.count(scored_board.runner_pieces) == 0
+      # assert Enum.count(scored_board.runner_pieces) == 0
       assert scored_board.top_player_score == 1
       assert scored_board.bot_player_score == 0
     end
@@ -107,7 +107,7 @@ defmodule GameServer.DaraDots.BoardTest do
 
       IO.inspect(scored_board.runner_pieces)
 
-      #assert Enum.count(scored_board.runner_pieces) == 0
+      # assert Enum.count(scored_board.runner_pieces) == 0
       assert scored_board.top_player_score == 0
       assert scored_board.bot_player_score == 1
     end

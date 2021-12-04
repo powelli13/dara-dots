@@ -3,8 +3,6 @@ import Phaser from "phaser";
 let TttPhaserWrapper = {
   init(socket, urlParam) {
     let params = new URLSearchParams(document.location.search);
-    // TODO this causes TTT board to show on the RPS screen as well
-    // need to have a better differentiation
     if (!params.has(urlParam)) { return; }
 
     socket.connect({token: window.userToken});

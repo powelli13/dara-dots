@@ -47,13 +47,13 @@ defmodule GameServer.DaraDots.Board do
          {:ok, bot_beta} <- LinkerPiece.new(bot_beta_coord),
          {:ok, top_alpha} <- LinkerPiece.new(top_alpha_coord),
          {:ok, top_beta} <- LinkerPiece.new(top_beta_coord) do
-       %Board{
-         bot_linker_alpha: bot_alpha,
-         bot_linker_beta: bot_beta,
-         top_linker_alpha: top_alpha,
-         top_linker_beta: top_beta,
-         dot_coords: MapSet.new(build_grid_coords()),
-       }
+      %Board{
+        bot_linker_alpha: bot_alpha,
+        bot_linker_beta: bot_beta,
+        top_linker_alpha: top_alpha,
+        top_linker_beta: top_beta,
+        dot_coords: MapSet.new(build_grid_coords())
+      }
     end
   end
 
@@ -227,6 +227,7 @@ defmodule GameServer.DaraDots.Board do
     case RunnerPiece.advance(runner, all_link_coords) do
       {:goal, :top_goal, new_runner} ->
         nil
+
       {:no_goal, new_runner} ->
         nil
     end

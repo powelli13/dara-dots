@@ -2,7 +2,6 @@ defmodule GameServerWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # TODO rename this
   channel "lobby:*", GameServerWeb.LobbyChannel
 
   channel "rps_lobby:*", GameServerWeb.RpsLobbyChannel
@@ -31,7 +30,6 @@ defmodule GameServerWeb.UserSocket do
   # performing token verification on connect.
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do
-    # TODO this token just needs to be there, we shouldn't have to worry about expiring?
     case Phoenix.Token.verify(
            socket,
            "user socket",
