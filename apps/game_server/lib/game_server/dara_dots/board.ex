@@ -216,14 +216,23 @@ defmodule GameServer.DaraDots.Board do
     advanced_runners =
       board.runner_pieces
       |> Enum.map(fn {_entry_time, runner} ->
-        # TODO check for goals in here
+        #case RunnerPiece.advance(runner, all_link_coords) do
+          #{:no_goal, new_runner} ->
+            #new_runner
+          #{:goal, scored_goal, new_runner} ->
+            # TODO score the goal??
+            #new_runner
+        #end
         RunnerPiece.advance(runner, all_link_coords)
       end)
+      #|> Enum.map(fn runner_result ->
+      #end)
+      # can use Map.delete(map, key) to remove scored runners
 
     %{board | runner_pieces: advanced_runners}
   end
 
-  defp handle_advanced_runner(%RunnerPiece{} = runner, all_link_coords) do
+  defp handle_advanced_runner(%Board{} = board, %RunnerPiece{} = runner, all_link_coords) do
     case RunnerPiece.advance(runner, all_link_coords) do
       {:goal, :top_goal, new_runner} ->
         nil
