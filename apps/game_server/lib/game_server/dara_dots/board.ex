@@ -36,8 +36,8 @@ defmodule GameServer.DaraDots.Board do
   end
 
   defp create_empty_board() do
-    #{:ok, test_runner_coord} = Coordinate.new(4, 2)
-    #{:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
+    # {:ok, test_runner_coord} = Coordinate.new(4, 2)
+    # {:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
 
     with {:ok, bot_alpha_coord} <- Coordinate.new(1, 2),
          {:ok, bot_beta_coord} <- Coordinate.new(1, 4),
@@ -210,14 +210,10 @@ defmodule GameServer.DaraDots.Board do
     all_link_coords = get_all_link_coords(board)
 
     # check for victory
-    # TODO find a way to gracefully advance runners in turn and check for scoring
-    # reduce_while should help with that
-    # if we want to advance by age we need to sort by runner_timer ascending
     {runners_and_keys, new_board} =
       board.runner_pieces
       |> Enum.map_reduce(board, fn {entry_time, runner}, acc_board ->
-        {advanced_runner, new_board} =
-          handle_advanced_runner(acc_board, runner, all_link_coords)
+        {advanced_runner, new_board} = handle_advanced_runner(acc_board, runner, all_link_coords)
 
         # TODO this could be simplified if I do not use a map to store runners
         # still undecided on giving priority to older runners though
@@ -226,9 +222,6 @@ defmodule GameServer.DaraDots.Board do
         {{entry_time, advanced_runner}, new_board}
       end)
 
-    #IO.inspect "!!!!!!!!!!!!!!!!!!! Runners and keys"
-    #IO.inspect runners_and_keys
-    
     advanced_runners = remove_scored_runners(runners_and_keys)
 
     %{new_board | runner_pieces: advanced_runners}
@@ -250,7 +243,7 @@ defmodule GameServer.DaraDots.Board do
     |> Enum.filter(fn {_key, runner} ->
       runner != nil
     end)
-    |> Map.new
+    |> Map.new()
   end
 
   defp get_all_link_coords(%Board{} = board) do
