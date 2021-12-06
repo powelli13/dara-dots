@@ -45,6 +45,20 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  test "scoring in top goal should increase bot player score" do
+    with {:ok, board} <- Board.new_test() do
+      scored_board = Board.score_goal(board, :bot_goal)
+      assert scored_board.top_player_score == 1
+    end
+  end
+
+  test "scoring in bot goal should increase top player score" do
+    with {:ok, board} <- Board.new_test() do
+      scored_board = Board.score_goal(board, :top_goal)
+      assert scored_board.bot_player_score == 1
+    end
+  end
+
   test "advance all runners should move all" do
     with {:ok, board} <- Board.new_test(),
          {:ok, first_coord} <- Coordinate.new(1, 3),
@@ -87,9 +101,9 @@ defmodule GameServer.DaraDots.BoardTest do
 
       IO.inspect(scored_board.runner_pieces)
 
-      # assert Enum.count(scored_board.runner_pieces) == 0
-      assert scored_board.top_player_score == 1
-      assert scored_board.bot_player_score == 0
+      assert Enum.count(scored_board.runner_pieces) == 0
+      assert scored_board.top_player_score == 0
+      assert scored_board.bot_player_score == 1
     end
   end
 
@@ -107,9 +121,9 @@ defmodule GameServer.DaraDots.BoardTest do
 
       IO.inspect(scored_board.runner_pieces)
 
-      # assert Enum.count(scored_board.runner_pieces) == 0
-      assert scored_board.top_player_score == 0
-      assert scored_board.bot_player_score == 1
+      assert Enum.count(scored_board.runner_pieces) == 0
+      assert scored_board.top_player_score == 1
+      assert scored_board.bot_player_score == 0
     end
   end
 end
