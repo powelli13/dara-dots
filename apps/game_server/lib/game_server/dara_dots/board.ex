@@ -36,8 +36,8 @@ defmodule GameServer.DaraDots.Board do
   end
 
   defp create_empty_board() do
-    {:ok, test_runner_coord} = Coordinate.new(4, 2)
-    {:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
+    #{:ok, test_runner_coord} = Coordinate.new(4, 2)
+    #{:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
 
     with {:ok, bot_alpha_coord} <- Coordinate.new(1, 2),
          {:ok, bot_beta_coord} <- Coordinate.new(1, 4),
@@ -213,33 +213,44 @@ defmodule GameServer.DaraDots.Board do
     # TODO find a way to gracefully advance runners in turn and check for scoring
     # reduce_while should help with that
     # if we want to advance by age we need to sort by runner_timer ascending
-    advanced_runners =
+    {runners_and_keys, new_board} =
       board.runner_pieces
-      |> Enum.map(fn {_entry_time, runner} ->
-        #case RunnerPiece.advance(runner, all_link_coords) do
-          #{:no_goal, new_runner} ->
-            #new_runner
-          #{:goal, scored_goal, new_runner} ->
-            # TODO score the goal??
-            #new_runner
-        #end
-        RunnerPiece.advance(runner, all_link_coords)
-      end)
-      #|> Enum.map(fn runner_result ->
-      #end)
-      # can use Map.delete(map, key) to remove scored runners
+      |> Enum.map_reduce(board, fn {entry_time, runner}, acc_board ->
+        {advanced_runner, new_board} =
+          handle_advanced_runner(acc_board, runner, all_link_coords)
 
-    %{board | runner_pieces: advanced_runners}
+        # TODO this could be simplified if I do not use a map to store runners
+        # still undecided on giving priority to older runners though
+        # so I'll leave the structure for now
+        # Preserve the entry time key
+        {{entry_time, advanced_runner}, new_board}
+      end)
+
+    #IO.inspect "!!!!!!!!!!!!!!!!!!! Runners and keys"
+    #IO.inspect runners_and_keys
+    
+    advanced_runners = remove_scored_runners(runners_and_keys)
+
+    %{new_board | runner_pieces: advanced_runners}
   end
 
   defp handle_advanced_runner(%Board{} = board, %RunnerPiece{} = runner, all_link_coords) do
     case RunnerPiece.advance(runner, all_link_coords) do
-      {:goal, :top_goal, new_runner} ->
-        nil
+      {:goal, goal, _new_runner} ->
+        {nil, score_goal(board, goal)}
 
       {:no_goal, new_runner} ->
-        nil
+        {new_runner, board}
     end
+  end
+
+  # Scored runners are returned as nil, remove those runners
+  defp remove_scored_runners(runners) do
+    runners
+    |> Enum.filter(fn {_key, runner} ->
+      runner != nil
+    end)
+    |> Map.new
   end
 
   defp get_all_link_coords(%Board{} = board) do
