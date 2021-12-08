@@ -9,6 +9,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.start(__MODULE__, id, name: via_tuple(id))
   end
 
+  def add_player(id, player_id) do
+    GenServer.cast(via_tuple(id), {:add_player, player_id})
+  end
+
   def select_piece(id, piece) do
     GenServer.cast(via_tuple(id), {:select_piece, piece})
   end
@@ -30,7 +34,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     # Distances are represented as percentages for the board to display
     initial_state = %{
       game_id: game_id,
-      selected_piece: :none
+      selected_piece: :none,
+      top_player_id: nil,
+      bot_player_id: nil
     }
 
     # Setup the initial pieces
@@ -50,6 +56,18 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     broadcast_game_state(state)
 
     {:noreply, state}
+  end
+
+  @impl GenServer
+  def handle_cast({:add_player, player_id}, state) do
+    added_state =
+      cond do
+        state.top_player_id == nil -> %{state | top_player_id: player_id}
+        state.bot_player_id == nil -> %{state | bot_player_id: player_id}
+        true -> state
+      end
+
+    {:noreply, %{state | added_state}}
   end
 
   @impl GenServer

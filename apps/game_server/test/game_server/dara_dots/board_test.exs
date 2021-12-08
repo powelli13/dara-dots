@@ -99,8 +99,6 @@ defmodule GameServer.DaraDots.BoardTest do
         |> Board.advance_runners()
         |> Board.advance_runners()
 
-      IO.inspect(scored_board.runner_pieces)
-
       assert Enum.count(scored_board.runner_pieces) == 0
       assert scored_board.top_player_score == 0
       assert scored_board.bot_player_score == 1
@@ -118,8 +116,6 @@ defmodule GameServer.DaraDots.BoardTest do
         |> Board.advance_runners()
         |> Board.advance_runners()
         |> Board.advance_runners()
-
-      IO.inspect(scored_board.runner_pieces)
 
       assert Enum.count(scored_board.runner_pieces) == 0
       assert scored_board.top_player_score == 1
