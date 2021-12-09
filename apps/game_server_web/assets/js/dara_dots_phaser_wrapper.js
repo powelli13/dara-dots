@@ -36,6 +36,7 @@ let DaraDotsPhaserWrapper = {
       yellowGraphics.clear();
 
       drawBoardState(dots);
+      drawLinks(testLinkCoords);
 
       if (redAlphaLinker !== undefined)
         updateLinkerCoord(redAlphaLinker, topAlphaCoord);
@@ -95,6 +96,7 @@ let DaraDotsPhaserWrapper = {
     let blueBetaLinker;
     let highlightDots = {};
     let highlightCoords = {};
+    let testLinkCoords = [[[2, 2], [2, 3]]];
 
     let game = new Phaser.Game(config);
 
@@ -183,6 +185,19 @@ let DaraDotsPhaserWrapper = {
 
       linkerSprite.x = x;
       linkerSprite.y = y;
+    }
+
+    function drawLinks(coords) {
+      coords.forEach((c, _) => {
+        const x1 = rowCoordinateToPixels(c[0][0]);
+        const x2 = rowCoordinateToPixels(c[0][1]);
+        const y1 = colCoordinateToPixels(c[1][0]);
+        const y2 = colCoordinateToPixels(c[1][1]);
+
+        const linkerLine = new Phaser.Geom.Line(x1, x2, y1, y2);
+
+        yellowGraphics.strokeLineShape(linkerLine);
+      });
     }
 
     function drawRunnerPieces(runnerCoords, graphics) {

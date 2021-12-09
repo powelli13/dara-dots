@@ -67,7 +67,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         true -> state
       end
 
-    {:noreply, %{state | added_state}}
+    {:noreply, added_state}
   end
 
   @impl GenServer
