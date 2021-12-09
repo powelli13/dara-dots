@@ -36,7 +36,7 @@ let DaraDotsPhaserWrapper = {
       yellowGraphics.clear();
 
       drawBoardState(dots);
-      drawLinks(testLinkCoords);
+      drawLinks(testLinkCoords, yellowGraphics);
 
       if (redAlphaLinker !== undefined)
         updateLinkerCoord(redAlphaLinker, topAlphaCoord);
@@ -96,7 +96,8 @@ let DaraDotsPhaserWrapper = {
     let blueBetaLinker;
     let highlightDots = {};
     let highlightCoords = {};
-    let testLinkCoords = [[[2, 2], [2, 3]]];
+    let testLinkCoords = [[[2, 2], [3, 3]]];
+    let testLine;
 
     let game = new Phaser.Game(config);
 
@@ -112,8 +113,18 @@ let DaraDotsPhaserWrapper = {
       this.add.image(boardWidth, boardHeight, "background");
 
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
-      yellowGraphics = this.add.graphics({ fillStyle: {color: 0xffff00} });
+      yellowGraphics = this.add.graphics(
+        {
+          fillStyle: {color: 0xffff00},
+          lineStyle: { width: 4, color: 0xffff00 }
+        });
       movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
+      testLine = new Phaser.Geom.Line(
+        rowCoordinateToPixels(1),
+        colCoordinateToPixels(1),
+        rowCoordinateToPixels(2),
+        colCoordinateToPixels(1)
+      );
 
       // Setup Pieces
       redAlphaLinker = this.add.sprite(0, 0, "red_linker").setInteractive();
@@ -187,16 +198,14 @@ let DaraDotsPhaserWrapper = {
       linkerSprite.y = y;
     }
 
-    function drawLinks(coords) {
+    function drawLinks(coords, graphics) {
       coords.forEach((c, _) => {
-        const x1 = rowCoordinateToPixels(c[0][0]);
-        const x2 = rowCoordinateToPixels(c[0][1]);
-        const y1 = colCoordinateToPixels(c[1][0]);
-        const y2 = colCoordinateToPixels(c[1][1]);
+        // TODO center it in between the link coords
+        //Phaser.Geom.Line.CenterOn(line, c[0], xy[1]);
 
-        const linkerLine = new Phaser.Geom.Line(x1, x2, y1, y2);
-
-        yellowGraphics.strokeLineShape(linkerLine);
+        graphics.strokeLineShape(
+          testLine
+        );
       });
     }
 
