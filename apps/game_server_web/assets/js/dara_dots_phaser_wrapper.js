@@ -96,7 +96,7 @@ let DaraDotsPhaserWrapper = {
     let blueBetaLinker;
     let highlightDots = {};
     let highlightCoords = {};
-    let testLinkCoords = [[[2, 2], [3, 3]]];
+    let testLinkCoords = [[[3, 3], [4, 3]]];
     let testLine;
 
     let game = new Phaser.Game(config);
@@ -120,10 +120,10 @@ let DaraDotsPhaserWrapper = {
         });
       movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
       testLine = new Phaser.Geom.Line(
-        rowCoordinateToPixels(1),
         colCoordinateToPixels(1),
-        rowCoordinateToPixels(2),
-        colCoordinateToPixels(1)
+        rowCoordinateToPixels(1),
+        colCoordinateToPixels(2),
+        rowCoordinateToPixels(1)
       );
 
       // Setup Pieces
@@ -200,8 +200,16 @@ let DaraDotsPhaserWrapper = {
 
     function drawLinks(coords, graphics) {
       coords.forEach((c, _) => {
-        // TODO center it in between the link coords
-        //Phaser.Geom.Line.CenterOn(line, c[0], xy[1]);
+        const x1 = colCoordinateToPixels(c[0][0]);
+        const y1 = rowCoordinateToPixels(c[0][1]);
+
+        const x2 = colCoordinateToPixels(c[1][0]);
+        const y2 = rowCoordinateToPixels(c[1][1]);
+
+        testLine.x1 = x1;
+        testLine.x2 = x2;
+        testLine.y1 = y1;
+        testLine.y2 = y2;
 
         graphics.strokeLineShape(
           testLine
