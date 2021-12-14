@@ -124,7 +124,18 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         Enum.map(
           state.board.runner_pieces,
           fn {_ix, runner} -> Coordinate.to_list(runner.coord) end
-        )
+        ),
+      links:
+        Board.get_all_link_coords(state.board)
+        |> Enum.map(fn coord_map_set ->
+            coord_map_set
+            |> MapSet.to_list()
+            |> Enum.map(
+              fn c ->
+                Coordinate.to_list(c)
+              end
+            )
+        end)
     }
 
     PubSub.broadcast(

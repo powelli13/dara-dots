@@ -21,10 +21,24 @@ defmodule GameServer.DaraDots.Board do
     # These are only for initial visual testing
     new_board = create_empty_board()
 
-    {
-      :ok,
-      place_initial_runners(new_board)
-    }
+    # Setting a link just for testing purposes
+    with {:ok, link_coord_first} <- Coordinate.new(1, 1),
+         {:ok, link_coord_second} <- Coordinate.new(1, 2) do
+      board_with_link = %{
+        new_board
+        | bot_linker_alpha:
+            LinkerPiece.set_link(
+              new_board.bot_linker_alpha,
+              link_coord_first,
+              link_coord_second
+            )
+      }
+
+      {
+        :ok,
+        place_initial_runners(board_with_link)
+      }
+    end
   end
 
   # Method to create the initial board with no runners for testing purposes
@@ -36,9 +50,6 @@ defmodule GameServer.DaraDots.Board do
   end
 
   defp create_empty_board() do
-    # {:ok, test_runner_coord} = Coordinate.new(4, 2)
-    # {:ok, test_runner} = RunnerPiece.new(test_runner_coord, :up)
-
     with {:ok, bot_alpha_coord} <- Coordinate.new(1, 2),
          {:ok, bot_beta_coord} <- Coordinate.new(1, 4),
          {:ok, top_alpha_coord} <- Coordinate.new(5, 2),
@@ -206,6 +217,17 @@ defmodule GameServer.DaraDots.Board do
     %Board{board | top_player_score: board.top_player_score + 1}
   end
 
+  def get_all_link_coords(%Board{} = board) do
+    get_linker_piece_keys()
+    |> Enum.map(fn key ->
+      {:ok, piece} = Map.fetch(board, key)
+      piece.link_coords
+    end)
+    |> Enum.filter(fn coord ->
+      coord != nil
+    end)
+  end
+
   def advance_runners(%Board{} = board) do
     all_link_coords = get_all_link_coords(board)
 
@@ -244,16 +266,5 @@ defmodule GameServer.DaraDots.Board do
       runner != nil
     end)
     |> Map.new()
-  end
-
-  defp get_all_link_coords(%Board{} = board) do
-    get_linker_piece_keys()
-    |> Enum.map(fn key ->
-      {:ok, piece} = Map.fetch(board, key)
-      piece.link_coords
-    end)
-    |> Enum.filter(fn coord ->
-      coord != nil
-    end)
   end
 end
