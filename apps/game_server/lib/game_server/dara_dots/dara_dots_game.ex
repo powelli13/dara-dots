@@ -17,6 +17,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.cast(via_tuple(id), {:select_piece, piece})
   end
 
+  def get_full_board(id) do
+    GenServer.call(via_tuple(id), :get_full_board)
+  end
+
   def get_selected_piece(id) do
     GenServer.call(via_tuple(id), :get_selected_piece)
   end
@@ -90,6 +94,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
+  def handle_call(:get_full_board, _, state) do
+    {:reply, state.board, state}
+  end
+
+  @impl GenServer
   def handle_call(:get_movable_dots, _, state) do
     {:reply, state.movable_dots, state}
   end
@@ -128,13 +137,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       links:
         Board.get_all_link_coords(state.board)
         |> Enum.map(fn coord_map_set ->
-            coord_map_set
-            |> MapSet.to_list()
-            |> Enum.map(
-              fn c ->
-                Coordinate.to_list(c)
-              end
-            )
+          coord_map_set
+          |> MapSet.to_list()
+          |> Enum.map(fn c ->
+            Coordinate.to_list(c)
+          end)
         end)
     }
 
