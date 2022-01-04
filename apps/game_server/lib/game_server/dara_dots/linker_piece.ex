@@ -30,4 +30,10 @@ defmodule GameServer.DaraDots.LinkerPiece do
   def move(%LinkerPiece{} = linker, %Coordinate{} = coord) do
     %LinkerPiece{linker | coord: coord}
   end
+
+  def move_and_set_link(%LinkerPiece{} = linker, %Coordinate{} = dest_coord) do
+    updated_link = set_link(linker, linker.coord, dest_coord)
+
+    %LinkerPiece{updated_link | coord: dest_coord}
+  end
 end

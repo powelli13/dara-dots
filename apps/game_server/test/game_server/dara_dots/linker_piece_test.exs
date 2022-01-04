@@ -51,4 +51,29 @@ defmodule GameServer.DaraDots.LinkerPieceTest do
     assert moved_linker.coord.row == dest_row
     assert moved_linker.coord.col == dest_col
   end
+
+  test "move_and_set_link should update coordinate" do
+    with {:ok, start_coord} = Coordinate.new(3, 3),
+      {dest_row, dest_col} = {3, 4},
+      {:ok, dest_coord} = Coordinate.new(dest_row, dest_col),
+      {:ok, linker} = LinkerPiece.new(start_coord) do
+      moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
+
+      assert moved_linker.coord.row == dest_row
+      assert moved_linker.coord.col == dest_col
+    end
+  end
+
+  test "move_and_set_link should update link" do
+    with {:ok, start_coord} = Coordinate.new(3, 3),
+      {dest_row, dest_col} = {3, 4},
+      {:ok, dest_coord} = Coordinate.new(dest_row, dest_col),
+      {:ok, linker} = LinkerPiece.new(start_coord) do
+      moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
+
+      assert moved_linker.link_coords != nil
+      assert MapSet.member?(moved_linker.link_coords, start_coord)
+      assert MapSet.member?(moved_linker.link_coords, dest_coord)
+    end
+  end
 end
