@@ -178,9 +178,9 @@ let DaraDotsPhaserWrapper = {
     function drawBoardState(dots) {
       grayGraphics.clear();
 
-      dots.forEach((v, i) => {
-        const x = rowCoordinateToPixels(v[1]);
-        const y = colCoordinateToPixels(v[0]);
+      dots.forEach(v => {
+        let [x, y] = coordinateToPixels(v);
+        //let c = coordinateToPixels(v);
 
         grayGraphics.fillCircleShape(
           new Phaser.Geom.Circle(x, y, 4)
@@ -189,8 +189,7 @@ let DaraDotsPhaserWrapper = {
     }
 
     function updateLinkerCoord(linkerSprite, coord) {
-      const x = rowCoordinateToPixels(coord[1]);
-      const y = colCoordinateToPixels(coord[0]);
+      let [x, y] = coordinateToPixels(coord);
 
       // TODO update link if applicable
 
@@ -200,14 +199,9 @@ let DaraDotsPhaserWrapper = {
 
     function drawLinks(coords, graphics) {
       coords.forEach((c, _) => {
-        // TODO make a utility to transform the [row, col] lists
-        // into [x, y] pixels. everything looks backwards because x value
-        // is column
-        const x1 = colCoordinateToPixels(c[0][1]);
-        const y1 = rowCoordinateToPixels(c[0][0]);
+        let [x1, y1] = coordinateToPixels(c[0]);
 
-        const x2 = colCoordinateToPixels(c[1][1]);
-        const y2 = rowCoordinateToPixels(c[1][0]);
+        let [x2, y2] = coordinateToPixels(c[1]);
 
         testLine.x1 = x1;
         testLine.x2 = x2;
@@ -222,8 +216,7 @@ let DaraDotsPhaserWrapper = {
 
     function drawRunnerPieces(runnerCoords, graphics) {
       runnerCoords.forEach((r, _) => {
-        const cx = rowCoordinateToPixels(r[1]);
-        const cy = colCoordinateToPixels(r[0]);
+        let [cx, cy] = coordinateToPixels(r);
 
         const x1 = cx - triangleBuffer;
         const y1 = cy + triangleBuffer;
@@ -242,17 +235,14 @@ let DaraDotsPhaserWrapper = {
 
       movableDots.forEach((v, i) => {
         lastUsedHighlightIndex = i;
-        const row = v[0];
-        const col = v[1];
-        const y = rowCoordinateToPixels(row);
-        const x = colCoordinateToPixels(col);
+        let [x, y] = coordinateToPixels(v);
 
         if (i < 4) {
           let hDot = highlightDots[i];
           hDot.x = x;
           hDot.y = y;
 
-          highlightCoords[i] = [row, col];
+          highlightCoords[i] = [v[0], v[1]];
         }
       });
 
@@ -277,6 +267,10 @@ let DaraDotsPhaserWrapper = {
 
     function colCoordinateToPixels(colCoord) {
       return (boardHeight - boardBuffer) * (colCoord / 5);
+    }
+
+    function coordinateToPixels(coords) {
+      return [rowCoordinateToPixels(coords[1]), colCoordinateToPixels(coords[0])];
     }
   }
 };
