@@ -51,6 +51,9 @@ let DaraDotsPhaserWrapper = {
       drawRunnerPieces(runnerPieces, yellowGraphics);
 
       highlightMovableDots(movableDots);
+
+      // TODO receive the linkable dots from the server
+      highlightCreatableLinkMoves([]);
     });
 
     gameChannel.join()
@@ -95,8 +98,15 @@ let DaraDotsPhaserWrapper = {
     let redBetaLinker;
     let blueAlphaLinker;
     let blueBetaLinker;
+
+    // Used for highlighting movable coordinates when a linker is selected
     let highlightDots = {};
     let highlightCoords = {};
+
+    // Use for showing linkable coords when a linker is selected
+    let highlightLinkable = {};
+    let highlightLinkableCoords = {};
+
     let testLine;
 
     let game = new Phaser.Game(config);
@@ -106,6 +116,7 @@ let DaraDotsPhaserWrapper = {
       this.load.image("red_linker", "game_images/red_linker.png");
       this.load.image("blue_linker", "game_images/blue_linker.png");
       this.load.image("highlight_dot", "game_images/highlight_dot.png");
+      this.load.image("highlight_linkable", "game_images/highlight_linkable.png");
     }
 
     function create () {
@@ -169,6 +180,12 @@ let DaraDotsPhaserWrapper = {
         highlightCoords[i] = [];
       }
 
+      for (let i = 0; i < 2; i++) {
+        let linkable = this.add.sprite(-24, -24, "highlight_linkable").setInteractive();
+
+        highlightLinkable[i] = linkable;
+      }
+
       this.input.mouse.disableContextMenu();
     }
 
@@ -180,7 +197,6 @@ let DaraDotsPhaserWrapper = {
 
       dots.forEach(v => {
         let [x, y] = coordinateToPixels(v);
-        //let c = coordinateToPixels(v);
 
         grayGraphics.fillCircleShape(
           new Phaser.Geom.Circle(x, y, 4)
@@ -256,6 +272,14 @@ let DaraDotsPhaserWrapper = {
           highlightCoords[i] = [];
         }
       }
+    }
+
+    function highlightCreatableLinkMoves(_coords) {
+      const testCoord = [3, 2];
+      let [x, y] = coordinateToPixels(testCoord);
+
+      highlightLinkable[0].x = x;
+      highlightLinkable[0].y = y;
     }
 
     // The server stores object positions as relative percentages
