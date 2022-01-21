@@ -139,8 +139,6 @@ defmodule GameServer.RockPaperScissors do
 
   @impl GenServer
   def handle_cast({:player_move, player_name, move}, old_game_state) do
-    # TODO this does not correctly update, this entire module is pretty gross
-    # should be refactored with tests added
     game_state =
       old_game_state
       |> make_move(player_name, move)
