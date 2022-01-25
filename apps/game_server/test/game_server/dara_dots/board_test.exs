@@ -122,4 +122,6 @@ defmodule GameServer.DaraDots.BoardTest do
       assert scored_board.bot_player_score == 0
     end
   end
+
+  # TODO tests for movable coords and linkable coords
 end

@@ -32,6 +32,7 @@ let DaraDotsPhaserWrapper = {
       botAlphaCoord,
       botBetaCoord,
       movableDots,
+      linkableDots,
       runnerPieces,
       links}) => {
       yellowGraphics.clear();
@@ -52,8 +53,7 @@ let DaraDotsPhaserWrapper = {
 
       highlightMovableDots(movableDots);
 
-      // TODO receive the linkable dots from the server
-      highlightCreatableLinkMoves([]);
+      highlightLinkableDots(linkableDots);
     });
 
     gameChannel.join()
@@ -274,12 +274,15 @@ let DaraDotsPhaserWrapper = {
       }
     }
 
-    function highlightCreatableLinkMoves(_coords) {
-      const testCoord = [3, 2];
-      let [x, y] = coordinateToPixels(testCoord);
+    function highlightLinkableDots(coords) {
+      // TODO there will be at most 2
+      // TODO display this slightly off of the node that the Linker is on
+      coords.forEach(c => {
+        let [x, y] = coordinateToPixels(c);
 
-      highlightLinkable[0].x = x;
-      highlightLinkable[0].y = y;
+        highlightLinkable[0].x = x;
+        highlightLinkable[0].y = y;
+      });
     }
 
     // The server stores object positions as relative percentages

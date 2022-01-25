@@ -129,6 +129,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
           Board.get_movable_coords(state.board, state.selected_piece) |> MapSet.to_list(),
           fn coord -> Coordinate.to_list(coord) end
         ),
+      linkable_dots:
+        Enum.map(
+          Board.get_linkable_coords(state.board, state.selected_piece) |> MapSet.to_list(),
+          fn coord -> Coordinate.to_list(coord) end
+        ),
       runner_pieces:
         Enum.map(
           state.board.runner_pieces,
