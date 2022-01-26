@@ -275,7 +275,7 @@ let DaraDotsPhaserWrapper = {
     }
 
     function highlightLinkableDots(coords) {
-      // TODO there will be at most 2
+      // TODO there will be at most 2, move off of the screen after a piece is moved or deselected
       // TODO display this slightly off of the node that the Linker is on
       coords.forEach(c => {
         let [x, y] = coordinateToPixels(c);

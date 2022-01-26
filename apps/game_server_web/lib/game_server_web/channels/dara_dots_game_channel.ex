@@ -47,6 +47,7 @@ defmodule GameServerWeb.DaraDotsGameChannel do
         botAlphaCoord: game_state.bot_alpha,
         botBetaCoord: game_state.bot_beta,
         movableDots: game_state.movable_dots,
+        linkableDots: game_state.linkable_dots,
         runnerPieces: game_state.runner_pieces,
         links: game_state.links
       }
