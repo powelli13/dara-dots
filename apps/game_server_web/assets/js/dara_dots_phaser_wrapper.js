@@ -68,6 +68,7 @@ let DaraDotsPhaserWrapper = {
     const boardBuffer = 75;
 
     const triangleBuffer = 12;
+    const linkHighlightBuffer = 12;
 
     // Setup Phaser game
     let config = {
@@ -281,8 +282,9 @@ let DaraDotsPhaserWrapper = {
         let [x, y] = coordinateToPixels(c);
         lastUsedHighlightIndex = i;
 
-        highlightLinkable[i].x = x;
-        highlightLinkable[i].y = y;
+        // Add the buffer to move it the linkable sprite off to show both
+        highlightLinkable[i].x = x + linkHighlightBuffer;
+        highlightLinkable[i].y = y + linkHighlightBuffer;
 
         highlightLinkableCoords[i] = [c[0], c[1]];
       });
