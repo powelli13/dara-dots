@@ -174,16 +174,16 @@ let DaraDotsPhaserWrapper = {
           }
         });
 
-        // TODO will need to send the correct coordinates when clicked
-        // may need to use the dots for this
         highlightDots[i] = hDot;
         highlightCoords[i] = [];
       }
 
+      // Create two sprites to indicate which nodes are linkable
       for (let i = 0; i < 2; i++) {
         let linkable = this.add.sprite(-24, -24, "highlight_linkable").setInteractive();
 
         highlightLinkable[i] = linkable;
+        highlightLinkableCoords[i] = [];
       }
 
       this.input.mouse.disableContextMenu();
@@ -216,7 +216,6 @@ let DaraDotsPhaserWrapper = {
     function drawLinks(coords, graphics) {
       coords.forEach((c, _) => {
         let [x1, y1] = coordinateToPixels(c[0]);
-
         let [x2, y2] = coordinateToPixels(c[1]);
 
         testLine.x1 = x1;
@@ -275,14 +274,29 @@ let DaraDotsPhaserWrapper = {
     }
 
     function highlightLinkableDots(coords) {
-      // TODO there will be at most 2, move off of the screen after a piece is moved or deselected
-      // TODO display this slightly off of the node that the Linker is on
-      coords.forEach(c => {
-        let [x, y] = coordinateToPixels(c);
+      // Used to move unused highlight dot sprites offscreen
+      let lastUsedHighlightIndex = -1;
 
-        highlightLinkable[0].x = x;
-        highlightLinkable[0].y = y;
+      coords.forEach((c, i) => {
+        let [x, y] = coordinateToPixels(c);
+        lastUsedHighlightIndex = i;
+
+        highlightLinkable[i].x = x;
+        highlightLinkable[i].y = y;
+
+        highlightLinkableCoords[i] = [c[0], c[1]];
       });
+
+      // We didn't use the second sprite, or there were no linkable dots
+      if (lastUsedHighlightIndex == 0 || lastUsedHighlightIndex == -1) {
+        for (let i = lastUsedHighlightIndex + 1; i < 2; i++) {
+          let hDot = highlightLinkable[i];
+          hDot.x = -24;
+          hDot.y = -24;
+
+          highlightLinkableCoords[i] = [];
+        }
+      }
     }
 
     // The server stores object positions as relative percentages
