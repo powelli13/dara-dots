@@ -190,9 +190,7 @@ defmodule GameServer.DaraDots.Board do
 
     if MapSet.member?(movable_coords, dest_coord) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
-        moved_linker =
-          LinkerPiece.move(linker, dest_coord)
-          |> LinkerPiece.set_link(linker.coord, dest_coord)
+        moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
 
         Map.put(board, linker_key, moved_linker)
       end

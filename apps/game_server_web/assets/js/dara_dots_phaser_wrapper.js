@@ -169,7 +169,8 @@ let DaraDotsPhaserWrapper = {
         let hDot = this.add.sprite(-24, -24, "highlight_dot").setInteractive();
         hDot.on("pointerup", function (_) {
           if (highlightCoords[i] !== undefined && highlightCoords[i].length == 2) {
-            gameChannel.push("submit_move",
+            gameChannel
+              .push("submit_move",
                 {"row": highlightCoords[i][0], "col": highlightCoords[i][1]})
               .receive("error", e => e.console.log(e));
           }
@@ -182,6 +183,14 @@ let DaraDotsPhaserWrapper = {
       // Create two sprites to indicate which nodes are linkable
       for (let i = 0; i < 2; i++) {
         let linkable = this.add.sprite(-24, -24, "highlight_linkable").setInteractive();
+        linkable.on("pointerup", function (_) {
+          if (highlightLinkableCoords[i] !== undefined && highlightLinkableCoords[i].length == 2) {
+            gameChannel
+              .push("submit_link_move",
+                {"row": highlightLinkableCoords[i][0], "col": highlightLinkableCoords[i][1]})
+              .receive("error", e => e.console.log(e));
+          }
+        });
 
         highlightLinkable[i] = linkable;
         highlightLinkableCoords[i] = [];

@@ -29,6 +29,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.cast(via_tuple(id), {:submit_move, row, col})
   end
 
+  def submit_link_move(id, row, col) do
+    GenServer.cast(via_tuple(id), {:submit_link_move, row, col})
+  end
+
   defp via_tuple(id) do
     {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
   end
@@ -88,6 +92,18 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     moved_board =
       state.board
       |> Board.move_linker_no_link(state.selected_piece, dest_coord)
+      |> Board.advance_runners()
+
+    {:noreply, %{state | board: moved_board, selected_piece: :none}}
+  end
+
+  @impl GenServer
+  def handle_cast({:submit_link_move, row, col}, state) do
+    {:ok, dest_coord} = Coordinate.new(row, col)
+
+    moved_board =
+      state.board
+      |> Board.move_linker_and_link(state.selected_piece, dest_coord)
       |> Board.advance_runners()
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
