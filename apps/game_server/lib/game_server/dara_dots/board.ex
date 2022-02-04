@@ -21,24 +21,10 @@ defmodule GameServer.DaraDots.Board do
     # These are only for initial visual testing
     new_board = create_empty_board()
 
-    # Setting a link just for testing purposes
-    with {:ok, link_coord_first} <- Coordinate.new(1, 1),
-         {:ok, link_coord_second} <- Coordinate.new(1, 2) do
-      board_with_link = %{
-        new_board
-        | bot_linker_alpha:
-            LinkerPiece.set_link(
-              new_board.bot_linker_alpha,
-              link_coord_first,
-              link_coord_second
-            )
-      }
-
-      {
-        :ok,
-        place_initial_runners(board_with_link)
-      }
-    end
+    {
+      :ok,
+      place_initial_runners(new_board)
+    }
   end
 
   # Method to create the initial board with no runners for testing purposes

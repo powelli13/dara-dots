@@ -100,6 +100,9 @@ let DaraDotsPhaserWrapper = {
     let blueAlphaLinker;
     let blueBetaLinker;
 
+    // For creating runner pieces
+    let createRunnerButton;
+
     // Used for highlighting movable coordinates when a linker is selected
     let highlightDots = {};
     let highlightCoords = {};
@@ -118,6 +121,7 @@ let DaraDotsPhaserWrapper = {
       this.load.image("blue_linker", "game_images/blue_linker.png");
       this.load.image("highlight_dot", "game_images/highlight_dot.png");
       this.load.image("highlight_linkable", "game_images/highlight_linkable.png");
+      this.load.image("create_runner", "game_images/create_runner.png");
     }
 
     function create () {
@@ -162,6 +166,9 @@ let DaraDotsPhaserWrapper = {
         gameChannel.push("select_piece", {"piece": "bot_beta"})
           .receive("error", e => e.console.log(e));
       });
+
+      // Allow the user to create triangles
+      createRunnerButton = this.add.sprite(24, boardHeight - 24, "create_runner").setInteractive();
 
       // Create four sprites to use when highlighting squares
       for (let i = 0; i < 4; i++) {
