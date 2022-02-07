@@ -216,6 +216,7 @@ defmodule GameServer.DaraDots.Board do
   end
 
   defp place_runner(%Board{} = board, %Coordinate{} = coord, facing) do
+    # TODO ensure that there is no runner on the node being placed on
     with {:ok, new_runner} <- RunnerPiece.new(coord, facing) do
       %Board{
         board

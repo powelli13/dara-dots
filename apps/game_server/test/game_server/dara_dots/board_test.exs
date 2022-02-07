@@ -45,6 +45,19 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  test "place runner should error if placed on node with a runner" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, coord} <- Coordinate.new(1, 3) do
+      # Place initial runner
+      placed_board = Board.place_runner(board, coord)
+
+      # Try to place the second runner
+      invalid_attempt_board = Board.place_runner(placed_board, coord)
+
+      assert map_size(invalid_attempt_board.runner_pieces) == 1
+    end
+  end
+
   test "scoring in top goal should increase bot player score" do
     with {:ok, board} <- Board.new_test() do
       scored_board = Board.score_goal(board, :bot_goal)
