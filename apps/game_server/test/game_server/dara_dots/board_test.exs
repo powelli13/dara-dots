@@ -58,6 +58,55 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  test "place runner should allow different columns but not same" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, coord_first} <- Coordinate.new(5, 1),
+         {:ok, coord_second} <- Coordinate.new(5, 3) do
+      placed_board = Board.place_runner(board, coord_first)
+
+      assert map_size(placed_board.runner_pieces) == 1
+
+      second_placed_board = Board.place_runner(placed_board, coord_second)
+
+      assert map_size(second_placed_board.runner_pieces) == 2
+
+      third_placed_board = Board.place_runner(second_placed_board, coord_first)
+
+      assert map_size(third_placed_board.runner_pieces) == 2
+    end
+  end
+
+  test "place runner should allow placing in same column but separate rows" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, top_row} <- Coordinate.new(1, 3),
+         {:ok, bot_row} <- Coordinate.new(5, 3) do
+      placed_board = board
+        |> Board.place_runner(top_row)
+        |> Board.place_runner(bot_row)
+
+      assert map_size(placed_board.runner_pieces) == 2
+    end
+  end
+
+  test "place runner should allow placing in three separate columns" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, first_col} <- Coordinate.new(1, 1),
+         {:ok, second_col} <- Coordinate.new(1, 2),
+         {:ok, third_col} <- Coordinate.new(1, 3) do
+      first_placement = Board.place_runner(board, first_col)
+
+      assert map_size(first_placement.runner_pieces) == 1
+
+      second_placement = Board.place_runner(first_placement, second_col)
+
+      assert map_size(second_placement.runner_pieces) == 2
+
+      third_placement = Board.place_runner(second_placement, third_col)
+
+      assert map_size(third_placement.runner_pieces) == 3
+    end
+  end
+
   test "scoring in top goal should increase bot player score" do
     with {:ok, board} <- Board.new_test() do
       scored_board = Board.score_goal(board, :bot_goal)
