@@ -80,7 +80,8 @@ defmodule GameServer.DaraDots.BoardTest do
     with {:ok, board} <- Board.new_test(),
          {:ok, top_row} <- Coordinate.new(1, 3),
          {:ok, bot_row} <- Coordinate.new(5, 3) do
-      placed_board = board
+      placed_board =
+        board
         |> Board.place_runner(top_row)
         |> Board.place_runner(bot_row)
 

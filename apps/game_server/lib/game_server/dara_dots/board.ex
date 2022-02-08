@@ -215,19 +215,29 @@ defmodule GameServer.DaraDots.Board do
     place_runner(board, coord, :down)
   end
 
+  defp node_has_runner?(%Board{} = board, %Coordinate{} = coord) do
+    board.runner_pieces
+    |> Enum.any?(fn {_k, runner} ->
+      Coordinate.equal?(runner.coord, coord)
+    end)
+  end
+
   defp place_runner(%Board{} = board, %Coordinate{} = coord, facing) do
-    # TODO ensure that there is no runner on the node being placed on
     with {:ok, new_runner} <- RunnerPiece.new(coord, facing) do
-      %Board{
+      if node_has_runner?(board, coord) do
         board
-        | runner_pieces:
-            Map.put(
-              board.runner_pieces,
-              board.runner_timer,
-              new_runner
-            ),
-          runner_timer: board.runner_timer + 1
-      }
+      else
+        %Board{
+          board
+          | runner_pieces:
+              Map.put(
+                board.runner_pieces,
+                board.runner_timer,
+                new_runner
+              ),
+            runner_timer: board.runner_timer + 1
+        }
+      end
     end
   end
 
