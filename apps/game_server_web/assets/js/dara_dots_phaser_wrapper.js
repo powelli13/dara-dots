@@ -101,7 +101,8 @@ let DaraDotsPhaserWrapper = {
     let blueBetaLinker;
 
     // For creating runner pieces
-    let createRunnerButton;
+    let createRunnerButtons = {};
+    let createRunnerCoords = {};
 
     // Used for highlighting movable coordinates when a linker is selected
     let highlightDots = {};
@@ -125,6 +126,8 @@ let DaraDotsPhaserWrapper = {
     }
 
     function create () {
+      
+      // TODO move game board sprite initialization to another file if possible
       // Only load the Phaser assets on certain pages
       this.add.image(boardWidth, boardHeight, "background");
 
@@ -168,11 +171,17 @@ let DaraDotsPhaserWrapper = {
       });
 
       // Allow the user to create triangles
-      createRunnerButton = this.add.sprite(24, boardHeight - 24, "create_runner").setInteractive();
+      for (let i = 0; i < 5; i++) {
+        let runnerButton = this.add.sprite(24 * (i + 1), boardHeight - 24, "create_runner").setInteractive()
+
+        createRunnerButtons[i] = runnerButton;
+        // TODO assign coords
+        createRunnerCoords[i] = [];
+      }
 
       // Create four sprites to use when highlighting squares
       for (let i = 0; i < 4; i++) {
-        // TODO set the alpha to remove hight background
+        // TODO set the alpha to remove white background
         let hDot = this.add.sprite(-24, -24, "highlight_dot").setInteractive();
         hDot.on("pointerup", function (_) {
           if (highlightCoords[i] !== undefined && highlightCoords[i].length == 2) {
