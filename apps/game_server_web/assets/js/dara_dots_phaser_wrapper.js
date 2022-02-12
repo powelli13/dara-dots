@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import daraDotsBoardConstants from "./dara_dots_board_setup";
 
 let DaraDotsPhaserWrapper = {
   init(socket, gameElemId) {
@@ -62,19 +63,12 @@ let DaraDotsPhaserWrapper = {
       })
       .receive("error", reason => console.log("join failed", reason));
 
-    // Setup display dimension
-    const boardWidth = 500;
-    const boardHeight = 500;
-    const boardBuffer = 75;
-
-    const triangleBuffer = 12;
-    const linkHighlightBuffer = 12;
 
     // Setup Phaser game
     let config = {
       type: Phaser.AUTO,
-      width: boardWidth,
-      height: boardHeight,
+      width: daraDotsBoardConstants.boardWidth,
+      height: daraDotsBoardConstants.boardHeight,
       physics: {
         default: "arcade",
         arcade: {
@@ -129,7 +123,7 @@ let DaraDotsPhaserWrapper = {
       
       // TODO move game board sprite initialization to another file if possible
       // Only load the Phaser assets on certain pages
-      this.add.image(boardWidth, boardHeight, "background");
+      this.add.image(daraDotsBoardConstants.boardWidth, daraDotsBoardConstants.boardHeight, "background");
 
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
       yellowGraphics = this.add.graphics(
@@ -259,12 +253,12 @@ let DaraDotsPhaserWrapper = {
       runnerCoords.forEach((r, _) => {
         let [cx, cy] = coordinateToPixels(r);
 
-        const x1 = cx - triangleBuffer;
-        const y1 = cy + triangleBuffer;
-        const x2 = cx + triangleBuffer;
-        const y2 = cy + triangleBuffer;
+        const x1 = cx - daraDotsBoardConstants.triangleBuffer;
+        const y1 = cy + daraDotsBoardConstants.triangleBuffer;
+        const x2 = cx + daraDotsBoardConstants.triangleBuffer;
+        const y2 = cy + daraDotsBoardConstants.triangleBuffer;
         const x3 = cx;
-        const y3 = cy - triangleBuffer;
+        const y3 = cy - daraDotsBoardConstants.triangleBuffer;
 
         graphics.fillTriangle(x1, y1, x2, y2, x3, y3);
       });
@@ -308,8 +302,8 @@ let DaraDotsPhaserWrapper = {
         lastUsedHighlightIndex = i;
 
         // Add the buffer to move it the linkable sprite off to show both
-        highlightLinkable[i].x = x + linkHighlightBuffer;
-        highlightLinkable[i].y = y + linkHighlightBuffer;
+        highlightLinkable[i].x = x + daraDotsBoardConstants.linkHighlightBuffer;
+        highlightLinkable[i].y = y + daraDotsBoardConstants.linkHighlightBuffer;
 
         highlightLinkableCoords[i] = [c[0], c[1]];
       });
@@ -318,6 +312,7 @@ let DaraDotsPhaserWrapper = {
       if (lastUsedHighlightIndex == 0 || lastUsedHighlightIndex == -1) {
         for (let i = lastUsedHighlightIndex + 1; i < 2; i++) {
           let hDot = highlightLinkable[i];
+          // TODO this and line 288 above are breaking becausee this is a fragile and gross fix, improve this
           hDot.x = -24;
           hDot.y = -24;
 
@@ -330,11 +325,11 @@ let DaraDotsPhaserWrapper = {
     // of the total game space. These functions are used to convert
     // server values into the percentage for the client board position.
     function rowCoordinateToPixels(rowCoord) {
-      return (boardWidth - boardBuffer) * (rowCoord / 5);
+      return (daraDotsBoardConstants.boardWidth - daraDotsBoardConstants.boardBuffer) * (rowCoord / 5);
     }
 
     function colCoordinateToPixels(colCoord) {
-      return (boardHeight - boardBuffer) * (colCoord / 5);
+      return (daraDotsBoardConstants.boardHeight - daraDotsBoardConstants.boardBuffer) * (colCoord / 5);
     }
 
     function coordinateToPixels(coords) {
