@@ -166,7 +166,7 @@ let DaraDotsPhaserWrapper = {
 
       // Allow the user to create triangles
       for (let i = 0; i < 5; i++) {
-        let runnerButton = this.add.sprite(24 * (i + 1), boardHeight - 24, "create_runner").setInteractive()
+        let runnerButton = this.add.sprite(24 * (i + 1), daraDotsBoardConstants.boardHeight - 24, "create_runner").setInteractive()
 
         createRunnerButtons[i] = runnerButton;
         // TODO assign coords
