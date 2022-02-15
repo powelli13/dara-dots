@@ -42,6 +42,12 @@ defmodule GameServerWeb.DaraDotsGameChannel do
     {:noreply, socket}
   end
 
+  def handle_in("place_runner", %{"row" => row, "col" => col}, socket) do
+    GameServer.DaraDots.DaraDotsGame.place_runner(socket.assigns[:game_id], row, col)
+
+    {:noreply, socket}
+  end
+
   def handle_info({:new_game_state, game_state}, socket) do
     push(
       socket,

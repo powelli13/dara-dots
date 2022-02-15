@@ -33,6 +33,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.cast(via_tuple(id), {:submit_link_move, row, col})
   end
 
+  def place_runner(id, row, col) do
+    GenServer.cast(via_tuple(id), {:place_runner, row, col})
+  end
+
+
   defp via_tuple(id) do
     {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
   end
@@ -107,6 +112,17 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       |> Board.advance_runners()
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
+  end
+
+  @impl GenServer
+  def handle_cast({:place_runner, row, col}, state) do
+    {:ok, create_coord} = Coordinate.new(row, col)
+
+    updated_board =
+      state.board
+      |> Board.place_runner(create_coord)
+
+    {:noreply, %{state | board: updated_board}}
   end
 
   @impl GenServer

@@ -166,7 +166,15 @@ let DaraDotsPhaserWrapper = {
 
       // Allow the user to create triangles
       for (let i = 0; i < 5; i++) {
-        let runnerButton = this.add.sprite(24 * (i + 1), daraDotsBoardConstants.boardHeight - 24, "create_runner").setInteractive()
+        // TODO this is backwards first is the y coord, second is x
+        let [xCoord, yCoord] = coordinateToPixels([5, i + 1]);
+
+        // TODO will need to distinguish between bottom and top player when allowing them to create runners
+        let runnerButton = this.add.sprite(xCoord, yCoord + 24, "create_runner").setInteractive();
+        runnerButton.on("pointerup", function (_) {
+          gameChannel.push("place_runner", {"col": i + 1, "row": 5})
+            .receive("error", e => e.console.log(e));
+        });
 
         createRunnerButtons[i] = runnerButton;
         // TODO assign coords
@@ -226,8 +234,6 @@ let DaraDotsPhaserWrapper = {
 
     function updateLinkerCoord(linkerSprite, coord) {
       let [x, y] = coordinateToPixels(coord);
-
-      // TODO update link if applicable
 
       linkerSprite.x = x;
       linkerSprite.y = y;

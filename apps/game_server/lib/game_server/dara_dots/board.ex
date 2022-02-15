@@ -215,6 +215,11 @@ defmodule GameServer.DaraDots.Board do
     place_runner(board, coord, :down)
   end
 
+  # If an invalid row is given then do nothing
+  def place_runner(%Board{} = board, _coord) do
+    board
+  end
+
   defp node_has_runner?(%Board{} = board, %Coordinate{} = coord) do
     board.runner_pieces
     |> Enum.any?(fn {_k, runner} ->
