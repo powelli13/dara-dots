@@ -86,17 +86,10 @@ defmodule GameServer.DaraDots.RunnerPiece do
   end
 
   defp advance_link(%RunnerPiece{} = runner, hit_links, link_coords, trip_speed) do
-    current_link = hd(hit_links) |> MapSet.to_list()
+    [first_link_coord, second_link_coord] = hd(hit_links) |> MapSet.to_list()
 
-    # TODO it would be nice to use MapSet.difference here
-    # but Coordinate doesn't implement Enumerable so we can't
-    # current_link here will be a list of two coordinates
-    other_coord =
-      Enum.reduce(current_link, nil, fn c, _acc ->
-        if Coordinate.equal?(c, runner.coord), do: nil, else: c
-      end)
+    other_coord = if Coordinate.equal?(runner.coord, first_link_coord), do: second_link_coord, else: first_link_coord
 
-    # If other_coord is nil here we have bad data
     # Move to the other coord in the link,
     # increase speed and change facing
     # Keep advancing with less speed for the trip

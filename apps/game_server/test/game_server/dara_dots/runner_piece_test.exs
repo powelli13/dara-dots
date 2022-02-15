@@ -195,6 +195,18 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
     end
   end
 
+  test "should take link given runner piece coord is first coord in coord links" do
+    with {:ok, runner_coord} <- Coordinate.new(3, 4),
+         {:ok, link_first} <- Coordinate.new(3, 4),
+         {:ok, link_second} <- Coordinate.new(3, 3),
+         {:ok, runner} <- RunnerPiece.new(runner_coord, :down) do
+      link_coords = [MapSet.new([link_first, link_second])]
+      {_was_goal, moved_runner} = RunnerPiece.advance(runner, link_coords)
+
+      assert Coordinate.equal?(moved_runner.coord, link_second)
+    end
+  end
+
   test "should advance given no links" do
     with {:ok, runner_coord} <- Coordinate.new(3, 3),
          {:ok, expected_dest} <- Coordinate.new(4, 3),
