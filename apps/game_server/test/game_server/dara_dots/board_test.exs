@@ -36,12 +36,10 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
-  test "should error if runner placed outside starting rows" do
+  test "should not create runner if placed outside starting rows" do
     with {:ok, board} <- Board.new_test(),
          {:ok, coord} <- Coordinate.new(3, 1) do
-      assert_raise FunctionClauseError, fn ->
-        _ = Board.place_runner(board, coord)
-      end
+      assert map_size(board.runner_pieces) == 0
     end
   end
 

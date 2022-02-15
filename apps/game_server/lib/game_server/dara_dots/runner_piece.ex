@@ -40,7 +40,7 @@ defmodule GameServer.DaraDots.RunnerPiece do
     end
   end
 
-  def move(%RunnerPiece{} = runner, %Coordinate{} = coord) do
+  defp move(%RunnerPiece{} = runner, %Coordinate{} = coord) do
     %RunnerPiece{runner | coord: coord}
   end
 
