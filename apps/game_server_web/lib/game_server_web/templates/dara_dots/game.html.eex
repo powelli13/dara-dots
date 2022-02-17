@@ -1,3 +1,4 @@
+<div id="scoreboard"></div>
 <div id="phaser-puzzle-wrapper"></div>
 
 <%= link("Return to Lobby", to: Routes.dara_dots_path(@conn, :lobby)) %>

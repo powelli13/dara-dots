@@ -3,7 +3,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   alias Phoenix.PubSub
   alias GameServer.DaraDots.{Board, Coordinate}
 
-  @broadcast_frequency 70
+  # I was thinking about this and it may be unnecessarily fast for the turn
+  # based nature of the game. Consider changing broadcast frequency, or
+  # perhaps only broadcasting parts of updates at once.
+  @broadcast_frequency 250
 
   def start(id) do
     GenServer.start(__MODULE__, id, name: via_tuple(id))

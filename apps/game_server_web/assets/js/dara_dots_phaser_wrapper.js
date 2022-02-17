@@ -38,8 +38,8 @@ let DaraDotsPhaserWrapper = {
       linkableDots,
       runnerPieces,
       links}) => {
-      // TODO move this to a scoreboard
-      console.log(`Score: Top ${topPlayerScore} - Bot ${botPlayerScore}`);
+      // Consider changing this scoreboard to use Phaser cool looking text
+      document.getElementById('scoreboard').innerText = `Top ${topPlayerScore} - Bot ${botPlayerScore}`;
 
       yellowGraphics.clear();
 
