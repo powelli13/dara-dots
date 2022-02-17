@@ -58,6 +58,8 @@ defmodule GameServerWeb.DaraDotsGameChannel do
         topBetaCoord: game_state.top_beta,
         botAlphaCoord: game_state.bot_alpha,
         botBetaCoord: game_state.bot_beta,
+        topPlayerScore: game_state.top_player_score,
+        botPlayerScore: game_state.bot_player_score,
         movableDots: game_state.movable_dots,
         linkableDots: game_state.linkable_dots,
         runnerPieces: game_state.runner_pieces,

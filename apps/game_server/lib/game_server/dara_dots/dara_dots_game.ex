@@ -149,13 +149,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
           fn coord -> coord |> Coordinate.to_list() end
         ),
       bot_alpha: state.board.bot_linker_alpha.coord |> Coordinate.to_list(),
-      bot_alpha_link: :none,
       bot_beta: state.board.bot_linker_beta.coord |> Coordinate.to_list(),
-      bot_beta_link: :none,
       top_alpha: state.board.top_linker_alpha.coord |> Coordinate.to_list(),
-      top_alpha_link: :none,
       top_beta: state.board.top_linker_beta.coord |> Coordinate.to_list(),
-      top_beta_link: :none,
+      top_player_score: state.board.top_player_score,
+      bot_player_score: state.board.bot_player_score,
       movable_dots:
         Enum.map(
           Board.get_movable_coords(state.board, state.selected_piece) |> MapSet.to_list(),
@@ -171,6 +169,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
           state.board.runner_pieces,
           fn {_ix, runner} -> Coordinate.to_list(runner.coord) end
         ),
+      # TODO does it matter if the links are not tied to specific linkers?
       links:
         Board.get_all_link_coords(state.board)
         |> Enum.map(fn coord_map_set ->

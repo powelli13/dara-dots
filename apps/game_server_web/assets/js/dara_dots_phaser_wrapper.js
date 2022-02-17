@@ -32,10 +32,15 @@ let DaraDotsPhaserWrapper = {
       topBetaCoord,
       botAlphaCoord,
       botBetaCoord,
+      topPlayerScore,
+      botPlayerScore,
       movableDots,
       linkableDots,
       runnerPieces,
       links}) => {
+      // TODO move this to a scoreboard
+      console.log(`Score: Top ${topPlayerScore} - Bot ${botPlayerScore}`);
+
       yellowGraphics.clear();
 
       drawBoardState(dots);
