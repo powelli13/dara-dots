@@ -260,9 +260,9 @@ let DaraDotsPhaserWrapper = {
       });
     }
 
-    function drawRunnerPieces(runnerCoords, graphics) {
-      runnerCoords.forEach((r, _) => {
-        let [cx, cy] = coordinateToPixels(r);
+    function drawRunnerPieces(runnerPieces, graphics) {
+      runnerPieces.forEach((r, _) => {
+        let [cx, cy] = coordinateToPixels(r.coords);
 
         const x1 = cx - daraDotsBoardConstants.triangleBuffer;
         const y1 = cy + daraDotsBoardConstants.triangleBuffer;

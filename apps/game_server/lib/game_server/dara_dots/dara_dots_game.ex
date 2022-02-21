@@ -170,7 +170,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       runner_pieces:
         Enum.map(
           state.board.runner_pieces,
-          fn {_ix, runner} -> Coordinate.to_list(runner.coord) end
+          fn {_ix, runner} -> %{coords: Coordinate.to_list(runner.coord), facing: to_string(runner.facing)} end
         ),
       # TODO does it matter if the links are not tied to specific linkers?
       links:
