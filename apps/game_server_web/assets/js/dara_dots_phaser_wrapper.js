@@ -264,12 +264,21 @@ let DaraDotsPhaserWrapper = {
       runnerPieces.forEach((r, _) => {
         let [cx, cy] = coordinateToPixels(r.coords);
 
-        const x1 = cx - daraDotsBoardConstants.triangleBuffer;
-        const y1 = cy + daraDotsBoardConstants.triangleBuffer;
-        const x2 = cx + daraDotsBoardConstants.triangleBuffer;
-        const y2 = cy + daraDotsBoardConstants.triangleBuffer;
-        const x3 = cx;
-        const y3 = cy - daraDotsBoardConstants.triangleBuffer;
+        let x1 = cx - daraDotsBoardConstants.triangleBuffer;
+        let y1 = cy + daraDotsBoardConstants.triangleBuffer;
+        let x2 = cx + daraDotsBoardConstants.triangleBuffer;
+        let y2 = cy + daraDotsBoardConstants.triangleBuffer;
+        let x3 = cx;
+        let y3 = cy - daraDotsBoardConstants.triangleBuffer;
+
+        if (r.facing == "up") {
+          x1 = cx - daraDotsBoardConstants.triangleBuffer;
+          y1 = cy - daraDotsBoardConstants.triangleBuffer;
+          x2 = cx + daraDotsBoardConstants.triangleBuffer;
+          y2 = cy - daraDotsBoardConstants.triangleBuffer;
+          x3 = cx;
+          y3 = cy + daraDotsBoardConstants.triangleBuffer;
+        }
 
         graphics.fillTriangle(x1, y1, x2, y2, x3, y3);
       });
