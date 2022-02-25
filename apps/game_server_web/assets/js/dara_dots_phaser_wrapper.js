@@ -179,14 +179,11 @@ let DaraDotsPhaserWrapper = {
         });
 
         createRunnerButtons[i] = runnerButton;
-        // TODO assign coords
-        createRunnerCoords[i] = [];
       }
 
       // Create four sprites to use when highlighting squares
       for (let i = 0; i < 4; i++) {
-        // TODO set the alpha to remove white background
-        let hDot = this.add.sprite(-24, -24, "highlight_dot").setInteractive();
+        const hDot = this.add.sprite(-24, -24, "highlight_dot").setInteractive();
         hDot.on("pointerup", function (_) {
           if (highlightCoords[i] !== undefined && highlightCoords[i].length == 2) {
             gameChannel
