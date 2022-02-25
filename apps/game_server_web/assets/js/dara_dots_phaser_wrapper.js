@@ -4,7 +4,7 @@ import daraDotsBoardConstants from "./dara_dots_board_setup";
 let DaraDotsPhaserWrapper = {
   init(socket, gameElemId) {
     // Ensure that we only load Dara Dots Phaser on the correct pages
-    let gameElement = document.getElementById(gameElemId);
+    const gameElement = document.getElementById(gameElemId);
     if (gameElement == null) { return; }
 
     //const params = new URLSearchParams(document.location.search);
@@ -91,7 +91,6 @@ let DaraDotsPhaserWrapper = {
     let grayGraphics;
     let yellowGraphics;
     let movableDotGraphics;
-    let emptyDot;
 
     // Sprites for Pieces
     let redAlphaLinker;
@@ -125,7 +124,6 @@ let DaraDotsPhaserWrapper = {
     }
 
     function create () {
-      
       // TODO move game board sprite initialization to another file if possible
       // Only load the Phaser assets on certain pages
       this.add.image(daraDotsBoardConstants.boardWidth, daraDotsBoardConstants.boardHeight, "background");
@@ -171,7 +169,6 @@ let DaraDotsPhaserWrapper = {
 
       // Allow the user to create triangles
       for (let i = 0; i < 5; i++) {
-        // TODO this is backwards first is the y coord, second is x
         let [xCoord, yCoord] = coordinateToPixels([5, i + 1]);
 
         // TODO will need to distinguish between bottom and top player when allowing them to create runners
