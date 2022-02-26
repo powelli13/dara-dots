@@ -36,6 +36,12 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
           socket.assigns.player_id,
           socket.assigns.username
         )
+
+      "dara-dots" ->
+        GameServer.DaraDots.DaraDotsPlayerQueue.add_player(
+          socket.assigns.player_id,
+          socket.assigns.username
+        )
     end
 
     {:noreply, socket}
@@ -49,6 +55,9 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
       "ttt" ->
         GameServer.TttPlayerQueue.remove_player(socket.assigns.player_id)
+
+      "dara-dots" ->
+        GameServer.DaraDots.DaraDotsPlayerQueue.remove_player(socket.assigns.player_id)
 
       "rps" ->
         nil
@@ -111,7 +120,7 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
         GameServer.TttPlayerQueue.remove_player(socket.assigns.player_id)
 
       "dara-dots" ->
-        nil
+        GameServer.DaraDots.DaraDotsPlayerQueue.remove_player(socket.assigns.player_id)
 
       "rps" ->
         nil

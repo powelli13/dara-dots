@@ -8,7 +8,6 @@ import {Presence} from "phoenix";
 let GenLobbyChat = {
   init(socket) {
     // Only connect if the chat container is on the page
-    // TODO change the lobby.js file to not overlap IDs
     const element = document.getElementById("gen-lobby-chat-container");
     if (!element) { return; }
     if (!element.dataset.lobbyName) { return; }

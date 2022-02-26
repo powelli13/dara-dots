@@ -99,9 +99,17 @@ defmodule GameServer.DaraDots.DaraDotsPlayerQueue do
 
       {:ok, _pid} = DaraDotsGame.start(new_game_id)
 
-      # TODO assign players to positions
-
       r = :rand.uniform()
+
+      cond do
+        r > 0.5 ->
+          DaraDotsGame.add_player(new_game_id, first_player_id)
+          DaraDotsGame.add_player(new_game_id, second_player_id)
+
+        true ->
+          DaraDotsGame.add_player(new_game_id, second_player_id)
+          DaraDotsGame.add_player(new_game_id, first_player_id)
+      end
 
       # Inform the lobby channels that the players are in a game together
       # The lobby name here must align with
