@@ -38,6 +38,7 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
         )
 
       "dara-dots" ->
+        IO.puts "adding player to queue for dara dots"
         GameServer.DaraDots.DaraDotsPlayerQueue.add_player(
           socket.assigns.player_id,
           socket.assigns.username
@@ -82,6 +83,8 @@ defmodule GameServerWeb.GenericLobbyChatChannel do
 
   # should set which queue module to join based on lobby_name
   def handle_info({:start_game, first_player_id, second_player_id, new_game_id}, socket) do
+    IO.puts "Received a message to start a game"
+
     if socket.assigns.player_id == first_player_id ||
          socket.assigns.player_id == second_player_id do
       push(

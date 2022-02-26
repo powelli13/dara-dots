@@ -9,6 +9,7 @@ defmodule GameServer.DaraDots.DaraDotsPlayerQueue do
   alias GameServer.DaraDots.DaraDotsGame
 
   def add_player(player_id, player_name) do
+    IO.puts "in queue: add_player"
     GenServer.cast(__MODULE__, {:add_player, player_id, player_name})
   end
 
@@ -32,9 +33,12 @@ defmodule GameServer.DaraDots.DaraDotsPlayerQueue do
 
   @impl GenServer
   def handle_cast({:add_player, player_id, player_name}, map_set) do
+    IO.puts "in queue handling the cast"
     {
       :noreply,
       unless already_in_queue?(map_set, player_id) do
+        IO.puts "IN THE QUEUE adding a player"
+
         # check for starting the game
         check_start_game(
           MapSet.put(

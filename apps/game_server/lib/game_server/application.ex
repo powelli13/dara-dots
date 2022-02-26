@@ -27,6 +27,7 @@ defmodule GameServer.Application do
       GameServer.RpsPlayerQueue,
       GameServer.TttPlayerQueue,
       GameServer.PongPlayerQueue,
+      GameServer.DaraDots.DaraDotsPlayerQueue,
 
       # Track active games
       GameServer.PongActiveGames
