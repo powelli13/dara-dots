@@ -9,6 +9,7 @@ defmodule GameServer.DaraDots.Board do
     :bot_linker_beta,
     top_player_score: 0,
     bot_player_score: 0,
+    current_turn: :top_player,
 
     # Used to save the age of the triangles as they are added to the board
     # TODO consider restructuring the data structures used for runner pieces
@@ -73,6 +74,18 @@ defmodule GameServer.DaraDots.Board do
       {:ok, coord} = Coordinate.new(row, col)
       coord
     end)
+  end
+
+  def get_current_turn(%Board{} = board) do
+    board.current_turn
+  end
+
+  def change_turn(%Board{current_turn: :top_player} = board) do
+    %Board{board | current_turn: :bot_player}
+  end
+
+  def change_turn(%Board{current_turn: :bot_player} = board) do
+    %Board{board | current_turn: :top_player}
   end
 
   # Determine movable nodes for a square

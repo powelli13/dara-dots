@@ -184,5 +184,18 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  test "change_turn should update turn" do
+    with {:ok, board} <- Board.new_test() do
+      assert board.current_turn == :top_player
+
+      new_board = Board.change_turn(board)
+
+      assert new_board.current_turn == :bot_player
+
+      last_board = Board.change_turn(new_board)
+
+      assert last_board.current_turn == :top_player
+    end
+  end
   # TODO tests for movable coords and linkable coords
 end
