@@ -3,7 +3,6 @@ defmodule GameServerWeb.DaraDotsGameChannel do
 
   def join("dara_dots_game:" <> game_id, _params, socket) do
     # TODO move this into the queue
-    # put Player ID on the socket.assigns
     GameServer.DaraDots.DaraDotsGame.start(game_id)
 
     {:ok, socket |> assign(:game_id, game_id)}
@@ -49,6 +48,12 @@ defmodule GameServerWeb.DaraDotsGameChannel do
   end
 
   def handle_info({:new_game_state, game_state}, socket) do
+    # Determine pieces of state that are unique to the player
+    player_message = game_state[socket.assigns.player_id]
+
+    IO.inspect "game state"
+    IO.inspect game_state
+
     push(
       socket,
       "game_state",
@@ -63,7 +68,8 @@ defmodule GameServerWeb.DaraDotsGameChannel do
         movableDots: game_state.movable_dots,
         linkableDots: game_state.linkable_dots,
         runnerPieces: game_state.runner_pieces,
-        links: game_state.links
+        links: game_state.links,
+        playerMessage: player_message
       }
     )
 

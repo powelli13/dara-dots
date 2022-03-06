@@ -37,7 +37,10 @@ let DaraDotsPhaserWrapper = {
       movableDots,
       linkableDots,
       runnerPieces,
-      links}) => {
+      links,
+      playerMessage}) => {
+      console.log(`The player message: ${playerMessage}`);
+
       // Consider changing this scoreboard to use Phaser cool looking text
       document.getElementById('scoreboard').innerText = `Top ${topPlayerScore} - Bot ${botPlayerScore}`;
 
