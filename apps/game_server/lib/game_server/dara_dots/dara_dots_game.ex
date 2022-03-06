@@ -144,10 +144,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   defp broadcast_game_state(state) do
-    IO.inspect "player IDs"
-    IO.inspect state.top_player_id
-    IO.inspect state.bot_player_id
-
     # generate the game state to be broadcast
     state_to_broadcast = %{
       :dots =>
