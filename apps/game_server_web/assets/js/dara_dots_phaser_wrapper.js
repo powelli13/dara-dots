@@ -7,12 +7,12 @@ let DaraDotsPhaserWrapper = {
     const gameElement = document.getElementById(gameElemId);
     if (gameElement == null) { return; }
 
-    //const params = new URLSearchParams(document.location.search);
-    //if (!params.has('id')) { return; }
+    const params = new URLSearchParams(document.location.search);
+    if (!params.has('id')) { return; }
 
     socket.connect({token: window.userToken});
 
-    this.onReady(socket, "1");// params.get('id'));
+    this.onReady(socket, params.get('id'));
   },
 
   onReady(socket, gameId) {
