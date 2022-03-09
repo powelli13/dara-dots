@@ -4,8 +4,8 @@ This web app has some multiplayer games, including Tic Tac Toe and Pong. These g
 ## LipSync
 Lip Sync is a competition in which performing teams dance and lip sync along to a playing song. The Lip Sync lobby is used to facilitate Lip Sync competitions. It allows for friendly chatting, registering your team with a YouTube video link and then starting the performance and enjoying the fun!
 
-## DaraDots Puzzle Idea
-DaraDots is cooperative puzzle game with concepts still being developed. The current working draft of the rules can be found [here](https://github.com/powelli13/dara-dots/blob/master/dara_dots_puzzle_rules.md).
+## Dara Dots Game
+For the still in progress rules of the Dara Dots game, which has been my main focus of development in this repo lately, see [here](https://github.com/powelli13/dara-dots/blob/master/dara_dots_rules.md).
 
 ## Getting Started
 This web app is built using [Elixir](https://elixir-lang.org/) and the [Phoenix Web Framework](https://phoenixframework.org/). Also [Phaser 3](https://www.phaser.io/phaser3) was used in the browser to power the games. These are both required in order to run the Lip Sync web app.
@@ -25,4 +25,3 @@ Contributions to the various games or the LipSync web app are always welcome! He
 
 ## License
 Code licensed under the [MIT License](https://github.com/powelli13/dara-dots/blob/master/LICENSE).
-
