@@ -88,8 +88,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def handle_cast({:select_piece, piece}, state) do
-    # TODO will want to use player IDs and check if they can move
-    # which turn is it, etc.
     {:noreply, %{state | selected_piece: piece}}
   end
 
@@ -173,6 +171,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
           fn {_ix, runner} -> %{coords: Coordinate.to_list(runner.coord), facing: to_string(runner.facing)} end
         ),
       # TODO does it matter if the links are not tied to specific linkers?
+      # I was thinking about this more the other day and a visual indicator
+      # may be nice to have. That way the user will know which of their links
+      # will go away if they make a new link
       :links =>
         Board.get_all_link_coords(state.board)
         |> Enum.map(fn coord_map_set ->

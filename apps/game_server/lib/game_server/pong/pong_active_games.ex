@@ -6,7 +6,6 @@ defmodule GameServer.PongActiveGames do
   Keeps track of the active Pong Games to display them in the
   lobby so that other players can view the game.
   """
-  # TODO could we use presence for this?
   def add_active_game(game_id) do
     GenServer.cast(__MODULE__, {:add_game, game_id})
   end
