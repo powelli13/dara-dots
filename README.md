@@ -8,7 +8,7 @@ Lip Sync is a competition in which performing teams dance and lip sync along to 
 For the still in progress rules of the Dara Dots game, which has been my main focus of development in this repo lately, see [here](https://github.com/powelli13/dara-dots/blob/master/dara_dots_rules.md).
 
 ## Getting Started
-This web app is built using [Elixir](https://elixir-lang.org/) and the [Phoenix Web Framework](https://phoenixframework.org/). Also [Phaser 3](https://www.phaser.io/phaser3) was used in the browser to power the games. These are both required in order to run the Lip Sync web app.
+This web app is built using [Elixir](https://elixir-lang.org/) and the [Phoenix Web Framework](https://phoenixframework.org/). Also [Phaser 3](https://www.phaser.io/phaser3) was used in the browser to power the games. Also [Node.js](https://nodejs.org/en/) and `npm`. are These are all required in order to run the Lip Sync web app locally.
 Once you have Elixir and the Phoenix Framework setup:
 
 * Clone the DaraDots repository, which contains the LipSync lobby functionality, through `git clone https://github.com/powelli13/dara-dots.git`
