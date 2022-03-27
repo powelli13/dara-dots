@@ -76,6 +76,14 @@ defmodule GameServer.DaraDots.Board do
     end)
   end
 
+  def is_top_turn?(%Board{} = board) do
+    board.current_turn == :top_player
+  end
+
+  def is_bot_turn?(%Board{} = board) do
+    board.current_turn == :bot_player
+  end
+
   def get_current_turn(%Board{} = board) do
     board.current_turn
   end

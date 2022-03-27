@@ -27,13 +27,23 @@ defmodule GameServerWeb.DaraDotsGameChannel do
   end
 
   def handle_in("submit_move", %{"row" => row, "col" => col}, socket) do
-    GameServer.DaraDots.DaraDotsGame.submit_move(socket.assigns[:game_id], row, col)
+    GameServer.DaraDots.DaraDotsGame.submit_move(
+      socket.assigns[:game_id],
+      socket.assigns[:player_id],
+      row,
+      col
+    )
 
     {:noreply, socket}
   end
 
   def handle_in("submit_link_move", %{"row" => row, "col" => col}, socket) do
-    GameServer.DaraDots.DaraDotsGame.submit_link_move(socket.assigns[:game_id], row, col)
+    GameServer.DaraDots.DaraDotsGame.submit_link_move(
+      socket.assigns[:game_id],
+      socket.assigns[:player_id],
+      row,
+      col
+    )
 
     {:noreply, socket}
   end

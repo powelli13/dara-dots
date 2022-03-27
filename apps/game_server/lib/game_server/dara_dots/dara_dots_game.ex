@@ -8,41 +8,40 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   # perhaps only broadcasting parts of updates at once.
   @broadcast_frequency 250
 
-  def start(id) do
-    GenServer.start(__MODULE__, id, name: via_tuple(id))
+  def start(game_id) do
+    GenServer.start(__MODULE__, game_id, name: via_tuple(game_id))
   end
 
-  def add_player(id, player_id) do
-    GenServer.cast(via_tuple(id), {:add_player, player_id})
+  def add_player(game_id, player_id) do
+    GenServer.cast(via_tuple(game_id), {:add_player, player_id})
   end
 
-  def select_piece(id, piece) do
-    GenServer.cast(via_tuple(id), {:select_piece, piece})
+  def select_piece(game_id, piece) do
+    GenServer.cast(via_tuple(game_id), {:select_piece, piece})
   end
 
   def get_full_board(id) do
     GenServer.call(via_tuple(id), :get_full_board)
   end
 
-  def get_selected_piece(id) do
-    GenServer.call(via_tuple(id), :get_selected_piece)
+  def get_selected_piece(game_id) do
+    GenServer.call(via_tuple(game_id), :get_selected_piece)
   end
 
-  def submit_move(id, row, col) do
-    GenServer.cast(via_tuple(id), {:submit_move, row, col})
+  def submit_move(game_id, player_id, row, col) do
+    GenServer.cast(via_tuple(game_id), {:submit_move, player_id, row, col})
   end
 
-  def submit_link_move(id, row, col) do
-    GenServer.cast(via_tuple(id), {:submit_link_move, row, col})
+  def submit_link_move(game_id, player_id, row, col) do
+    GenServer.cast(via_tuple(game_id), {:submit_link_move, player_id, row, col})
   end
 
-  def place_runner(id, row, col) do
-    GenServer.cast(via_tuple(id), {:place_runner, row, col})
+  def place_runner(game_id, player_id, row, col) do
+    GenServer.cast(via_tuple(game_id), {:place_runner, player_id, row, col})
   end
 
-
-  defp via_tuple(id) do
-    {:via, Registry, {GameServer.Registry, {__MODULE__, id}}}
+  defp via_tuple(game_id) do
+    {:via, Registry, {GameServer.Registry, {__MODULE__, game_id}}}
   end
 
   @impl GenServer
@@ -92,7 +91,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
-  def handle_cast({:submit_move, row, col}, state) do
+  def handle_cast({:submit_move, _player_id, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
 
     moved_board =
@@ -104,7 +103,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
-  def handle_cast({:submit_link_move, row, col}, state) do
+  def handle_cast({:submit_link_move, _player_id, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
 
     moved_board =
@@ -116,7 +115,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
-  def handle_cast({:place_runner, row, col}, state) do
+  def handle_cast({:place_runner, _player_id, row, col}, state) do
     {:ok, create_coord} = Coordinate.new(row, col)
 
     updated_board =
@@ -139,6 +138,22 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_call(:get_selected_piece, _, state) do
     {:reply, state.selected_piece, state}
+  end
+
+  # Returns true if it is the turn of the player
+  # attempting to move, otherwise false
+  defp is_players_turn?(state, player_id) do
+    cond do
+      player_id == state.top_player_id && Board.is_top_turn?(state.board) ->
+        true
+
+      player_id == state.bot_player_id && Board.is_bot_turn?(state.board) ->
+        true
+
+      # Default condition is false since it was not the submitted player's turn
+      true ->
+        false
+    end
   end
 
   defp broadcast_game_state(state) do
@@ -168,7 +183,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       :runner_pieces =>
         Enum.map(
           state.board.runner_pieces,
-          fn {_ix, runner} -> %{coords: Coordinate.to_list(runner.coord), facing: to_string(runner.facing)} end
+          fn {_ix, runner} ->
+            %{coords: Coordinate.to_list(runner.coord), facing: to_string(runner.facing)}
+          end
         ),
       # TODO does it matter if the links are not tied to specific linkers?
       # I was thinking about this more the other day and a visual indicator

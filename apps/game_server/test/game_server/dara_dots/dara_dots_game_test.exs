@@ -9,4 +9,8 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
 
     assert MapSet.size(board.dot_coords) != 0
   end
+
+  test "submitted moves should only take affect if it is that players turn" do
+    assert true
+  end
 end

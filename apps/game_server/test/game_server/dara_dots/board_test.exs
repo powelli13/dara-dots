@@ -197,5 +197,6 @@ defmodule GameServer.DaraDots.BoardTest do
       assert last_board.current_turn == :top_player
     end
   end
+
   # TODO tests for movable coords and linkable coords
 end

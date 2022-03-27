@@ -88,7 +88,10 @@ defmodule GameServer.DaraDots.RunnerPiece do
   defp advance_link(%RunnerPiece{} = runner, hit_links, link_coords, trip_speed) do
     [first_link_coord, second_link_coord] = hd(hit_links) |> MapSet.to_list()
 
-    other_coord = if Coordinate.equal?(runner.coord, first_link_coord), do: second_link_coord, else: first_link_coord
+    other_coord =
+      if Coordinate.equal?(runner.coord, first_link_coord),
+        do: second_link_coord,
+        else: first_link_coord
 
     # Move to the other coord in the link,
     # increase speed and change facing
