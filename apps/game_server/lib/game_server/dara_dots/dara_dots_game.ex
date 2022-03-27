@@ -142,7 +142,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   # Returns true if it is the turn of the player
   # attempting to move, otherwise false
-  defp is_players_turn?(state, player_id) do
+  def is_players_turn?(state, player_id) do
     cond do
       player_id == state.top_player_id && Board.is_top_turn?(state.board) ->
         true

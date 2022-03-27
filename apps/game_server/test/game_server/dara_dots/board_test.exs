@@ -184,6 +184,12 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  test "current_turn should start for top player" do
+    with {:ok, board} <- Board.new_test() do
+      assert Board.is_top_turn?(board)
+    end
+  end
+
   test "change_turn should update turn" do
     with {:ok, board} <- Board.new_test() do
       assert board.current_turn == :top_player
@@ -199,4 +205,10 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   # TODO tests for movable coords and linkable coords
+  # test "should be bot turn after a move is made" do
+  # with {:ok, board} <- Board.new_test(),
+  # {:ok, dest_coord} <- Coordinate.new(1,1) do
+  # assert true
+  # end
+  # end
 end

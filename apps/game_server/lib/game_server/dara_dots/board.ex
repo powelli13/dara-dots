@@ -9,6 +9,7 @@ defmodule GameServer.DaraDots.Board do
     :bot_linker_beta,
     top_player_score: 0,
     bot_player_score: 0,
+    # TODO Board module should be responsible for changing turn to keep state consistent
     current_turn: :top_player,
 
     # Used to save the age of the triangles as they are added to the board
