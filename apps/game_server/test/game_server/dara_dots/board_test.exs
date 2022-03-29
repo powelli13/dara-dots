@@ -205,10 +205,31 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   # TODO tests for movable coords and linkable coords
-  # test "should be bot turn after a move is made" do
-  # with {:ok, board} <- Board.new_test(),
-  # {:ok, dest_coord} <- Coordinate.new(1,1) do
-  # assert true
-  # end
-  # end
+  test "should be bot turn after a move is made" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, top_dest_coord} <- Coordinate.new(5, 1) do
+      moved_board = Board.move_linker_no_link(
+        board,
+        :top_linker_alpha,
+        top_dest_coord
+      )
+
+      assert moved_board.current_turn == :bot_player
+    end
+  end
+
+  test "should not move bot linker if it is top turn" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, bot_alpha_start} <- Coordinate.new(1, 2),
+         {:ok, bot_dest_coord} <- Coordinate.new(1, 1) do
+      moved_board = Board.move_linker_no_link(
+        board,
+        :bot_linker_alpha,
+        bot_dest_coord
+      )
+
+      assert moved_board.current_turn == :top_player
+      assert Coordinate.equal?(bot_alpha_start, moved_board.bot_linker_alpha.coord)
+    end
+  end
 end
