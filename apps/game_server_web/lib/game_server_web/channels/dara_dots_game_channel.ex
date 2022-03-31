@@ -73,7 +73,8 @@ defmodule GameServerWeb.DaraDotsGameChannel do
         linkableDots: game_state.linkable_dots,
         runnerPieces: game_state.runner_pieces,
         links: game_state.links,
-        playerMessage: player_message
+        playerMessage: player_message,
+        currentTurn: game_state.current_turn
       }
     )
 

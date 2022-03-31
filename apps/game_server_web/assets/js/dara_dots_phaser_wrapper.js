@@ -38,11 +38,13 @@ let DaraDotsPhaserWrapper = {
       linkableDots,
       runnerPieces,
       links,
-      playerMessage}) => {
+      playerMessage,
+      currentTurn}) => {
       console.log(`The player message: ${playerMessage}`);
 
       // Consider changing this scoreboard to use Phaser cool looking text
-      document.getElementById('scoreboard').innerText = `Top ${topPlayerScore} - Bot ${botPlayerScore}`;
+      document.getElementById('scoreboard').innerText =
+        `Top ${topPlayerScore} - Bot ${botPlayerScore} Current Turn: ${currentTurn}`;
 
       yellowGraphics.clear();
 

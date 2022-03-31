@@ -213,7 +213,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
           end)
         end),
       state.top_player_id => "#{state.top_player_id} hey top player this is your message",
-      state.bot_player_id => "#{state.bot_player_id} hey bot player this is your message"
+      state.bot_player_id => "#{state.bot_player_id} hey bot player this is your message",
+      # TODO may need to make this a string
+      :current_turn => state.board.current_turn
     }
 
     PubSub.broadcast(
