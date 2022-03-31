@@ -232,4 +232,19 @@ defmodule GameServer.DaraDots.BoardTest do
       assert Coordinate.equal?(bot_alpha_start, moved_board.bot_linker_alpha.coord)
     end
   end
+
+  test "moving linker and link should not move if it is not their turn" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, bot_alpha_start} <- Coordinate.new(1, 2),
+         {:ok, bot_dest_coord} <- Coordinate.new(1, 1) do
+      moved_board = Board.move_linker_and_link(
+        board,
+        :bot_linker_alpha,
+        bot_dest_coord
+      )
+
+      assert moved_board.current_turn == :top_player
+      assert Coordinate.equal?(bot_alpha_start, moved_board.bot_linker_alpha.coord)
+    end
+  end
 end
