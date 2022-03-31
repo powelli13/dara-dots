@@ -91,24 +91,26 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
-  def handle_cast({:submit_move, _player_id, row, col}, state) do
+  def handle_cast({:submit_move, player_id, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
+    player_turn = get_player_turn(state, player_id)
 
     moved_board =
       state.board
-      |> Board.move_linker_no_link(state.selected_piece, dest_coord)
+      |> Board.move_linker_no_link(player_turn, state.selected_piece, dest_coord)
       |> Board.advance_runners()
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end
 
   @impl GenServer
-  def handle_cast({:submit_link_move, _player_id, row, col}, state) do
+  def handle_cast({:submit_link_move, player_id, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
+    player_turn = get_player_turn(state, player_id)
 
     moved_board =
       state.board
-      |> Board.move_linker_and_link(state.selected_piece, dest_coord)
+      |> Board.move_linker_and_link(player_turn, state.selected_piece, dest_coord)
       |> Board.advance_runners()
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
@@ -153,6 +155,16 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       # Default condition is false since it was not the submitted player's turn
       true ->
         false
+    end
+  end
+
+  def get_player_turn(state, player_id) do
+    cond do
+      player_id == state.top_player_id ->
+        :top_player
+
+      player_id == state.bot_player_id ->
+        :bot_player
     end
   end
 

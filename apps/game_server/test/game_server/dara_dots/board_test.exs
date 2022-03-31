@@ -208,11 +208,13 @@ defmodule GameServer.DaraDots.BoardTest do
   test "should be bot turn after a move is made" do
     with {:ok, board} <- Board.new_test(),
          {:ok, top_dest_coord} <- Coordinate.new(5, 1) do
-      moved_board = Board.move_linker_no_link(
-        board,
-        :top_linker_alpha,
-        top_dest_coord
-      )
+      moved_board =
+        Board.move_linker_no_link(
+          board,
+          :top_player,
+          :top_linker_alpha,
+          top_dest_coord
+        )
 
       assert moved_board.current_turn == :bot_player
     end
@@ -222,11 +224,13 @@ defmodule GameServer.DaraDots.BoardTest do
     with {:ok, board} <- Board.new_test(),
          {:ok, bot_alpha_start} <- Coordinate.new(1, 2),
          {:ok, bot_dest_coord} <- Coordinate.new(1, 1) do
-      moved_board = Board.move_linker_no_link(
-        board,
-        :bot_linker_alpha,
-        bot_dest_coord
-      )
+      moved_board =
+        Board.move_linker_no_link(
+          board,
+          :bot_player,
+          :bot_linker_alpha,
+          bot_dest_coord
+        )
 
       assert moved_board.current_turn == :top_player
       assert Coordinate.equal?(bot_alpha_start, moved_board.bot_linker_alpha.coord)
@@ -237,11 +241,13 @@ defmodule GameServer.DaraDots.BoardTest do
     with {:ok, board} <- Board.new_test(),
          {:ok, bot_alpha_start} <- Coordinate.new(1, 2),
          {:ok, bot_dest_coord} <- Coordinate.new(1, 1) do
-      moved_board = Board.move_linker_and_link(
-        board,
-        :bot_linker_alpha,
-        bot_dest_coord
-      )
+      moved_board =
+        Board.move_linker_and_link(
+          board,
+          :bot_player,
+          :bot_linker_alpha,
+          bot_dest_coord
+        )
 
       assert moved_board.current_turn == :top_player
       assert Coordinate.equal?(bot_alpha_start, moved_board.bot_linker_alpha.coord)

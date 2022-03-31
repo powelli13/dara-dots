@@ -77,6 +77,10 @@ defmodule GameServer.DaraDots.Board do
     end)
   end
 
+  def is_player_turn?(%Board{} = board, player) do
+    board.current_turn == player
+  end
+
   def is_top_turn?(%Board{} = board) do
     board.current_turn == :top_player
   end
@@ -193,31 +197,46 @@ defmodule GameServer.DaraDots.Board do
     do: MapSet.new([:top_linker_alpha, :top_linker_beta, :bot_linker_alpha, :bot_linker_beta])
 
   # Move a linker and update its link
-  def move_linker_and_link(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
+  def move_linker_and_link(
+        %Board{} = board,
+        player,
+        linker_key,
+        %Coordinate{} = dest_coord
+      ) do
     movable_coords = get_movable_coords(board, linker_key)
 
-    if MapSet.member?(movable_coords, dest_coord) do
+    if MapSet.member?(movable_coords, dest_coord) &&
+       is_player_turn?(board, player) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
 
         Map.put(board, linker_key, moved_linker)
+        |> change_turn
       end
     else
       board
     end
   end
 
-  def move_linker_and_link(%Board{} = board, :none, %Coordinate{} = _coord) do
+  def move_linker_and_link(%Board{} = board, _player, :none, %Coordinate{} = _coord) do
     board
   end
 
-  def move_linker_no_link(%Board{} = board, linker_key, %Coordinate{} = dest_coord) do
+  def move_linker_no_link(
+        %Board{} = board,
+        player,
+        linker_key,
+        %Coordinate{} = dest_coord
+  ) do
     movable_coords = get_movable_coords(board, linker_key)
 
-    if MapSet.member?(movable_coords, dest_coord) do
+    if MapSet.member?(movable_coords, dest_coord) &&
+       is_player_turn?(board, player) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move(linker, dest_coord)
+
         Map.put(board, linker_key, moved_linker)
+        |> change_turn
       end
     else
       board
