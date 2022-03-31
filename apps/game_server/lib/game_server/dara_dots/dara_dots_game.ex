@@ -98,7 +98,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     moved_board =
       state.board
       |> Board.move_linker_no_link(player_turn, state.selected_piece, dest_coord)
-      |> Board.advance_runners()
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end
@@ -111,7 +110,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     moved_board =
       state.board
       |> Board.move_linker_and_link(player_turn, state.selected_piece, dest_coord)
-      |> Board.advance_runners()
 
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end

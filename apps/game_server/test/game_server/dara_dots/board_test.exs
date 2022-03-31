@@ -39,7 +39,9 @@ defmodule GameServer.DaraDots.BoardTest do
   test "should not create runner if placed outside starting rows" do
     with {:ok, board} <- Board.new_test(),
          {:ok, coord} <- Coordinate.new(3, 1) do
-      assert map_size(board.runner_pieces) == 0
+      placed_board = Board.place_runner(board, coord)
+
+      assert map_size(placed_board.runner_pieces) == 0
     end
   end
 
@@ -251,6 +253,26 @@ defmodule GameServer.DaraDots.BoardTest do
 
       assert moved_board.current_turn == :top_player
       assert Coordinate.equal?(bot_alpha_start, moved_board.bot_linker_alpha.coord)
+    end
+  end
+
+  test "should not advance runners if it is not the players turn" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, bot_dest_coord} <- Coordinate.new(1, 1),
+         {:ok, runner_coord} <- Coordinate.new(1, 3) do
+      moved_board =
+        Board.move_linker_and_link(
+          board,
+          :bot_player,
+          :bot_linker_alpha,
+          bot_dest_coord
+        )
+        |> Board.place_runner(runner_coord)
+
+      assert moved_board.current_turn == :top_player
+
+      [{_age, runner}] = moved_board.runner_pieces |> Map.to_list()
+      assert Coordinate.equal?(runner_coord, runner.coord)
     end
   end
 end

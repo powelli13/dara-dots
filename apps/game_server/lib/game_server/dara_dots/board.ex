@@ -206,11 +206,12 @@ defmodule GameServer.DaraDots.Board do
     movable_coords = get_movable_coords(board, linker_key)
 
     if MapSet.member?(movable_coords, dest_coord) &&
-       is_player_turn?(board, player) do
+         is_player_turn?(board, player) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
 
         Map.put(board, linker_key, moved_linker)
+        |> advance_runners
         |> change_turn
       end
     else
@@ -227,15 +228,16 @@ defmodule GameServer.DaraDots.Board do
         player,
         linker_key,
         %Coordinate{} = dest_coord
-  ) do
+      ) do
     movable_coords = get_movable_coords(board, linker_key)
 
     if MapSet.member?(movable_coords, dest_coord) &&
-       is_player_turn?(board, player) do
+         is_player_turn?(board, player) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move(linker, dest_coord)
 
         Map.put(board, linker_key, moved_linker)
+        |> advance_runners
         |> change_turn
       end
     else
