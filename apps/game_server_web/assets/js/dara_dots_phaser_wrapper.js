@@ -117,6 +117,9 @@ let DaraDotsPhaserWrapper = {
 
     let testLine;
 
+    let follower;
+    let path;
+
     let game = new Phaser.Game(config);
 
     function preload () {
@@ -218,10 +221,37 @@ let DaraDotsPhaserWrapper = {
         highlightLinkableCoords[i] = [];
       }
 
+      // Working on a basic path following object
+      follower = { t: 0, vec: new Phaser.Math.Vector2() };
+
+      //  The curves do not have to be joined
+      var line1 = new Phaser.Curves.Line([ 100, 100, 500, 200 ]);
+      var line2 = new Phaser.Curves.Line([ 200, 300, 600, 500 ]);
+
+      path = this.add.path();
+
+      // path = new Phaser.Curves.Path();
+
+      path.add(line1);
+      path.add(line2);
+
+      this.tweens.add({
+          targets: follower,
+          t: 1,
+          ease: 'Linear',
+          duration: 4000,
+          yoyo: true,
+          repeat: -1
+      });
+
       this.input.mouse.disableContextMenu();
     }
 
     function update () {
+      path.draw(yellowGraphics);
+      path.getPoint(follower.t, follower.vec);
+
+      yellowGraphics.fillRect(follower.vec.x - 8, follower.vec.y - 8, 16, 16);
     }
 
     function drawBoardState(dots) {
