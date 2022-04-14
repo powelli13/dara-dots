@@ -117,6 +117,7 @@ let DaraDotsPhaserWrapper = {
 
     let testLine;
 
+    let greenGraphics;
     let follower;
     let path;
 
@@ -149,6 +150,8 @@ let DaraDotsPhaserWrapper = {
         colCoordinateToPixels(2),
         rowCoordinateToPixels(1)
       );
+
+      greenGraphics = this.add.graphics({ fillStyle: {color: 0x00cc00}});
 
       // Setup Pieces
       redAlphaLinker = this.add.sprite(0, 0, "red_linker").setInteractive();
@@ -248,10 +251,11 @@ let DaraDotsPhaserWrapper = {
     }
 
     function update () {
-      path.draw(yellowGraphics);
+      greenGraphics.clear();
+      path.draw(greenGraphics);
       path.getPoint(follower.t, follower.vec);
 
-      yellowGraphics.fillRect(follower.vec.x - 8, follower.vec.y - 8, 16, 16);
+      greenGraphics.fillRect(follower.vec.x - 8, follower.vec.y - 8, 16, 16);
     }
 
     function drawBoardState(dots) {
