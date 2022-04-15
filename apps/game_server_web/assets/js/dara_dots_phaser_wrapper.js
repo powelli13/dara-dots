@@ -120,6 +120,10 @@ let DaraDotsPhaserWrapper = {
     let greenGraphics;
     let follower;
     let path;
+    let timedEvent;
+    let testLinePosition = 'left'
+    let line1;
+    let line2;
 
     let game = new Phaser.Game(config);
 
@@ -227,15 +231,12 @@ let DaraDotsPhaserWrapper = {
       // Working on a basic path following object
       follower = { t: 0, vec: new Phaser.Math.Vector2() };
 
-      //  The curves do not have to be joined
-      var line1 = new Phaser.Curves.Line([ 100, 100, 500, 200 ]);
-      var line2 = new Phaser.Curves.Line([ 200, 300, 600, 500 ]);
 
       path = this.add.path();
+      timedEvent = this.time.delayedCall(3000, swapLines, [], this);
 
-      // path = new Phaser.Curves.Path();
-
-      path.add(line1);
+      line1 = new Phaser.Curves.Line([ 100, 100, 500, 200 ]);
+      line2 = new Phaser.Curves.Line([ 200, 300, 600, 500 ]);
       path.add(line2);
 
       this.tweens.add({
@@ -250,12 +251,25 @@ let DaraDotsPhaserWrapper = {
       this.input.mouse.disableContextMenu();
     }
 
-    function update () {
+    function update() {
       greenGraphics.clear();
       path.draw(greenGraphics);
       path.getPoint(follower.t, follower.vec);
 
       greenGraphics.fillRect(follower.vec.x - 8, follower.vec.y - 8, 16, 16);
+    }
+
+    function swapLines() {
+      path.destroy();
+      if (testLinePosition === 'left') {
+        path.add(line1);
+        testLinePosition = 'right';
+      } else {
+        path.add(line2);
+        testLinePosition = 'left';
+      }
+
+      timedEvent = this.time.delayedCall(3000, swapLines, [], this);
     }
 
     function drawBoardState(dots) {
