@@ -256,7 +256,13 @@ let DaraDotsPhaserWrapper = {
       path.draw(greenGraphics);
       path.getPoint(follower.t, follower.vec);
 
-      greenGraphics.fillRect(follower.vec.x - 8, follower.vec.y - 8, 16, 16);
+      let x1 = follower.vec.x - daraDotsBoardConstants.triangleBuffer;
+      let y1 = follower.vec.y + daraDotsBoardConstants.triangleBuffer;
+      let x2 = follower.vec.x + daraDotsBoardConstants.triangleBuffer;
+      let y2 = follower.vec.y + daraDotsBoardConstants.triangleBuffer;
+      let x3 = follower.vec.x;
+      let y3 = follower.vec.y - daraDotsBoardConstants.triangleBuffer;
+      greenGraphics.fillTriangle(x1, y1, x2, y2, x3, y3);
     }
 
     function swapLines() {
