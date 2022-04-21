@@ -115,7 +115,7 @@ let DaraDotsPhaserWrapper = {
     let highlightLinkable = {};
     let highlightLinkableCoords = {};
 
-    let testLine;
+    let linkLine;
 
     let greenGraphics;
     let follower;
@@ -149,7 +149,7 @@ let DaraDotsPhaserWrapper = {
           lineStyle: { width: 4, color: 0xffff00 }
         });
       movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
-      testLine = new Phaser.Geom.Line(
+      linkLine = new Phaser.Geom.Line(
         colCoordinateToPixels(1),
         rowCoordinateToPixels(1),
         colCoordinateToPixels(2),
@@ -331,13 +331,13 @@ let DaraDotsPhaserWrapper = {
         let [x1, y1] = coordinateToPixels(c[0]);
         let [x2, y2] = coordinateToPixels(c[1]);
 
-        testLine.x1 = x1;
-        testLine.x2 = x2;
-        testLine.y1 = y1;
-        testLine.y2 = y2;
+        linkLine.x1 = x1;
+        linkLine.x2 = x2;
+        linkLine.y1 = y1;
+        linkLine.y2 = y2;
 
         graphics.strokeLineShape(
-          testLine
+          linkLine
         );
       });
     }
