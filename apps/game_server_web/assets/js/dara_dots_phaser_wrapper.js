@@ -124,6 +124,7 @@ let DaraDotsPhaserWrapper = {
     let testLinePosition = 'left'
     let line1;
     let line2;
+    let testLineCoords;
 
     let game = new Phaser.Game(config);
 
@@ -233,11 +234,28 @@ let DaraDotsPhaserWrapper = {
 
 
       path = this.add.path();
-      timedEvent = this.time.delayedCall(3000, swapLines, [], this);
+      //timedEvent = this.time.delayedCall(3000, swapLines, [], this);
+
 
       line1 = new Phaser.Curves.Line([ 100, 100, 500, 200 ]);
       line2 = new Phaser.Curves.Line([ 200, 300, 600, 500 ]);
+
+      testLineCoords = [
+        {
+          start: [3, 3],
+          end: [3, 4]
+        },
+        {
+          start: [3, 4],
+          end: [3, 5]
+        },
+        {
+          start: [3, 5],
+          end: [2, 5]
+        }];
+
       path.add(line2);
+      populateLinesFromCoords(path, testLineCoords);
 
       this.tweens.add({
           targets: follower,
@@ -263,6 +281,17 @@ let DaraDotsPhaserWrapper = {
       let x3 = follower.vec.x;
       let y3 = follower.vec.y - daraDotsBoardConstants.triangleBuffer;
       greenGraphics.fillTriangle(x1, y1, x2, y2, x3, y3);
+    }
+
+    function populateLinesFromCoords(path, coords) {
+      path.destroy();
+
+      coords.forEach(se => {
+        const [xs, ys] = coordinateToPixels(se.start);
+        const [xe, ye] = coordinateToPixels(se.end);
+
+        path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
+      });
     }
 
     function swapLines() {
