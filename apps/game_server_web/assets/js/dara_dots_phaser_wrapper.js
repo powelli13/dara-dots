@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import daraDotsBoardConstants from "./dara_dots_board_setup";
+import daraDotsBoardConstants from "./dara_dots_board_constants";
 
 let DaraDotsPhaserWrapper = {
   init(socket, gameElemId) {
@@ -73,7 +73,6 @@ let DaraDotsPhaserWrapper = {
       })
       .receive("error", reason => console.log("join failed", reason));
 
-
     // Setup Phaser game
     let config = {
       type: Phaser.AUTO,
@@ -140,15 +139,23 @@ let DaraDotsPhaserWrapper = {
     function create () {
       // TODO move game board sprite initialization to another file if possible
       // Only load the Phaser assets on certain pages
-      this.add.image(daraDotsBoardConstants.boardWidth, daraDotsBoardConstants.boardHeight, "background");
+      this.add.image(
+        daraDotsBoardConstants.boardWidth,
+        daraDotsBoardConstants.boardHeight,
+        "background"
+      );
 
       grayGraphics = this.add.graphics({ fillStyle: {color: 0xd3d3d3 } });
       yellowGraphics = this.add.graphics(
         {
-          fillStyle: {color: 0xffff00},
-          lineStyle: { width: 4, color: 0xffff00 }
+          fillStyle: {color: daraDotsBoardConstants.yellow},
+          lineStyle: { width: 4, color: daraDotsBoardConstants.yellow }
         });
-      movableDotGraphics = this.add.graphics({ fillStyle: {color: 0xffdf33, alpha: 0.5} });
+      movableDotGraphics = this.add.graphics(
+        {
+          fillStyle: {color: daraDotsBoardConstants.hightlight, alpha: 0.5}
+        }
+      );
       linkLine = new Phaser.Geom.Line(
         colCoordinateToPixels(1),
         rowCoordinateToPixels(1),
@@ -156,7 +163,9 @@ let DaraDotsPhaserWrapper = {
         rowCoordinateToPixels(1)
       );
 
-      greenGraphics = this.add.graphics({ fillStyle: {color: 0x00cc00}});
+      greenGraphics = this.add.graphics(
+        { fillStyle: { color: daraDotsBoardConstants.green }}
+      );
 
       // Setup Pieces
       redAlphaLinker = this.add.sprite(0, 0, "red_linker").setInteractive();
@@ -187,7 +196,8 @@ let DaraDotsPhaserWrapper = {
       for (let i = 0; i < 5; i++) {
         let [xCoord, yCoord] = coordinateToPixels([5, i + 1]);
 
-        // TODO will need to distinguish between bottom and top player when allowing them to create runners
+        // TODO will need to distinguish between bottom and top player
+        // when allowing them to create runners
         let runnerButton = this.add.sprite(xCoord, yCoord + 24, "create_runner").setInteractive();
         runnerButton.on("pointerup", function (_) {
           gameChannel.push("place_runner", {"col": i + 1, "row": 5})
@@ -232,10 +242,8 @@ let DaraDotsPhaserWrapper = {
       // Working on a basic path following object
       follower = { t: 0, vec: new Phaser.Math.Vector2() };
 
-
       path = this.add.path();
       //timedEvent = this.time.delayedCall(3000, swapLines, [], this);
-
 
       line1 = new Phaser.Curves.Line([ 100, 100, 500, 200 ]);
       line2 = new Phaser.Curves.Line([ 200, 300, 600, 500 ]);
@@ -292,19 +300,6 @@ let DaraDotsPhaserWrapper = {
 
         path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
       });
-    }
-
-    function swapLines() {
-      path.destroy();
-      if (testLinePosition === 'left') {
-        path.add(line1);
-        testLinePosition = 'right';
-      } else {
-        path.add(line2);
-        testLinePosition = 'left';
-      }
-
-      timedEvent = this.time.delayedCall(3000, swapLines, [], this);
     }
 
     function drawBoardState(dots) {
@@ -414,7 +409,8 @@ let DaraDotsPhaserWrapper = {
       if (lastUsedHighlightIndex == 0 || lastUsedHighlightIndex == -1) {
         for (let i = lastUsedHighlightIndex + 1; i < 2; i++) {
           let hDot = highlightLinkable[i];
-          // TODO this and line 288 above are breaking becausee this is a fragile and gross fix, improve this
+          // TODO this and line 288 above are breaking becausee this is a fragile and gross fix,
+          // improve this
           hDot.x = -24;
           hDot.y = -24;
 

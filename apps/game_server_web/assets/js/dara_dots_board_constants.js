@@ -5,7 +5,12 @@ let daraDotsBoardConstants = {
   boardBuffer: 75,
 
   triangleBuffer: 12,
-  linkHighlightBuffer: 12
+  linkHighlightBuffer: 12,
+
+  // Colors
+  yellow: 0xffff00,
+  green: 0x00cc00,
+  highlight: 0xffdf33,
 }
 
 export default daraDotsBoardConstants;
