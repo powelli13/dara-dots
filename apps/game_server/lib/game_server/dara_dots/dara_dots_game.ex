@@ -68,6 +68,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
     Broadcaster.broadcast_game_state(state)
+    Broadcaster.broadcast_runner_paths(state)
 
     {:noreply, state}
   end

@@ -4,7 +4,11 @@ defmodule GameServer.DaraDots.RunnerPiece do
 
   # last_step_link keeps track of whether the most recent move
   # was on a link to avoid taking the same link twice
-  defstruct [:coord, :facing, speed: 1, last_step_link: false]
+  defstruct [
+    :coord,
+    :facing,
+    speed: 1,
+    last_step_link: false]
 
   def new(start_coord, facing) when is_atom(facing) do
     {:ok, %RunnerPiece{coord: start_coord, facing: facing}}

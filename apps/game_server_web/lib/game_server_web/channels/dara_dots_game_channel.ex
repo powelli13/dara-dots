@@ -80,4 +80,16 @@ defmodule GameServerWeb.DaraDotsGameChannel do
 
     {:noreply, socket}
   end
+
+  def handle_info({:new_runner_paths, paths}, socket) do 
+    push(
+      socket,
+      "runner_paths",
+      %{
+        paths: paths
+      }
+    )
+
+    {:noreply, socket}
+  end
 end

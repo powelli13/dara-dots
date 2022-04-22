@@ -67,6 +67,12 @@ let DaraDotsPhaserWrapper = {
       highlightLinkableDots(linkableDots);
     });
 
+    gameChannel.on("runner_paths", ({paths}) => {
+      console.log(`received paths: ${paths}`);
+      if (path !== undefined)
+        populateLinesFromCoords(path, paths);
+    });
+
     gameChannel.join()
       .receive("ok", (resp) => {
         return;
@@ -119,11 +125,6 @@ let DaraDotsPhaserWrapper = {
     let greenGraphics;
     let follower;
     let path;
-    let timedEvent;
-    let testLinePosition = 'left'
-    let line1;
-    let line2;
-    let testLineCoords;
 
     let game = new Phaser.Game(config);
 
@@ -243,27 +244,6 @@ let DaraDotsPhaserWrapper = {
       follower = { t: 0, vec: new Phaser.Math.Vector2() };
 
       path = this.add.path();
-      //timedEvent = this.time.delayedCall(3000, swapLines, [], this);
-
-      line1 = new Phaser.Curves.Line([ 100, 100, 500, 200 ]);
-      line2 = new Phaser.Curves.Line([ 200, 300, 600, 500 ]);
-
-      testLineCoords = [
-        {
-          start: [3, 3],
-          end: [3, 4]
-        },
-        {
-          start: [3, 4],
-          end: [3, 5]
-        },
-        {
-          start: [3, 5],
-          end: [2, 5]
-        }];
-
-      path.add(line2);
-      populateLinesFromCoords(path, testLineCoords);
 
       this.tweens.add({
           targets: follower,
@@ -279,6 +259,8 @@ let DaraDotsPhaserWrapper = {
 
     function update() {
       greenGraphics.clear();
+
+      // TODO will need to specify the different runners to animate here
       path.draw(greenGraphics);
       path.getPoint(follower.t, follower.vec);
 
