@@ -216,4 +216,16 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
       assert Coordinate.equal?(moved_runner.coord, expected_dest)
     end
   end
+
+  test "should populate path to animate after advancing" do
+    with {:ok, runner_coord} <- Coordinate.new(3, 3),
+         {:ok, expected_dest} <- Coordinate.new(4, 3),
+         {:ok, runner} <- RunnerPiece.new(runner_coord, :up) do
+      {_was_goal, moved_runner} = RunnerPiece.advance(runner, [])
+
+      path_to_animate = RunnerPiece.get_path_to_animate(moved_runner)
+
+      assert path_to_animate != []
+    end
+  end
 end

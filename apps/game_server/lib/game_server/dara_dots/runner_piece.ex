@@ -8,7 +8,9 @@ defmodule GameServer.DaraDots.RunnerPiece do
     :coord,
     :facing,
     speed: 1,
-    last_step_link: false]
+    last_step_link: false,
+    animate_path: []
+  ]
 
   def new(start_coord, facing) when is_atom(facing) do
     {:ok, %RunnerPiece{coord: start_coord, facing: facing}}
@@ -44,6 +46,14 @@ defmodule GameServer.DaraDots.RunnerPiece do
     end
   end
 
+  def get_path_to_animate(%RunnerPiece{} = runner) do
+    runner.animate_path
+  end
+
+  def advance(%RunnerPiece{} = runner, link_coords) do
+    advance_step(runner, link_coords, runner.speed)
+  end
+
   defp move(%RunnerPiece{} = runner, %Coordinate{} = coord) do
     %RunnerPiece{runner | coord: coord}
   end
@@ -54,10 +64,6 @@ defmodule GameServer.DaraDots.RunnerPiece do
 
   defp moved_standard(%RunnerPiece{} = runner) do
     %RunnerPiece{runner | last_step_link: false}
-  end
-
-  def advance(%RunnerPiece{} = runner, link_coords) do
-    advance_step(runner, link_coords, runner.speed)
   end
 
   defp advance_step(%RunnerPiece{} = runner, link_coords, trip_speed) when trip_speed > 0 do
