@@ -54,8 +54,19 @@ defmodule GameServer.DaraDots.RunnerPiece do
     advance_step(runner, link_coords, runner.speed)
   end
 
+  # TODO rename restructure this
   defp move(%RunnerPiece{} = runner, %Coordinate{} = coord) do
-    %RunnerPiece{runner | coord: coord}
+    runner_and_path = add_path_piece(runner, coord)
+    %RunnerPiece{runner_and_path | coord: coord}
+  end
+
+  defp add_path_piece(%RunnerPiece{} = runner, %Coordinate{} = coord) do
+    piece_map = %{
+      start: runner.coord,
+      end: coord
+    }
+
+    %RunnerPiece{runner | animate_path: [piece_map | runner.animate_path]}
   end
 
   defp moved_link(%RunnerPiece{} = runner) do
