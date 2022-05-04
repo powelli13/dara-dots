@@ -61,9 +61,10 @@ defmodule GameServer.DaraDots.RunnerPiece do
   end
 
   defp add_path_piece(%RunnerPiece{} = runner, %Coordinate{} = coord) do
+    # TODO consider moving this transformation to the broadcaster?
     piece_map = %{
-      start: runner.coord,
-      end: coord
+      "start" => Coordinate.to_list(runner.coord),
+      "end" => Coordinate.to_list(coord)
     }
 
     %RunnerPiece{runner | animate_path: [piece_map | runner.animate_path]}

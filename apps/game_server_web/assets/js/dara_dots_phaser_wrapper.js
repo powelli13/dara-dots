@@ -69,7 +69,7 @@ let DaraDotsPhaserWrapper = {
 
     gameChannel.on("runner_paths", ({paths}) => {
       console.log(`received paths: ${paths}`);
-      if (path !== undefined)
+      if (path !== undefined && paths !== undefined)
         populateLinesFromCoords(path, paths);
     });
 
@@ -273,14 +273,19 @@ let DaraDotsPhaserWrapper = {
       greenGraphics.fillTriangle(x1, y1, x2, y2, x3, y3);
     }
 
-    function populateLinesFromCoords(path, coords) {
+    function populateLinesFromCoords(path, childPaths) {
       path.destroy();
 
-      coords.forEach(se => {
-        const [xs, ys] = coordinateToPixels(se.start);
-        const [xe, ye] = coordinateToPixels(se.end);
+      childPaths.forEach(p => {
+        p.forEach(se => {
+          console.log('se: ', se);
+          if (se && se.length > 0) {
+            const [xs, ys] = coordinateToPixels(se.start);
+            const [xe, ye] = coordinateToPixels(se.end);
 
-        path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
+            path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
+          }
+        });
       });
     }
 
