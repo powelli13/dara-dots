@@ -276,9 +276,9 @@ let DaraDotsPhaserWrapper = {
     function populateLinesFromCoords(path, childPaths) {
       path.destroy();
 
+      // TODO need to adjust this to handle multiple paths being broadcast at once
       childPaths.forEach(p => {
         p.forEach(se => {
-          console.log('se: ', se);
           if (se && se.length > 0) {
             const [xs, ys] = coordinateToPixels(se.start);
             const [xe, ye] = coordinateToPixels(se.end);
