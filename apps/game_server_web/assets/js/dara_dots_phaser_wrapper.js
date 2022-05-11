@@ -68,7 +68,8 @@ let DaraDotsPhaserWrapper = {
     });
 
     gameChannel.on("runner_paths", ({paths}) => {
-      console.log(`received paths: ${paths}`);
+      // console.log('received paths:');
+      // console.log(paths);
       if (path !== undefined && paths !== undefined)
         populateLinesFromCoords(path, paths);
     });
@@ -262,6 +263,7 @@ let DaraDotsPhaserWrapper = {
 
       // TODO will need to specify the different runners to animate here
       path.draw(greenGraphics);
+      /*
       path.getPoint(follower.t, follower.vec);
 
       let x1 = follower.vec.x - daraDotsBoardConstants.triangleBuffer;
@@ -271,21 +273,28 @@ let DaraDotsPhaserWrapper = {
       let x3 = follower.vec.x;
       let y3 = follower.vec.y - daraDotsBoardConstants.triangleBuffer;
       greenGraphics.fillTriangle(x1, y1, x2, y2, x3, y3);
+      */
     }
 
     function populateLinesFromCoords(path, childPaths) {
       path.destroy();
 
       // TODO need to adjust this to handle multiple paths being broadcast at once
-      childPaths.forEach(p => {
-        p.forEach(se => {
-          if (se && se.length > 0) {
-            const [xs, ys] = coordinateToPixels(se.start);
-            const [xe, ye] = coordinateToPixels(se.end);
+      // console.log('Here are the paths: ');
+      // console.log(childPaths);
 
-            path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
-          }
-        });
+      childPaths.forEach(se => {
+        console.log('se: ');
+        console.log(se);
+        // p.forEach(se => {
+        if (se) { // && se.length > 0) {
+          console.log('updating line!');
+          const [xs, ys] = coordinateToPixels(se.start);
+          const [xe, ye] = coordinateToPixels(se.end);
+
+          path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
+        }
+        // });
       });
     }
 
