@@ -50,6 +50,10 @@ defmodule GameServer.DaraDots.RunnerPiece do
     runner.animate_path
   end
 
+  def reset_path_to_animate(%RunnerPiece{} = runner) do
+    %RunnerPiece{runner | animate_path: []}
+  end
+
   def advance(%RunnerPiece{} = runner, link_coords) do
     advance_step(runner, link_coords, runner.speed)
   end
