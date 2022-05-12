@@ -87,13 +87,16 @@ defmodule GameServer.DaraDots.Broadcaster do
         }
       ]
     ]
-    #paths = state.board.runner_pieces
-      #|> Enum.reduce(
-        #[],
-        #fn {_ix, runner}, acc ->
-          #[runner.animate_path | acc]
-        #end
-      #)
+    paths = state.board.runner_pieces
+      |> Enum.reduce(
+        [],
+        fn {_ix, runner}, acc ->
+          [runner.animate_path | acc]
+        end
+      )
+
+    IO.inspect "Paths from server"
+    IO.inspect paths
 
     PubSub.broadcast(
       GameServer.PubSub,
