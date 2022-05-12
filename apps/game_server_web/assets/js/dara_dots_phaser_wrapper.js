@@ -283,18 +283,20 @@ let DaraDotsPhaserWrapper = {
       // console.log('Here are the paths: ');
       // console.log(childPaths);
 
-      childPaths.forEach(se => {
-        console.log('se: ');
-        console.log(se);
-        // p.forEach(se => {
-        if (se) { // && se.length > 0) {
-          console.log('updating line!');
-          const [xs, ys] = coordinateToPixels(se.start);
-          const [xe, ye] = coordinateToPixels(se.end);
+      childPaths.forEach(p => {
+        console.log('p: ');
+        console.log(p);
+        p.forEach(se => {
+          console.log('se: ');
+          console.log(se);
+          if (se) { // && se.length > 0) {
+            console.log('updating line!');
+            const [xs, ys] = coordinateToPixels(se.start);
+            const [xe, ye] = coordinateToPixels(se.end);
 
-          path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
-        }
-        // });
+            path.add(new Phaser.Curves.Line([xs, ys, xe, ye]));
+          }
+        });
       });
     }
 
