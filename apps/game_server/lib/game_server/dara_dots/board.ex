@@ -263,6 +263,18 @@ defmodule GameServer.DaraDots.Board do
     board
   end
 
+  def clear_runner_animate_paths(%Board{} = board) do
+    # TODO unit tests for this, and utilize it
+    reset_runners =
+      board.runner_pieces
+      |> Enum.map(fn {k, runner} ->
+        reset_runner = Runner.reset_path_to_animate(runner)
+        {k, reset_runner}
+      end)
+
+    %Board{board | runner_pieces: reset_runners}
+  end
+
   defp node_has_runner?(%Board{} = board, %Coordinate{} = coord) do
     board.runner_pieces
     |> Enum.any?(fn {_k, runner} ->
