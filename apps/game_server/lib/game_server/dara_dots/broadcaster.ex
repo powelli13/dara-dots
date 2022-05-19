@@ -97,9 +97,6 @@ defmodule GameServer.DaraDots.Broadcaster do
         end
       )
 
-    IO.inspect("Paths from server")
-    IO.inspect(paths)
-
     PubSub.broadcast(
       GameServer.PubSub,
       "dara_dots_game:#{state.game_id}",

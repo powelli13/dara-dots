@@ -228,4 +228,21 @@ defmodule GameServer.DaraDots.RunnerPieceTest do
       assert path_to_animate != []
     end
   end
+
+  test "reset animate path should clear path" do
+    with {:ok, runner_coord} <- Coordinate.new(3, 3),
+         {:ok, runner} <- RunnerPiece.new(runner_coord, :up) do
+      # Advance the runner to populate the path
+      {_was_goal, moved_runner} = RunnerPiece.advance(runner, [])
+
+      path_to_animate = RunnerPiece.get_path_to_animate(moved_runner)
+
+      assert path_to_animate != []
+
+      cleared_runner = RunnerPiece.reset_path_to_animate(moved_runner)
+      cleared_path = RunnerPiece.get_path_to_animate(cleared_runner)
+
+      assert cleared_path == []
+    end
+  end
 end
