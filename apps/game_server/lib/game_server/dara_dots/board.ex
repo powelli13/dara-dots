@@ -1,6 +1,8 @@
 defmodule GameServer.DaraDots.Board do
   alias __MODULE__
   alias GameServer.DaraDots.{Coordinate, LinkerPiece, RunnerPiece}
+  # TODO change this to 3 when implementing turn confirmation and action take back
+  @actions_per_turn_count 1
 
   defstruct [
     :top_linker_alpha,
@@ -11,6 +13,7 @@ defmodule GameServer.DaraDots.Board do
     bot_player_score: 0,
     # TODO Board module should be responsible for changing turn to keep state consistent
     current_turn: :top_player,
+    current_turn_action_count: @actions_per_turn_count,
 
     # Used to save the age of the triangles as they are added to the board
     # TODO consider restructuring the data structures used for runner pieces
@@ -91,6 +94,22 @@ defmodule GameServer.DaraDots.Board do
 
   def get_current_turn(%Board{} = board) do
     board.current_turn
+  end
+
+  # TODO eventually these will need to be updated to allow for move confirmation
+  # and undoing pending actions
+  def decrement_action_count_check_turn(%Board{} = board) do
+    new_actions_count = board.current_turn_action_count - 1
+
+    cond do
+      new_actions_count > 0 ->
+        %Board{board | current_turn_action_count: @actions_per_turn_count}
+
+      # Change the turn if the actions are exhausted
+      true ->
+        %Board{board | current_turn_action_count: @actions_per_turn_count}
+        |> change_turn
+    end
   end
 
   def change_turn(%Board{current_turn: :top_player} = board) do
@@ -212,7 +231,7 @@ defmodule GameServer.DaraDots.Board do
 
         Map.put(board, linker_key, moved_linker)
         |> advance_runners
-        |> change_turn
+        |> decrement_action_count_check_turn
       end
     else
       board
@@ -238,7 +257,7 @@ defmodule GameServer.DaraDots.Board do
 
         Map.put(board, linker_key, moved_linker)
         |> advance_runners
-        |> change_turn
+        |> decrement_action_count_check_turn
       end
     else
       board
@@ -264,7 +283,7 @@ defmodule GameServer.DaraDots.Board do
   end
 
   def clear_runner_animate_paths(%Board{} = board) do
-    # TODO unit tests for this, and utilize it
+    # TODO unit tests for this
     reset_runners =
       board.runner_pieces
       |> Enum.map(fn {k, runner} ->
