@@ -103,7 +103,7 @@ defmodule GameServer.DaraDots.Board do
 
     cond do
       new_actions_count > 0 ->
-        %Board{board | current_turn_action_count: @actions_per_turn_count}
+        %Board{board | current_turn_action_count: new_actions_count}
 
       # Change the turn if the actions are exhausted
       true ->
@@ -287,7 +287,7 @@ defmodule GameServer.DaraDots.Board do
     reset_runners =
       board.runner_pieces
       |> Enum.map(fn {k, runner} ->
-        reset_runner = Runner.reset_path_to_animate(runner)
+        reset_runner = RunnerPiece.reset_path_to_animate(runner)
         {k, reset_runner}
       end)
 

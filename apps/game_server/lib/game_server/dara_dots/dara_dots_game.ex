@@ -74,6 +74,13 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
+  def handle_info(:clear_runner_paths, state) do
+    no_animations_board = Board.clear_runner_animate_paths(state.board)
+
+    {:noreply, %{state | board: no_animations_board}}
+  end
+
+  @impl GenServer
   def handle_cast({:add_player, player_id}, state) do
     added_state =
       cond do
@@ -99,6 +106,8 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       state.board
       |> Board.move_linker_no_link(player_turn, state.selected_piece, dest_coord)
 
+    # TODO this will clear animations even if the move was illegal
+    confirm_player_end_turn(state)
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end
 
@@ -111,6 +120,8 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       state.board
       |> Board.move_linker_and_link(player_turn, state.selected_piece, dest_coord)
 
+    # TODO this will clear animations even if the move was illegal
+    confirm_player_end_turn(state)
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end
 
@@ -138,6 +149,16 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_call(:get_selected_piece, _, state) do
     {:reply, state.selected_piece, state}
+  end
+
+  # To be expanded when player confirmations are added
+  # Right now it is just used to clear the runner paths
+  # Just trying to slightly future proof, but this will certainly change
+  # Need to incorporate remaining actions logic in this module
+  def confirm_player_end_turn(state) do
+    Process.send_after(self(), :clear_runner_paths, 1000)
+
+    state
   end
 
   # Returns true if it is the turn of the player
