@@ -57,6 +57,18 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     {:ok, board} = Board.new()
     initial_state = Map.put(initial_state, :board, board)
 
+    # Store pending actions on the game
+    # apply them as appropriate when broadcasting the state
+    # only to the player whose turn it is.
+    # Store all the info relevant to the move in the pending actions
+    # list or map, later pass that info into the board.
+    # Then create a secondary board for broadcasting
+    # with the pending move applied.
+    # Be sure to only store pending moves if it is the current players turn.
+    # On end of turn confirmation apply all pending moves to the actual 
+    # board state.
+    # Also allow for clearing pending moves.
+
     # Start the regular state broadcasting
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
