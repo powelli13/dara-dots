@@ -251,8 +251,8 @@ let DaraDotsPhaserWrapper = {
           t: 1,
           ease: 'Linear',
           duration: 4000,
-          yoyo: true,
-          repeat: -1
+          yoyo: false,
+          repeat: 1
       });
 
       this.input.mouse.disableContextMenu();
@@ -261,9 +261,8 @@ let DaraDotsPhaserWrapper = {
     function update() {
       greenGraphics.clear();
 
-      // TODO will need to specify the different runners to animate here
       path.draw(greenGraphics);
-      /*
+      // TODO need multiple followers
       path.getPoint(follower.t, follower.vec);
 
       let x1 = follower.vec.x - daraDotsBoardConstants.triangleBuffer;
@@ -273,7 +272,6 @@ let DaraDotsPhaserWrapper = {
       let x3 = follower.vec.x;
       let y3 = follower.vec.y - daraDotsBoardConstants.triangleBuffer;
       greenGraphics.fillTriangle(x1, y1, x2, y2, x3, y3);
-      */
     }
 
     function populateLinesFromCoords(path, childPaths) {
