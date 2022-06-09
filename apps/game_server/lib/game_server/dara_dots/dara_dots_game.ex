@@ -50,7 +50,8 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       game_id: game_id,
       selected_piece: :none,
       top_player_id: nil,
-      bot_player_id: nil
+      bot_player_id: nil,
+      pending_actions: %{}
     }
 
     # Setup the initial pieces
@@ -111,6 +112,13 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def handle_cast({:submit_move, player_id, row, col}, state) do
+    # Check if it is the player's turn
+    # Check if the move is valid
+    # Store the pending action
+    # Generate a new board state with the action,
+    # don't yet update current board though
+    # Use new boardstate to generate transition animations
+    # or ghost piece placement
     {:ok, dest_coord} = Coordinate.new(row, col)
     player_turn = get_player_turn(state, player_id)
 
@@ -162,6 +170,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   def handle_call(:get_selected_piece, _, state) do
     {:reply, state.selected_piece, state}
   end
+
+  # Add a GenServer impl to confirm player turn
+  # Play out pending actions in order
+  # Update runner pieces
+  # Change turn
 
   # To be expanded when player confirmations are added
   # Right now it is just used to clear the runner paths
