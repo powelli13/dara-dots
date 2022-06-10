@@ -112,14 +112,22 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def handle_cast({:submit_move, player_id, row, col}, state) do
+    {:ok, dest_coord} = Coordinate.new(row, col)
     # Check if it is the player's turn
     # Check if the move is valid
     # Store the pending action
+    new_pending_actions =
+      save_pending_action(
+        state.pending_actions,
+        # TODO need some data structure for this
+        {:move, player_turn, state.selected_piece, dest_coord}
+      )
+
     # Generate a new board state with the action,
     # don't yet update current board though
     # Use new boardstate to generate transition animations
     # or ghost piece placement
-    {:ok, dest_coord} = Coordinate.new(row, col)
+
     player_turn = get_player_turn(state, player_id)
 
     moved_board =
@@ -128,7 +136,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
     # TODO this will clear animations even if the move was illegal
     confirm_player_end_turn(state)
-    {:noreply, %{state | board: moved_board, selected_piece: :none}}
+
+    {:noreply,
+     %{state | board: moved_board, selected_piece: :none, pending_actions: new_pending_actions}}
   end
 
   @impl GenServer
@@ -209,6 +219,23 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
       player_id == state.bot_player_id ->
         :bot_player
+    end
+  end
+
+  defp save_pending_action(pending_actions, action_tuple) do
+    cond do
+      !Map.has_key?(pending_actions, 1) ->
+        Map.put(pending_actions, 1, action_tuple)
+
+      !Map.has_key?(pending_actions, 2) ->
+        Map.put(pending_actions, 2, action_tuple)
+
+      !Map.has_key?(pending_actions, 3) ->
+        Map.put(pending_actions, 3, action_tuple)
+
+      # We cannot take any more actions, should we error?
+      true ->
+        pending_actions
     end
   end
 end
