@@ -156,14 +156,22 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
-  def handle_cast({:place_runner, _player_id, row, col}, state) do
+  def handle_cast({:place_runner, player_id, row, col}, state) do
     {:ok, create_coord} = Coordinate.new(row, col)
+
+    # TODO should we get player turn here
+    new_pending_actions =
+      save_pending_action(
+        state.pending_actions,
+        # TODO need some data structure for this
+        {:place_runner, player_id, create_coord}
+      )
 
     updated_board =
       state.board
       |> Board.place_runner(create_coord)
 
-    {:noreply, %{state | board: updated_board}}
+    {:noreply, %{state | board: updated_board, pending_actions: new_pending_actions}}
   end
 
   @impl GenServer
