@@ -59,6 +59,13 @@ defmodule GameServerWeb.DaraDotsGameChannel do
     {:noreply, socket}
   end
 
+  def handle_in("confirm_turn_actions", _, socket) do
+    GameServer.DaraDots.DaraDotsGame.confirm_turn_actions(
+      socket.assigns[:game_id],
+      socket.assigns[:player_id]
+    )
+  end
+
   def handle_info({:new_game_state, game_state}, socket) do
     # Determine pieces of state that are unique to the player
     player_message = game_state[socket.assigns.player_id]

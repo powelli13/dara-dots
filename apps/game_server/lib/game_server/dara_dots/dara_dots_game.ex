@@ -39,6 +39,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.cast(via_tuple(game_id), {:place_runner, player_id, row, col})
   end
 
+  def confirm_turn_actions(game_id, player_id) do
+    GenServer.cast(via_tuple(game_id), {:confirm_turn_actions, player_id})
+  end
+
   defp via_tuple(game_id) do
     {:via, Registry, {GameServer.Registry, {__MODULE__, game_id}}}
   end
@@ -172,6 +176,13 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       |> Board.place_runner(create_coord)
 
     {:noreply, %{state | board: updated_board, pending_actions: new_pending_actions}}
+  end
+
+  @impl GenServer
+  def handle_cast({:confirm_turn_actions, player_id}, state) do
+    new_state = confirm_player_end_turn(state)
+
+    {:noreply, new_state}
   end
 
   @impl GenServer
