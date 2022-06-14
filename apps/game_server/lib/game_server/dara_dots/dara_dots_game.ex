@@ -124,7 +124,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       save_pending_action(
         state.pending_actions,
         # TODO need some data structure for this
-        {:move, player_turn, state.selected_piece, dest_coord}
+        {:move, player_id, state.selected_piece, dest_coord}
       )
 
     # Generate a new board state with the action,
@@ -240,6 +240,15 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         :bot_player
     end
   end
+
+  def is_player_turn?(state, player_id) do
+    # This is kind of weird, should probably manage turns entirely in here?
+    player_turn_atom = get_player_turn(state, player_id)
+    Board.is_player_turn?(state.board, player_turn_atom)
+  end
+
+  # def is_legal_move?(state, player_id, ) do
+  # end
 
   defp save_pending_action(pending_actions, action_tuple) do
     cond do

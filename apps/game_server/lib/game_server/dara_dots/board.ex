@@ -120,6 +120,14 @@ defmodule GameServer.DaraDots.Board do
     %Board{board | current_turn: :top_player}
   end
 
+  # Determines if it is the players turn and if the move is legal
+  # This checks moving linker without link, will most likely need more
+  def is_legal_move?(%Board{} = board, player, piece_key, dest_coord) do
+    movable_coords = get_movable_coords(board, piece_key)
+
+    MapSet.member?(movable_coords, dest_coord) && is_player_turn?(board, player)
+  end
+
   # Determine movable nodes for a square
   def get_movable_coords(%Board{} = board, piece_key) when is_atom(piece_key) do
     # Get possible nodes for the chosen piece
@@ -222,10 +230,7 @@ defmodule GameServer.DaraDots.Board do
         linker_key,
         %Coordinate{} = dest_coord
       ) do
-    movable_coords = get_movable_coords(board, linker_key)
-
-    if MapSet.member?(movable_coords, dest_coord) &&
-         is_player_turn?(board, player) do
+    if is_legal_move?(board, player, linker_key, dest_coord) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
 
@@ -248,10 +253,7 @@ defmodule GameServer.DaraDots.Board do
         linker_key,
         %Coordinate{} = dest_coord
       ) do
-    movable_coords = get_movable_coords(board, linker_key)
-
-    if MapSet.member?(movable_coords, dest_coord) &&
-         is_player_turn?(board, player) do
+    if is_legal_move?(board, player, linker_key, dest_coord) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move(linker, dest_coord)
 
@@ -270,6 +272,11 @@ defmodule GameServer.DaraDots.Board do
 
   # Allow for placement of Runners
   def place_runner(%Board{} = board, %Coordinate{row: 1} = coord) do
+    # TODO need is legal move checks for these
+    # should check player turn
+    # player should only place in their home row
+    # TODO need placement markers on both home rows
+    # node should be open
     place_runner(board, coord, :up)
   end
 

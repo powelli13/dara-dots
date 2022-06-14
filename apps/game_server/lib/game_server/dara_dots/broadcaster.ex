@@ -52,7 +52,10 @@ defmodule GameServer.DaraDots.Broadcaster do
       state.top_player_id => "#{state.top_player_id} hey top player this is your message",
       state.bot_player_id => "#{state.bot_player_id} hey bot player this is your message",
       # TODO may need to make this a string
-      :current_turn => state.board.current_turn
+      :current_turn => state.board.current_turn,
+      # TODO nice to have in the future would be display the pending
+      # move in some animated form when they hover the indicator
+      :ready_pending_actions => Map.keys(state.pending_actions)
     }
 
     PubSub.broadcast(
