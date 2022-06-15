@@ -13,4 +13,22 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
   test "submitted moves should only take affect if it is that players turn" do
     assert true
   end
+
+  test "submit_move should populate pending action" do
+    # TODO the same id causes issues with the above test, is there a better way to test genserver?
+    id = "test_id_2"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "player_one")
+    DaraDotsGame.add_player(id, "player_two")
+
+    DaraDotsGame.submit_move(id, "player_one", 1, 1)
+
+    pending_actions = DaraDotsGame.get_pending_actions(id)
+
+    actual = pending_actions |> Map.keys() |> Enum.count()
+
+    assert actual == 1
+  end
 end

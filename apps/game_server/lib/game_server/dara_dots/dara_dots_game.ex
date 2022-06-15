@@ -23,6 +23,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.call(via_tuple(id), :get_full_board)
   end
 
+  def get_pending_actions(id) do
+    GenServer.call(via_tuple(id), :get_pending_actions)
+  end
+
   def get_selected_piece(game_id) do
     GenServer.call(via_tuple(game_id), :get_selected_piece)
   end
@@ -188,6 +192,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_call(:get_full_board, _, state) do
     {:reply, state.board, state}
+  end
+
+  @impl GenServer
+  def handle_call(:get_pending_actions, _, state) do
+    {:reply, state.pending_actions, state}
   end
 
   @impl GenServer
