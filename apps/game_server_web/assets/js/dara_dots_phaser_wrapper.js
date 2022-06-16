@@ -110,7 +110,8 @@ let DaraDotsPhaserWrapper = {
     let blueBetaLinker;
 
     // For creating runner pieces
-    let createRunnerButtons = {};
+    let createBottomRunnerButtons = {};
+    let createTopRunnerButtons = {};
     let createRunnerCoords = {};
 
     // Used for highlighting movable coordinates when a linker is selected
@@ -194,19 +195,31 @@ let DaraDotsPhaserWrapper = {
           .receive("error", e => e.console.log(e));
       });
 
-      // Allow the user to create triangles
+      // TODO redo this when making it so players always play from the bottom
+      // Allow the user to create runners along bottom row
       for (let i = 0; i < 5; i++) {
         let [xCoord, yCoord] = coordinateToPixels([5, i + 1]);
 
-        // TODO will need to distinguish between bottom and top player
-        // when allowing them to create runners
         let runnerButton = this.add.sprite(xCoord, yCoord + 24, "create_runner").setInteractive();
         runnerButton.on("pointerup", function (_) {
           gameChannel.push("place_runner", {"col": i + 1, "row": 5})
             .receive("error", e => e.console.log(e));
         });
 
-        createRunnerButtons[i] = runnerButton;
+        createBottomRunnerButtons[i] = runnerButton;
+      }
+
+      // Allow creation of runners in the top row
+      for (let i = 0; i < 5; i++) {
+        const [xCoord, yCoord] = coordinateToPixels([1, i + 1]);
+
+        const runnerButton = this.add.sprite(xCoord, yCoord - 24, "create_runner").setInteractive();
+        runnerButton.on("pointerup", function (_) {
+          gameChannel.push("place_runner", {"col": i + 1, "row": 1})
+            .receive("error", e => e.console.log(e));
+        });
+
+        createTopRunnerButtons[i] = runnerButton;
       }
 
       // Create four sprites to use when highlighting squares
