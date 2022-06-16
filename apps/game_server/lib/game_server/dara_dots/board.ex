@@ -364,6 +364,8 @@ defmodule GameServer.DaraDots.Board do
 
     advanced_runners = remove_scored_runners(runners_and_keys)
 
+    # TODO left off this is corrupting the data structure of the runners
+    # Need to return to a Map here
     %{new_board | runner_pieces: advanced_runners}
   end
 
