@@ -145,6 +145,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     # TODO this will clear animations even if the move was illegal
     confirm_player_end_turn(state)
 
+    IO.puts "After moving"
+    IO.inspect moved_board.runner_pieces
+
     {:noreply,
      %{state | board: moved_board, selected_piece: :none, pending_actions: new_pending_actions}}
   end
@@ -175,9 +178,15 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         {:place_runner, player_id, create_coord}
       )
 
+    IO.puts "1"
+    IO.inspect state.board.runner_pieces
+
     updated_board =
       state.board
       |> Board.place_runner(create_coord)
+
+    IO.puts "2"
+    IO.inspect updated_board.runner_pieces
 
     {:noreply, %{state | board: updated_board, pending_actions: new_pending_actions}}
   end

@@ -275,4 +275,83 @@ defmodule GameServer.DaraDots.BoardTest do
       assert Coordinate.equal?(runner_coord, runner.coord)
     end
   end
+
+  test "after advancing runners runners should remain a map" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, coord} <- Coordinate.new(1, 1) do
+      start_timer = board.runner_timer
+
+      placed_board = Board.place_runner(board, coord)
+
+      assert is_map(placed_board.runner_pieces)
+
+      advanced_board = Board.advance_runners(placed_board)
+
+      assert is_map(advanced_board.runner_pieces)
+    end
+  end
+
+  test "should be able to place a runner after placing and moving" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, runner_coord} <- Coordinate.new(1, 1),
+         {:ok, linker_dest_coord} <- Coordinate.new(4, 2) do
+      board = Board.place_runner(board, runner_coord)
+
+      assert is_map(board.runner_pieces)
+
+      board =
+        Board.move_linker_and_link(
+          board,
+          :top_player,
+          :top_linker_alpha,
+          linker_dest_coord
+        )
+
+      assert is_map(board.runner_pieces)
+
+      board = Board.place_runner(board, runner_coord)
+
+      assert is_map(board.runner_pieces)
+    end
+  end
+
+  test "should be able to place multiple runners then move and place again" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, runner_coord} <- Coordinate.new(1, 1),
+         {:ok, top_alpha_start} <- Coordinate.new(5, 2),
+         {:ok, second_runner_coord} <- Coordinate.new(1, 3),
+         {:ok, linker_dest_coord} <- Coordinate.new(4, 2) do
+      board = Board.place_runner(board, runner_coord)
+      board = Board.place_runner(board, second_runner_coord)
+
+      assert is_map(board.runner_pieces)
+
+      board =
+        Board.move_linker_no_link(
+          board,
+          :top_player,
+          :top_linker_alpha,
+          linker_dest_coord
+        )
+      
+      assert Coordinate.equal?(linker_dest_coord, board.top_linker_alpha.coord)
+
+      assert is_map(board.runner_pieces)
+
+      board = Board.place_runner(board, runner_coord)
+
+      IO.inspect board.runner_pieces
+
+      assert is_map(board.runner_pieces)
+    end
+  end
+
+  test "clearing animate paths should leave runners as a map" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, runner_coord} <- Coordinate.new(1, 1) do
+      board = Board.clear_runner_animate_paths(board)
+
+      assert is_map(board.runner_pieces)
+    end
+  end
 end

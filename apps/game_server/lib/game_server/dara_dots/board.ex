@@ -297,6 +297,7 @@ defmodule GameServer.DaraDots.Board do
         reset_runner = RunnerPiece.reset_path_to_animate(runner)
         {k, reset_runner}
       end)
+      |> Map.new()
 
     %Board{board | runner_pieces: reset_runners}
   end
