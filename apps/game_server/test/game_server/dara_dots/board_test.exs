@@ -340,8 +340,6 @@ defmodule GameServer.DaraDots.BoardTest do
 
       board = Board.place_runner(board, runner_coord)
 
-      IO.inspect board.runner_pieces
-
       assert is_map(board.runner_pieces)
     end
   end
