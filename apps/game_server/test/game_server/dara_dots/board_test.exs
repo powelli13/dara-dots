@@ -318,7 +318,6 @@ defmodule GameServer.DaraDots.BoardTest do
   test "should be able to place multiple runners then move and place again" do
     with {:ok, board} <- Board.new_test(),
          {:ok, runner_coord} <- Coordinate.new(1, 1),
-         {:ok, top_alpha_start} <- Coordinate.new(5, 2),
          {:ok, second_runner_coord} <- Coordinate.new(1, 3),
          {:ok, linker_dest_coord} <- Coordinate.new(4, 2) do
       board = Board.place_runner(board, runner_coord)
@@ -345,8 +344,7 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   test "clearing animate paths should leave runners as a map" do
-    with {:ok, board} <- Board.new_test(),
-         {:ok, runner_coord} <- Coordinate.new(1, 1) do
+    with {:ok, board} <- Board.new_test() do
       board = Board.clear_runner_animate_paths(board)
 
       assert is_map(board.runner_pieces)

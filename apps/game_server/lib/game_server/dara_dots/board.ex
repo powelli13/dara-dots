@@ -235,7 +235,6 @@ defmodule GameServer.DaraDots.Board do
         moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
 
         Map.put(board, linker_key, moved_linker)
-        |> advance_runners
         |> decrement_action_count_check_turn
       end
     else
@@ -258,7 +257,6 @@ defmodule GameServer.DaraDots.Board do
         moved_linker = LinkerPiece.move(linker, dest_coord)
 
         Map.put(board, linker_key, moved_linker)
-        |> advance_runners
         |> decrement_action_count_check_turn
       end
     else
