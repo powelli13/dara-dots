@@ -128,6 +128,9 @@ let DaraDotsPhaserWrapper = {
     let follower;
     let path;
 
+    // Used to indicate pending actions on screen
+    let pendingActionsDots;
+
     let game = new Phaser.Game(config);
 
     function preload () {
