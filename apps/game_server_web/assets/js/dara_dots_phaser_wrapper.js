@@ -129,7 +129,8 @@ let DaraDotsPhaserWrapper = {
     let path;
 
     // Used to indicate pending actions on screen
-    let pendingActionsDots;
+    // TODO 
+    let pendingActionsDots = [1];
 
     let game = new Phaser.Game(config);
 
@@ -322,6 +323,13 @@ let DaraDotsPhaserWrapper = {
 
         grayGraphics.fillCircleShape(
           new Phaser.Geom.Circle(x, y, 4)
+        );
+      });
+
+      pendingActionsDots.forEach(_ => {
+        // TODO use some space on the bottom of the screen for controls and info
+        grayGraphics.strokeCircleShape(
+          new Phaser.Geom.Circle(16, daraDotsBoardConstants.boardHeight - 16, 16)
         );
       });
     }
