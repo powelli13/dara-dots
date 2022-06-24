@@ -39,7 +39,8 @@ let DaraDotsPhaserWrapper = {
       runnerPieces,
       links,
       playerMessage,
-      currentTurn}) => {
+      currentTurn,
+      readyPendingActions}) => {
       console.log(`The player message: ${playerMessage}`);
 
       // Consider changing this scoreboard to use Phaser cool looking text
@@ -65,6 +66,9 @@ let DaraDotsPhaserWrapper = {
       highlightMovableDots(movableDots);
 
       highlightLinkableDots(linkableDots);
+
+      if (pendingActionDots !== undefined)
+        pendingActionDots = readyPendingActions;
     });
 
     gameChannel.on("runner_paths", ({paths}) => {
