@@ -67,8 +67,18 @@ let DaraDotsPhaserWrapper = {
 
       highlightLinkableDots(linkableDots);
 
-      if (pendingActionDots !== undefined)
-        pendingActionDots = readyPendingActions;
+      // Clear the pending actions, then populate the action keys from the server
+      if (pendingActionsDots !== undefined) {
+        pendingActionsDots = {'1': '', '2': '', '3': ''};
+
+        readyPendingActions.forEach(actionKey => {
+          if (pendingActionsDots.hasOwnProperty(actionKey)) {
+            // TODO may set this to something else later
+            // in order to undo pending moves
+            pendingActionsDots[actionKey] = actionKey;
+          }
+        });
+      }
     });
 
     gameChannel.on("runner_paths", ({paths}) => {
@@ -133,8 +143,11 @@ let DaraDotsPhaserWrapper = {
     let path;
 
     // Used to indicate pending actions on screen
-    // TODO 
-    let pendingActionsDots = [1];
+    let pendingActionsDots = {
+      '1': '',
+      '2': '',
+      '3': ''
+    };
 
     let game = new Phaser.Game(config);
 
@@ -330,12 +343,14 @@ let DaraDotsPhaserWrapper = {
         );
       });
 
-      pendingActionsDots.forEach(_ => {
-        // TODO use some space on the bottom of the screen for controls and info
+      for (const [key, _value] of Object.entries(pendingActionsDots)) {
+        // Will adjust the spacing in the UI later
         grayGraphics.strokeCircleShape(
-          new Phaser.Geom.Circle(16, daraDotsBoardConstants.boardHeight - 16, 16)
+          new Phaser.Geom.Circle(key * 32, daraDotsBoardConstants.boardHeight - 16, 16)
         );
-      });
+
+        // TODO if _value isn't empty then fill in the circle
+      }
     }
 
     function updateLinkerCoord(linkerSprite, coord) {

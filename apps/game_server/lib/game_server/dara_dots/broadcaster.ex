@@ -55,7 +55,7 @@ defmodule GameServer.DaraDots.Broadcaster do
       :current_turn => state.board.current_turn,
       # TODO nice to have in the future would be display the pending
       # move in some animated form when they hover the indicator
-      :ready_pending_actions => Map.keys(state.pending_actions)
+      :ready_pending_actions => Map.keys(state.pending_actions) |> Enum.map(&to_string(&1))
     }
 
     PubSub.broadcast(
