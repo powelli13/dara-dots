@@ -349,6 +349,10 @@ let DaraDotsPhaserWrapper = {
           new Phaser.Geom.Circle(key * 32, daraDotsBoardConstants.boardHeight - 16, 16)
         );
 
+        grayGraphics.fillCircleShape(
+          new Phaser.Geom.Circle(key * 32, daraDotsBoardConstants.boardHeight - 16, 12)
+        );
+
         // TODO if _value isn't empty then fill in the circle
       }
     }
