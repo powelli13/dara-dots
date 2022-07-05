@@ -186,6 +186,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   def handle_cast({:confirm_turn_actions, player_id}, state) do
     new_state = confirm_player_end_turn(state)
 
+    # TODO animations?
+    new_board_state = Board.advance_runners(new_state.board)
+    new_state = Map.put(new_state, :board, new_board_state)
     {:noreply, new_state}
   end
 
