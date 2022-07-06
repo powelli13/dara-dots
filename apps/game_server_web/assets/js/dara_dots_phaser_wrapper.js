@@ -60,6 +60,8 @@ let DaraDotsPhaserWrapper = {
         updateLinkerCoord(blueAlphaLinker, botAlphaCoord);
       if (blueBetaLinker !== undefined)
         updateLinkerCoord(blueBetaLinker, botBetaCoord);
+      if (confirmEndTurnButton !== undefined)
+        showGreenCheck(confirmEndTurnButton);
 
       drawRunnerPieces(runnerPieces, yellowGraphics);
 
@@ -123,6 +125,9 @@ let DaraDotsPhaserWrapper = {
     let blueAlphaLinker;
     let blueBetaLinker;
 
+    // Sprites for UI controls
+    let confirmEndTurnButton;
+
     // For creating runner pieces
     let createBottomRunnerButtons = {};
     let createTopRunnerButtons = {};
@@ -158,6 +163,7 @@ let DaraDotsPhaserWrapper = {
       this.load.image("highlight_dot", "game_images/highlight_dot.png");
       this.load.image("highlight_linkable", "game_images/highlight_linkable.png");
       this.load.image("create_runner", "game_images/create_runner.png");
+      this.load.image("green_check", "game_images/green_check.png");
     }
 
     function create () {
@@ -215,6 +221,12 @@ let DaraDotsPhaserWrapper = {
         gameChannel.push("select_piece", {"piece": "bot_beta"})
           .receive("error", e => e.console.log(e));
       });
+
+     confirmEndTurnButton = this.add.sprite(0, 0, "green_check").setInteractive();
+     confirmEndTurnButton.on("pointerup", function (_) {
+      gameChannel.push("confirm_turn_actions", {})
+        .receive("error", e => e.console.log(e));
+     });
 
       // TODO redo this when making it so players always play from the bottom
       // Allow the user to create runners along bottom row
@@ -355,6 +367,16 @@ let DaraDotsPhaserWrapper = {
 
         // TODO if _value isn't empty then fill in the circle
       }
+    }
+
+    function showGreenCheck(button) {
+      button.x = daraDotsBoardConstants.boardHeight - 24;
+      button.y = daraDotsBoardConstants.boardWidth - 24;
+    }
+
+    function hideGreenCheck(button) {
+      button.x = -24;
+      button.y = -24;
     }
 
     function updateLinkerCoord(linkerSprite, coord) {
