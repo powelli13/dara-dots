@@ -332,7 +332,7 @@ defmodule GameServer.DaraDots.BoardTest do
           :top_linker_alpha,
           linker_dest_coord
         )
-      
+
       assert Coordinate.equal?(linker_dest_coord, board.top_linker_alpha.coord)
 
       assert is_map(board.runner_pieces)
