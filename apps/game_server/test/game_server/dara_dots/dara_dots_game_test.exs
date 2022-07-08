@@ -54,4 +54,19 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
 
     assert actual == 1
   end
+
+  test "apply_pending_action should generate new updated board" do
+    id = "test_id_4"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "player_one")
+    DaraDotsGame.add_player(id, "player_two")
+
+    before_board = DaraDotsGame.get_full_board(id)
+
+    DaraDotsGame.place_runner(id, "player_one", 1, 3)
+
+    after_board = DaraDotsGame.get_full_board(id)
+  end
 end

@@ -152,6 +152,12 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_cast({:submit_link_move, player_id, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
+    new_pending_actions =
+      save_pending_action(
+        state.pending_actions,
+        {:move_with_link, player_id, state.selected_piece, dest_coord}
+      )
+
     player_turn = get_player_turn(state, player_id)
 
     moved_board =
@@ -171,7 +177,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     new_pending_actions =
       save_pending_action(
         state.pending_actions,
-        # TODO need some data structure for this
         {:place_runner, player_id, create_coord}
       )
 
@@ -261,6 +266,33 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   # def is_legal_move?(state, player_id, ) do
   # end
+
+  def apply_pending_actions(board, pending_actions) do
+    # TODO should we have this kicked off by a cast?
+    # for each pending action
+    # apply the action to create a new board
+    # then update the state board
+  end
+
+  @doc """
+  Digest the action tuple, apply it to create a new board state
+  and return that board state.
+  """
+  def apply_pending_action(board, action_tuple) do
+    case action_tuple do
+      {:move, player_id, selected_piece, dest_coord} ->
+        Board.move_linker_no_link(board, player_id, selected_piece, dest_coord)
+
+      {:move_with_link, player_id, selected_piece, dest_coord} ->
+        Board.move_linker_and_link(board, player_id, selected_piece, dest_coord)
+
+      {:place_runner, _player_id, create_coord} ->
+        Board.place_runner(board, create_coord)
+
+      _ ->
+        board
+    end
+  end
 
   defp save_pending_action(pending_actions, action_tuple) do
     cond do
