@@ -350,4 +350,24 @@ defmodule GameServer.DaraDots.BoardTest do
       assert is_map(board.runner_pieces)
     end
   end
+
+  test "top player should only match top pieces" do
+    assert Board.is_players_piece?(:top_player, :top_linker_alpha)
+    assert Board.is_players_piece?(:top_player, :top_linker_beta)
+  end
+
+  test "top player should not match bot pieces" do
+    assert Board.is_players_piece?(:top_player, :bot_linker_alpha) == false
+    assert Board.is_players_piece?(:top_player, :bot_linker_beta) == false
+  end
+
+  test "bot player should only match bot pieces" do
+    assert Board.is_players_piece?(:bot_player, :bot_linker_alpha)
+    assert Board.is_players_piece?(:bot_player, :bot_linker_beta)
+  end
+
+  test "bot player should not match top pieces" do
+    assert Board.is_players_piece?(:bot_player, :top_linker_alpha) == false
+    assert Board.is_players_piece?(:bot_player, :top_linker_beta) == false
+  end
 end

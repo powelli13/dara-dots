@@ -152,6 +152,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_cast({:submit_link_move, player_id, row, col}, state) do
     {:ok, dest_coord} = Coordinate.new(row, col)
+
     new_pending_actions =
       save_pending_action(
         state.pending_actions,
@@ -264,7 +265,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     Board.is_player_turn?(state.board, player_turn_atom)
   end
 
-  # def is_legal_move?(state, player_id, ) do
+  # def is_legal_move?(state, player_id) do
   # end
 
   def apply_pending_actions(board, pending_actions) do
