@@ -370,4 +370,20 @@ defmodule GameServer.DaraDots.BoardTest do
     assert Board.is_players_piece?(:bot_player, :top_linker_alpha) == false
     assert Board.is_players_piece?(:bot_player, :top_linker_beta) == false
   end
+
+  test "legal moves should decriment current_turn_action_count" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, top_dest_coord} <- Coordinate.new(5, 1) do
+      moved_board =
+        Board.move_linker_no_link(
+          board,
+          :top_player,
+          :top_linker_alpha,
+          top_dest_coord
+        )
+
+      assert moved_board.current_turn == :bot_player
+      assert moved_board.current_turn_action_count == 2
+    end
+  end
 end

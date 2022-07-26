@@ -1,8 +1,7 @@
 defmodule GameServer.DaraDots.Board do
   alias __MODULE__
   alias GameServer.DaraDots.{Coordinate, LinkerPiece, RunnerPiece}
-  # TODO change this to 3 when implementing turn confirmation and action take back
-  @actions_per_turn_count 1
+  @actions_per_turn_count 3
 
   defstruct [
     :top_linker_alpha,
