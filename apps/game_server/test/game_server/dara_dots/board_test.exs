@@ -207,7 +207,7 @@ defmodule GameServer.DaraDots.BoardTest do
   end
 
   # TODO tests for movable coords and linkable coords
-  test "should be bot turn after a move is made" do
+  test "should not change turn unless all pending actions are confirmed" do
     with {:ok, board} <- Board.new_test(),
          {:ok, top_dest_coord} <- Coordinate.new(5, 1) do
       moved_board =
@@ -218,7 +218,7 @@ defmodule GameServer.DaraDots.BoardTest do
           top_dest_coord
         )
 
-      assert moved_board.current_turn == :bot_player
+      assert moved_board.current_turn == :top_player
     end
   end
 
@@ -382,7 +382,7 @@ defmodule GameServer.DaraDots.BoardTest do
           top_dest_coord
         )
 
-      assert moved_board.current_turn == :bot_player
+      assert moved_board.current_turn == :top_player
       assert moved_board.current_turn_action_count == 2
     end
   end
