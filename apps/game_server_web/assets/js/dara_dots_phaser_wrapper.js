@@ -38,10 +38,8 @@ let DaraDotsPhaserWrapper = {
       linkableDots,
       runnerPieces,
       links,
-      playerMessage,
       currentTurn,
       readyPendingActions}) => {
-      console.log(`The player message: ${playerMessage}`);
 
       // Consider changing this scoreboard to use Phaser cool looking text
       document.getElementById('scoreboard').innerText =
@@ -81,6 +79,11 @@ let DaraDotsPhaserWrapper = {
           }
         });
       }
+    });
+
+    gameChannel.on("player_state", ({isYourTurn}) => {
+      document.getElementById('turn-banner').innerText =
+        `Is it your turn? ${isYourTurn}`;
     });
 
     gameChannel.on("runner_paths", ({paths}) => {

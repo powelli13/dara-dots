@@ -89,6 +89,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     Process.send_after(self(), :broadcast_game_state, @broadcast_frequency)
 
     Broadcaster.broadcast_game_state(state)
+    Broadcaster.broadcast_player_specifics(state)
     Broadcaster.broadcast_runner_paths(state)
 
     {:noreply, state}
@@ -233,23 +234,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     state
   end
 
-  # Returns true if it is the turn of the player
-  # attempting to move, otherwise false
-  def is_players_turn?(state, player_id) do
-    cond do
-      player_id == state.top_player_id && Board.is_top_turn?(state.board) ->
-        true
+  # def is_legal_move?(state, player_id) do
+  # end
 
-      player_id == state.bot_player_id && Board.is_bot_turn?(state.board) ->
-        true
-
-      # Default condition is false since it was not the submitted player's turn
-      true ->
-        false
-    end
-  end
-
-  def get_player_turn(state, player_id) do
+  defp get_player_turn(state, player_id) do
     cond do
       player_id == state.top_player_id ->
         :top_player
@@ -258,15 +246,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         :bot_player
     end
   end
-
-  def is_player_turn?(state, player_id) do
-    # This is kind of weird, should probably manage turns entirely in here?
-    player_turn_atom = get_player_turn(state, player_id)
-    Board.is_player_turn?(state.board, player_turn_atom)
-  end
-
-  # def is_legal_move?(state, player_id) do
-  # end
 
   def apply_pending_actions(board, pending_actions) do
     # TODO should we have this kicked off by a cast?

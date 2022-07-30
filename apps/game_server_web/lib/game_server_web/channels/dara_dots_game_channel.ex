@@ -67,9 +67,6 @@ defmodule GameServerWeb.DaraDotsGameChannel do
   end
 
   def handle_info({:new_game_state, game_state}, socket) do
-    # Determine pieces of state that are unique to the player
-    player_message = game_state[socket.assigns.player_id]
-
     push(
       socket,
       "game_state",
@@ -85,9 +82,26 @@ defmodule GameServerWeb.DaraDotsGameChannel do
         linkableDots: game_state.linkable_dots,
         runnerPieces: game_state.runner_pieces,
         links: game_state.links,
-        playerMessage: player_message,
         currentTurn: game_state.current_turn,
         readyPendingActions: game_state.ready_pending_actions
+      }
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:player_specific_state, game_state}, socket) do
+    # Determine pieces of state that are unique to the player
+    # Could we make this handle only the state that matches the player id?
+    # and broadcast twice from the Broadcaster?
+    player_state = game_state[socket.assigns.player_id]
+
+    # TODO move highlightable nodes and pending actions to player state
+    push(
+      socket,
+      "player_state",
+      %{
+        isYourTurn: player_state.is_your_turn
       }
     )
 
