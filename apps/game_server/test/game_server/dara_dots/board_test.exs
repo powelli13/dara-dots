@@ -192,17 +192,33 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
-  test "change_turn should update turn" do
+  test "change_turn should not update turn on new board" do
     with {:ok, board} <- Board.new_test() do
       assert board.current_turn == :top_player
 
       new_board = Board.change_turn(board)
 
-      assert new_board.current_turn == :bot_player
+      assert new_board.current_turn == :top_player
 
       last_board = Board.change_turn(new_board)
 
       assert last_board.current_turn == :top_player
+    end
+  end
+
+  test "change_turn should only change if there are no more actions to make" do
+    with {:ok, board} <- Board.new_test() do
+      # Manually set the pending actions to zero
+      assert board.current_turn == :top_player
+
+      new_board = board
+        |> Board.decrement_action_count_check_turn
+        |> Board.decrement_action_count_check_turn
+        |> Board.decrement_action_count_check_turn
+
+      new_board = Board.change_turn(new_board)
+
+      assert new_board.current_turn == :bot_player
     end
   end
 
@@ -386,4 +402,5 @@ defmodule GameServer.DaraDots.BoardTest do
       assert moved_board.current_turn_action_count == 2
     end
   end
+
 end

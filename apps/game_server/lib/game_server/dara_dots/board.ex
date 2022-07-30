@@ -115,22 +115,32 @@ defmodule GameServer.DaraDots.Board do
     new_actions_count = board.current_turn_action_count - 1
 
     cond do
-      new_actions_count > 0 ->
+      # When the count equals zero then we allow changing turn
+      # and disallow any more actions
+      new_actions_count >= 0 ->
         %Board{board | current_turn_action_count: new_actions_count}
 
-      # Change the turn if the actions are exhausted
       true ->
-        %Board{board | current_turn_action_count: @actions_per_turn_count}
-        |> change_turn
+        board
     end
   end
 
-  def change_turn(%Board{current_turn: :top_player} = board) do
-    %Board{board | current_turn: :bot_player}
+  def change_turn(%Board{} = board) do
+    cond do
+      board.current_turn_action_count == 0 ->
+        change_turn_internal(board)
+
+      true ->
+        board
+    end
   end
 
-  def change_turn(%Board{current_turn: :bot_player} = board) do
-    %Board{board | current_turn: :top_player}
+  defp change_turn_internal(%Board{current_turn: :top_player} = board) do
+    %Board{board | current_turn: :bot_player, current_turn_action_count: @actions_per_turn_count}
+  end
+
+  defp change_turn_internal(%Board{current_turn: :bot_player} = board) do
+    %Board{board | current_turn: :top_player, current_turn_action_count: @actions_per_turn_count}
   end
 
   # Determines if it is the players turn and if the move is legal
