@@ -137,6 +137,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     # Use new boardstate to generate transition animations
     # or ghost piece placement
 
+    # TODO LEFT OFF need to break this board modifying code into confirm turn
     player_turn = get_player_turn(state, player_id)
 
     moved_board =
@@ -168,6 +169,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
     # TODO this will clear animations even if the move was illegal
     confirm_player_end_turn(state)
+
     {:noreply, %{state | board: moved_board, selected_piece: :none}}
   end
 
@@ -230,6 +232,13 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   # Need to incorporate remaining actions logic in this module
   def confirm_player_end_turn(state) do
     Process.send_after(self(), :clear_runner_paths, 1000)
+
+    # only submit if it is their turn
+    # only change turn if no more actions to make (enforced in board)
+    # change turn
+    # error message if they still have pending actions
+    # only enable button if there are no more actions to make
+    # apply pending actions and actually update board state
 
     state
   end
