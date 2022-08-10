@@ -69,4 +69,22 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
 
     after_board = DaraDotsGame.get_full_board(id)
   end
+
+  test "multiple pending actions is a valid state" do
+    id = "test_id_5"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "player_one")
+    DaraDotsGame.add_player(id, "player_two")
+
+    DaraDotsGame.submit_move(id, "player_one", 1, 1)
+    DaraDotsGame.place_runner(id, "player_one", 1, 3)
+
+    pending_actions = DaraDotsGame.get_pending_actions(id)
+
+    actual = pending_actions |> Map.keys() |> Enum.count()
+
+    assert actual == 2
+  end
 end
