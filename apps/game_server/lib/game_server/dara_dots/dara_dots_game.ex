@@ -184,11 +184,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
         {:place_runner, player_id, create_coord}
       )
 
-    updated_board =
-      state.board
-      |> Board.place_runner(create_coord)
+    # updated_board =
+      # state.board
+      # |> Board.place_runner(create_coord)
 
-    {:noreply, %{state | board: updated_board, pending_actions: new_pending_actions}}
+    {:noreply, %{state | pending_actions: new_pending_actions}}
   end
 
   @impl GenServer
@@ -235,10 +235,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
     # only submit if it is their turn
     # only change turn if no more actions to make (enforced in board)
-    # change turn
     # error message if they still have pending actions
     # only enable button if there are no more actions to make
     # apply pending actions and actually update board state
+    # change turn
 
     state
   end

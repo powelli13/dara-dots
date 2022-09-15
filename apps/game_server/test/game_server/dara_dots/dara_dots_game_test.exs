@@ -141,4 +141,29 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
     assert Coordinate.equal?(top_alpha_init_coord, top_alpha_after_coord)
     assert Coordinate.equal?(top_beta_init_coord, top_beta_after_coord)
   end
+
+  test "save_pending_action should not save given non turn player" do
+  end
+
+  test "save_pending_action should save pending action given player turn" do
+  end
+  
+  test "save_pending_action should not save illegal pending moves" do
+  end
+
+  test "confirm_player_end_turn should not change turns given too few pending actions" do
+  end
+
+  test "confirm_player_end_turn should change turn given enough pending actions" do
+  end
+
+  test "confirm_player_end_turn should update board after changing turn" do
+  end
+
+  test "confirm_player_end_turn should clear pending actions" do
+  end
+  
+  test "confirm_player_end_turn should broadcast new game state" do
+
+  end
 end
