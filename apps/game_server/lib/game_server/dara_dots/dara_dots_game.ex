@@ -146,8 +146,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       # TODO this will clear animations even if the move was illegal
       confirm_player_end_turn(state)
 
-      {:noreply,
-       %{state | selected_piece: :none, pending_actions: new_pending_actions}}
+      {:noreply, %{state | selected_piece: :none, pending_actions: new_pending_actions}}
     else
       {:noreply, state}
     end
@@ -253,10 +252,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   # those tuples could be used in the functions used for
   # checking legality, saving and applying pending actions
   def is_legal_move?(
-    state,
-    player_id,
-    {:place_runner, player_id, create_coord})
-  do
+        state,
+        player_id,
+        {:place_runner, player_id, create_coord}
+      ) do
     # TODO should we check turn here?
     # coord is open
     # if bot player, then must be bot row
@@ -265,10 +264,12 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   def is_legal_move?(
-    state,
-    player_id,
-    {:move, player_id, selected_piece, row, col})
-  do
+        state,
+        player_id,
+        {:move, player_id, selected_piece, row, col}
+      ) do
+    # TODO should we put coords in the action tuples?
+    # is_open = is_coord_open?(state, )
     # dest coord must be open
     # selected piece must belong to player
     # selected piece within moving range
@@ -276,7 +277,9 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     true
   end
 
-  defp is_coord_open?(state, coord) do
+  def is_coord_open?(state, coord) do
+    !(Board.node_has_linker?(state.board, coord) ||
+        Board.node_has_runner?(state.board, coord))
   end
 
   defp get_player_turn(state, player_id) do

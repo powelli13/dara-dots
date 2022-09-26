@@ -404,6 +404,22 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  test "node_has_runner? should return true for placed runner" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, coord} <- Coordinate.new(1, 1) do
+      placed_board = Board.place_runner(board, coord)
+
+      assert Board.node_has_runner?(placed_board, coord) == true
+    end
+  end
+
+  test "node_has_runner? should return false for empty node" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, coord} <- Coordinate.new(3, 3) do
+      assert Board.node_has_runner?(board, coord) == false
+    end
+  end
+
   test "node_has_linker? should return true for linker start position" do
     with {:ok, board} <- Board.new_test(),
          {:ok, check_coord} <- Coordinate.new(5, 2) do
@@ -411,7 +427,7 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
-  test "node_has_linker? should return false for empty position" do
+  test "node_has_linker? should return false for empty node" do
     with {:ok, board} <- Board.new_test(),
          {:ok, check_coord} <- Coordinate.new(3, 3) do
       assert Board.node_has_linker?(board, check_coord) == false
