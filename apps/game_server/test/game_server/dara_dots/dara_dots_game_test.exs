@@ -142,10 +142,45 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
     assert Coordinate.equal?(top_beta_init_coord, top_beta_after_coord)
   end
 
+  test "new game should have no pending actions" do
+    id = "test_8"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    pending_actions = DaraDotsGame.get_pending_actions(id)
+    assert map_size(pending_actions) == 0
+  end
+
   test "save_pending_action should not save given non turn player" do
+    # TODO spin down games after each set and then create a new one
+    # to avoid all these tedious IDs and leftover games after tests
+    id = "test_9"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "top_player")
+    DaraDotsGame.add_player(id, "bot_player")
+
+    DaraDotsGame.submit_move(id, "bot_player", 5, 5)
+
+    pending_actions = DaraDotsGame.get_pending_actions(id)
+    assert map_size(pending_actions) == 0
   end
 
   test "save_pending_action should save pending action given player turn" do
+    id = "test_10"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "top_player")
+    DaraDotsGame.add_player(id, "bot_player")
+
+    DaraDotsGame.submit_move(id, "top_player", 1, 5)
+
+    pending_actions = DaraDotsGame.get_pending_actions(id)
+    assert map_size(pending_actions) == 1
+
+    {action_kind, _, _, _} = pending_actions[1]
+    assert action_kind == :move
   end
   
   test "save_pending_action should not save illegal pending moves" do

@@ -121,34 +121,38 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def handle_cast({:submit_move, player_id, row, col}, state) do
-    {:ok, dest_coord} = Coordinate.new(row, col)
-    # Check if it is the player's turn
-    # Check if the move is valid
-    # Store the pending action
-    new_pending_actions =
-      save_pending_action(
-        state.pending_actions,
-        # TODO need some data structure for this
-        {:move, player_id, state.selected_piece, dest_coord}
-      )
+    if is_player_turn?(state, player_id) do
+      {:ok, dest_coord} = Coordinate.new(row, col)
+      # Check if it is the player's turn
+      # Check if the move is valid
+      # Store the pending action
+      new_pending_actions =
+        save_pending_action(
+          state.pending_actions,
+          # TODO need some data structure for this
+          {:move, player_id, state.selected_piece, dest_coord}
+        )
 
-    # Generate a new board state with the action,
-    # don't yet update current board though
-    # Use new boardstate to generate transition animations
-    # or ghost piece placement
+      # Generate a new board state with the action,
+      # don't yet update current board though
+      # Use new boardstate to generate transition animations
+      # or ghost piece placement
 
-    # TODO LEFT OFF need to break this board modifying code into confirm turn
-    player_turn = get_player_turn(state, player_id)
+      # TODO LEFT OFF need to break this board modifying code into confirm turn
+      player_turn = get_player_turn(state, player_id)
 
-    moved_board =
-      state.board
-      |> Board.move_linker_no_link(player_turn, state.selected_piece, dest_coord)
+      moved_board =
+        state.board
+        |> Board.move_linker_no_link(player_turn, state.selected_piece, dest_coord)
 
-    # TODO this will clear animations even if the move was illegal
-    confirm_player_end_turn(state)
+      # TODO this will clear animations even if the move was illegal
+      confirm_player_end_turn(state)
 
-    {:noreply,
-     %{state | board: moved_board, selected_piece: :none, pending_actions: new_pending_actions}}
+      {:noreply,
+      %{state | board: moved_board, selected_piece: :none, pending_actions: new_pending_actions}}
+    else
+      {:noreply, state}
+    end
   end
 
   @impl GenServer
@@ -254,6 +258,13 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       player_id == state.bot_player_id ->
         :bot_player
     end
+  end
+
+  defp is_player_turn?(state, player_id) do
+    # TODO this is kind of weird, maybe all turn stuff shoould
+    # be tied to the player ID in the game module?
+    player_turn = get_player_turn(state, player_id)
+    Board.is_player_turn?(state.board, player_turn)
   end
 
   def apply_pending_actions(board, pending_actions) do
