@@ -3,6 +3,9 @@ defmodule GameServer.DaraDots.Board do
   alias GameServer.DaraDots.{Coordinate, LinkerPiece, RunnerPiece}
   @actions_per_turn_count 3
 
+  # TODO split the data struct and the board operations and rules
+  # game should operate on the board controlling rules
+  # should the board know about player IDs though?
   defstruct [
     :top_linker_alpha,
     :top_linker_beta,
@@ -323,10 +326,22 @@ defmodule GameServer.DaraDots.Board do
     %Board{board | runner_pieces: reset_runners}
   end
 
-  defp node_has_runner?(%Board{} = board, %Coordinate{} = coord) do
+  def node_has_runner?(%Board{} = board, %Coordinate{} = coord) do
     board.runner_pieces
     |> Enum.any?(fn {_k, runner} ->
       Coordinate.equal?(runner.coord, coord)
+    end)
+  end
+
+  def node_has_linker?(%Board{} = board, %Coordinate{} = coord) do
+    [
+      board.top_linker_alpha.coord,
+      board.top_linker_beta.coord,
+      board.bot_linker_alpha.coord,
+      board.bot_linker_beta.coord
+    ]
+    |> Enum.any?(fn linker_coord ->
+      Coordinate.equal?(linker_coord, coord)
     end)
   end
 

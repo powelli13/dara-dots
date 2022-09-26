@@ -211,10 +211,11 @@ defmodule GameServer.DaraDots.BoardTest do
       # Manually set the pending actions to zero
       assert board.current_turn == :top_player
 
-      new_board = board
-        |> Board.decrement_action_count_check_turn
-        |> Board.decrement_action_count_check_turn
-        |> Board.decrement_action_count_check_turn
+      new_board =
+        board
+        |> Board.decrement_action_count_check_turn()
+        |> Board.decrement_action_count_check_turn()
+        |> Board.decrement_action_count_check_turn()
 
       new_board = Board.change_turn(new_board)
 
@@ -403,4 +404,17 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  test "node_has_linker? should return true for linker start position" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, check_coord} <- Coordinate.new(5, 2) do
+      assert Board.node_has_linker?(board, check_coord) == true
+    end
+  end
+
+  test "node_has_linker? should return false for empty position" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, check_coord} <- Coordinate.new(3, 3) do
+      assert Board.node_has_linker?(board, check_coord) == false
+    end
+  end
 end

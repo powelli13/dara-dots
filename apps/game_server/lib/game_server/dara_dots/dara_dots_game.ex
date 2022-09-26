@@ -123,13 +123,11 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   def handle_cast({:submit_move, player_id, row, col}, state) do
     if is_player_turn?(state, player_id) do
       {:ok, dest_coord} = Coordinate.new(row, col)
-      # Check if it is the player's turn
       # Check if the move is valid
-      # Store the pending action
+
       new_pending_actions =
         save_pending_action(
           state.pending_actions,
-          # TODO need some data structure for this
           {:move, player_id, state.selected_piece, dest_coord}
         )
 
@@ -141,15 +139,15 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       # TODO LEFT OFF need to break this board modifying code into confirm turn
       player_turn = get_player_turn(state, player_id)
 
-      moved_board =
-        state.board
-        |> Board.move_linker_no_link(player_turn, state.selected_piece, dest_coord)
+      # moved_board =
+      # state.board
+      # |> Board.move_linker_no_link(player_turn, state.selected_piece, dest_coord)
 
       # TODO this will clear animations even if the move was illegal
       confirm_player_end_turn(state)
 
       {:noreply,
-      %{state | board: moved_board, selected_piece: :none, pending_actions: new_pending_actions}}
+       %{state | selected_piece: :none, pending_actions: new_pending_actions}}
     else
       {:noreply, state}
     end
@@ -179,20 +177,24 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def handle_cast({:place_runner, player_id, row, col}, state) do
-    {:ok, create_coord} = Coordinate.new(row, col)
+    if is_player_turn?(state, player_id) do
+      {:ok, create_coord} = Coordinate.new(row, col)
 
-    # TODO should we get player turn here
-    new_pending_actions =
-      save_pending_action(
-        state.pending_actions,
-        {:place_runner, player_id, create_coord}
-      )
+      # TODO should we get player turn here
+      new_pending_actions =
+        save_pending_action(
+          state.pending_actions,
+          {:place_runner, player_id, create_coord}
+        )
 
-    # updated_board =
+      # updated_board =
       # state.board
       # |> Board.place_runner(create_coord)
 
-    {:noreply, %{state | pending_actions: new_pending_actions}}
+      {:noreply, %{state | pending_actions: new_pending_actions}}
+    else
+      {:noreply, state}
+    end
   end
 
   @impl GenServer
@@ -247,8 +249,35 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     state
   end
 
-  # def is_legal_move?(state, player_id) do
-  # end
+  # Might be nice to have tuples to represent the moves
+  # those tuples could be used in the functions used for
+  # checking legality, saving and applying pending actions
+  def is_legal_move?(
+    state,
+    player_id,
+    {:place_runner, player_id, create_coord})
+  do
+    # TODO should we check turn here?
+    # coord is open
+    # if bot player, then must be bot row
+    # if top player, then must be top row
+    true
+  end
+
+  def is_legal_move?(
+    state,
+    player_id,
+    {:move, player_id, selected_piece, row, col})
+  do
+    # dest coord must be open
+    # selected piece must belong to player
+    # selected piece within moving range
+    # i.e. one row or col away
+    true
+  end
+
+  defp is_coord_open?(state, coord) do
+  end
 
   defp get_player_turn(state, player_id) do
     cond do

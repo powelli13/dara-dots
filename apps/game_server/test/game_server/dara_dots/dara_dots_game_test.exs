@@ -104,10 +104,13 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
 
     after_board = DaraDotsGame.get_full_board(id)
 
-    initial_count = initial_board.runner_pieces
+    initial_count =
+      initial_board.runner_pieces
       |> Map.keys()
       |> Enum.count()
-    after_count = after_board.runner_pieces
+
+    after_count =
+      after_board.runner_pieces
       |> Map.keys()
       |> Enum.count()
 
@@ -135,8 +138,8 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
     top_beta_after_coord = after_board.top_linker_beta.coord
 
     # TODO this is passing but I am not sure why
-    IO.inspect top_alpha_init_coord
-    IO.inspect top_alpha_after_coord
+    IO.inspect(top_alpha_init_coord)
+    IO.inspect(top_alpha_after_coord)
 
     assert Coordinate.equal?(top_alpha_init_coord, top_alpha_after_coord)
     assert Coordinate.equal?(top_beta_init_coord, top_beta_after_coord)
@@ -182,7 +185,38 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
     {action_kind, _, _, _} = pending_actions[1]
     assert action_kind == :move
   end
-  
+
+  test "placing a runner should not save pending action given not players turn" do
+    id = "test_11"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "top_player")
+    DaraDotsGame.add_player(id, "bot_player")
+
+    DaraDotsGame.place_runner(id, "bot_player", 5, 3)
+
+    pending_actions = DaraDotsGame.get_pending_actions(id)
+    assert map_size(pending_actions) == 0
+  end
+
+  test "place_runner should add pending action given is players turn" do
+    id = "test_12"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "top_player")
+    DaraDotsGame.add_player(id, "bot_player")
+
+    DaraDotsGame.place_runner(id, "top_player", 1, 5)
+
+    pending_actions = DaraDotsGame.get_pending_actions(id)
+    assert map_size(pending_actions) == 1
+
+    {action_kind, _, _} = pending_actions[1]
+    assert action_kind == :place_runner
+  end
+
   test "save_pending_action should not save illegal pending moves" do
   end
 
@@ -197,8 +231,7 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
 
   test "confirm_player_end_turn should clear pending actions" do
   end
-  
-  test "confirm_player_end_turn should broadcast new game state" do
 
+  test "confirm_player_end_turn should broadcast new game state" do
   end
 end
