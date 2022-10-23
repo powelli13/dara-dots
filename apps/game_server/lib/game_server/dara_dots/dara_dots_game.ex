@@ -248,9 +248,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     state
   end
 
-  # Might be nice to have tuples to represent the moves
-  # those tuples could be used in the functions used for
-  # checking legality, saving and applying pending actions
   def is_legal_move?(
         state,
         player_id,
@@ -263,18 +260,32 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     true
   end
 
+  # TODO unit test me!
   def is_legal_move?(
         state,
         player_id,
-        {:move, player_id, selected_piece, row, col}
+        {:move, player_id, selected_piece, dest_coord}
       ) do
-    # TODO should we put coords in the action tuples?
-    # is_open = is_coord_open?(state, )
-    # dest coord must be open
-    # selected piece must belong to player
-    # selected piece within moving range
-    # i.e. one row or col away
-    true
+    player_turn = get_player_turn(state, player_id)
+
+    # TODO check turn?
+    is_coord_open?(state, dest_coord) &&
+      is_players_piece?(state, player_id, selected_piece) &&
+      Board.is_legal_move_coord?(state.board, player_turn, selected_piece, dest_coord)
+  end
+
+  def is_players_piece?(state, player_id, piece) do
+    cond do
+      player_id == state.top_player_id ->
+        piece == :top_linker_alpha || piece == :top_linker_beta
+
+      player_id == state.bot_player_id ->
+        piece == :bot_linker_alpha || piece == :bot_linker_beta
+
+      # Default to false
+      true ->
+        false
+    end
   end
 
   def is_coord_open?(state, coord) do
@@ -311,6 +322,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   and return that board state.
   """
   def apply_pending_action(board, action_tuple) do
+    # TODO I don't think these can be player_id
     case action_tuple do
       {:move, player_id, selected_piece, dest_coord} ->
         Board.move_linker_no_link(board, player_id, selected_piece, dest_coord)

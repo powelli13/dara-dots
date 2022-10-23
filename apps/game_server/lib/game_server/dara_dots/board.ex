@@ -148,7 +148,7 @@ defmodule GameServer.DaraDots.Board do
 
   # Determines if it is the players turn and if the move is legal
   # This checks moving linker without link, will most likely need more
-  def is_legal_move?(%Board{} = board, player, piece_key, dest_coord) do
+  def is_legal_move_coord?(%Board{} = board, player, piece_key, dest_coord) do
     movable_coords = get_movable_coords(board, piece_key)
 
     MapSet.member?(movable_coords, dest_coord) && is_player_turn?(board, player)
@@ -176,7 +176,8 @@ defmodule GameServer.DaraDots.Board do
     MapSet.new()
   end
 
-  defp get_possible_move_coords(%Board{} = board, piece_key, :movable) when is_atom(piece_key) do
+  defp get_possible_move_coords(%Board{} = board, piece_key, :movable)
+       when is_atom(piece_key) do
     {:ok, piece} = Map.fetch(board, piece_key)
 
     curr = piece.coord
@@ -256,7 +257,7 @@ defmodule GameServer.DaraDots.Board do
         linker_key,
         %Coordinate{} = dest_coord
       ) do
-    if is_legal_move?(board, player, linker_key, dest_coord) do
+    if is_legal_move_coord?(board, player, linker_key, dest_coord) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move_and_set_link(linker, dest_coord)
 
@@ -278,7 +279,7 @@ defmodule GameServer.DaraDots.Board do
         linker_key,
         %Coordinate{} = dest_coord
       ) do
-    if is_legal_move?(board, player, linker_key, dest_coord) do
+    if is_legal_move_coord?(board, player, linker_key, dest_coord) do
       with {:ok, linker} <- Map.fetch(board, linker_key) do
         moved_linker = LinkerPiece.move(linker, dest_coord)
 
