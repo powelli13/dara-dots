@@ -15,8 +15,8 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.cast(via_tuple(game_id), {:add_player, player_id})
   end
 
-  def select_piece(game_id, piece) do
-    GenServer.cast(via_tuple(game_id), {:select_piece, piece})
+  def select_piece(game_id, player_id, piece) do
+    GenServer.cast(via_tuple(game_id), {:select_piece, player_id, piece})
   end
 
   def get_full_board(id) do
@@ -115,8 +115,14 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   end
 
   @impl GenServer
-  def handle_cast({:select_piece, piece}, state) do
-    {:noreply, %{state | selected_piece: piece}}
+  def handle_cast({:select_piece, player_id, piece}, state) do
+    # TODO left off
+    # Can the player select that piece
+    # is it the players piece
+    # is it the players turn
+
+    # {:noreply, %{state | selected_piece: piece}}
+    {:noreply, state}
   end
 
   @impl GenServer
@@ -268,7 +274,6 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       ) do
     player_turn = get_player_turn(state, player_id)
 
-    # TODO check turn?
     is_coord_open?(state, dest_coord) &&
       is_players_piece?(state, player_id, selected_piece) &&
       Board.is_legal_move_coord?(state.board, player_turn, selected_piece, dest_coord)

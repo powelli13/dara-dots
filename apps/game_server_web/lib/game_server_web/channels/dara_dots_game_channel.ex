@@ -21,7 +21,11 @@ defmodule GameServerWeb.DaraDotsGameChannel do
           :bot_linker_beta
       end
 
-    GameServer.DaraDots.DaraDotsGame.select_piece(socket.assigns[:game_id], piece_to_select)
+    GameServer.DaraDots.DaraDotsGame.select_piece(
+      socket.assigns[:game_id],
+      socket.assigns[:player_id],
+      piece_to_select
+    )
 
     {:noreply, socket}
   end
