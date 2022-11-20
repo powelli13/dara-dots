@@ -52,6 +52,10 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.call(via_tuple(game_id), :get_selected_piece)
   end
 
+  def get_current_turn(game_id) do
+    GenServer.call(via_tuple(game_id), :get_current_turn)
+  end
+
   def submit_move(game_id, player_id, row, col) do
     GenServer.cast(via_tuple(game_id), {:submit_move, player_id, row, col})
   end
@@ -250,6 +254,12 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_call(:get_selected_piece, _, state) do
     {:reply, state.selected_piece, state}
+  end
+
+  @impl GenServer
+  def handle_call(:get_current_turn, _, state) do
+    current_turn = Board.get_current_turn(state.board)
+    {:reply, current_turn, state}
   end
 
   # Add a GenServer impl to confirm player turn

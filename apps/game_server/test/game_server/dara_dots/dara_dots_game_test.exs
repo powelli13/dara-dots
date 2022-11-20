@@ -221,6 +221,21 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
   end
 
   test "confirm_player_end_turn should not change turns given too few pending actions" do
+    # TODO look up how to stop or restart the game
+    id = "test_13"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "top_player")
+    DaraDotsGame.add_player(id, "bot_player")
+
+    # Create one pending action
+    DaraDotsGame.place_runner(id, "top_player", 1, 5)
+
+    DaraDotsGame.confirm_turn_actions(id, "top_player")
+    current_turn = DaraDotsGame.get_current_turn(id)
+
+    assert current_turn == :top_player
   end
 
   test "confirm_player_end_turn should change turn given enough pending actions" do
