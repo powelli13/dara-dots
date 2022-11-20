@@ -5,26 +5,13 @@ defmodule GameServerWeb.DaraDotsGameChannel do
     {:ok, socket |> assign(:game_id, game_id)}
   end
 
-  def handle_in("select_piece", %{"piece" => piece}, socket) do
-    piece_to_select =
-      case piece do
-        "top_alpha" ->
-          :top_linker_alpha
-
-        "top_beta" ->
-          :top_linker_beta
-
-        "bot_alpha" ->
-          :bot_linker_alpha
-
-        "bot_beta" ->
-          :bot_linker_beta
-      end
+  def handle_in("select_piece", %{"piece" => piece_string}, socket) do
+    # TODO maybe the channel should not know aboutt this?
 
     GameServer.DaraDots.DaraDotsGame.select_piece(
       socket.assigns[:game_id],
       socket.assigns[:player_id],
-      piece_to_select
+      piece_string
     )
 
     {:noreply, socket}

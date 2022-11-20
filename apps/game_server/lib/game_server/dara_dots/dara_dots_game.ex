@@ -15,8 +15,29 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     GenServer.cast(via_tuple(game_id), {:add_player, player_id})
   end
 
-  def select_piece(game_id, player_id, piece) do
-    GenServer.cast(via_tuple(game_id), {:select_piece, player_id, piece})
+  # TODO write tests for this
+  def select_piece(game_id, player_id, piece_string) do
+    piece =
+      case piece_string do
+        "top_alpha" ->
+          :top_linker_alpha
+
+        "top_beta" ->
+          :top_linker_beta
+
+        "bot_alpha" ->
+          :bot_linker_alpha
+
+        "bot_beta" ->
+          :bot_linker_beta
+
+        _ ->
+          :error
+      end
+
+    if piece != :error do
+      GenServer.cast(via_tuple(game_id), {:select_piece, player_id, piece})
+    end
   end
 
   def get_full_board(id) do
@@ -116,13 +137,12 @@ defmodule GameServer.DaraDots.DaraDotsGame do
 
   @impl GenServer
   def handle_cast({:select_piece, player_id, piece}, state) do
-    # TODO left off
-    # Can the player select that piece
-    # is it the players piece
-    # is it the players turn
-
-    # {:noreply, %{state | selected_piece: piece}}
-    {:noreply, state}
+    if is_player_turn?(state, player_id) &&
+      is_player_piece?(state, player_id, piece) do
+      {:noreply, %{state | selected_piece: piece}}
+    else
+      {:noreply, state}
+    end
   end
 
   @impl GenServer
@@ -143,7 +163,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       # or ghost piece placement
 
       # TODO LEFT OFF need to break this board modifying code into confirm turn
-      player_turn = get_player_turn(state, player_id)
+      # player_turn = get_player_turn(state, player_id)
 
       # moved_board =
       # state.board
@@ -308,11 +328,16 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     end
   end
 
-  defp is_player_turn?(state, player_id) do
-    # TODO this is kind of weird, maybe all turn stuff shoould
-    # be tied to the player ID in the game module?
+  # These two functions are used because we need to convert
+  # the player_id into the player turn used by the board
+  def is_player_turn?(state, player_id) do
     player_turn = get_player_turn(state, player_id)
     Board.is_player_turn?(state.board, player_turn)
+  end
+
+  def is_player_piece?(state, player_id, piece_key) do
+    player_turn = get_player_turn(state, player_id)
+    Board.is_players_piece?(player_turn, piece_key)
   end
 
   def apply_pending_actions(board, pending_actions) do

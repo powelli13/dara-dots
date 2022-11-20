@@ -94,8 +94,6 @@ defmodule GameServer.DaraDots.Board do
     board.current_turn == :bot_player
   end
 
-  # TODO should we include board here?
-  # If we include board then it could check if the piece is for the current turn
   def is_players_piece?(player, piece_key) do
     case player do
       :top_player ->
