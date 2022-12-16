@@ -239,12 +239,52 @@ defmodule GameServer.DaraDots.DaraDotsGameTest do
   end
 
   test "confirm_player_end_turn should change turn given enough pending actions" do
+    # TODO look up how to stop or restart the game
+    id = "test_14"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "top_player")
+    DaraDotsGame.add_player(id, "bot_player")
+
+    # Create three pending actions
+    DaraDotsGame.place_runner(id, "top_player", 1, 5)
+    DaraDotsGame.place_runner(id, "top_player", 1, 3)
+    DaraDotsGame.place_runner(id, "top_player", 1, 1)
+
+    DaraDotsGame.confirm_turn_actions(id, "top_player")
+    current_turn = DaraDotsGame.get_current_turn(id)
+
+    assert current_turn == :bot_player
   end
 
   test "confirm_player_end_turn should update board after changing turn" do
   end
 
   test "confirm_player_end_turn should clear pending actions" do
+    # TODO look up how to stop or restart the game
+    id = "test_16"
+    {:ok, _pid} = DaraDotsGame.start(id)
+
+    # Add both players
+    DaraDotsGame.add_player(id, "top_player")
+    DaraDotsGame.add_player(id, "bot_player")
+
+    # Create three pending actions
+    DaraDotsGame.place_runner(id, "top_player", 1, 5)
+    DaraDotsGame.place_runner(id, "top_player", 1, 3)
+    DaraDotsGame.place_runner(id, "top_player", 1, 1)
+
+    # Assert full pending actions
+    full_pending_actions = DaraDotsGame.get_pending_actions(id)
+    assert map_size(full_pending_actions) == 3
+
+    DaraDotsGame.confirm_turn_actions(id, "top_player")
+    current_turn = DaraDotsGame.get_current_turn(id)
+
+    # Assert empty pending actions
+    new_pending_actions = DaraDotsGame.get_pending_actions(id)
+    assert map_size(new_pending_actions) == 0
   end
 
   test "confirm_player_end_turn should broadcast new game state" do
