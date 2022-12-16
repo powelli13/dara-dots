@@ -231,6 +231,8 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     new_state = confirm_player_end_turn(state)
 
     # TODO animations?
+    # This should not be here, the state should only change if confirm player end turn
+    # says that it should
     new_board_state = Board.advance_runners(new_state.board)
     new_state = Map.put(new_state, :board, new_board_state)
     {:noreply, new_state}
@@ -284,16 +286,22 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     state
   end
 
+  # TODO could probably do this better by moving atomic legality checks into the board
+  # and then just check player_id turn here && check legality with the board
   def is_legal_move?(
         state,
         player_id,
         {:place_runner, player_id, create_coord}
       ) do
-    # TODO should we check turn here?
     # coord is open
     # if bot player, then must be bot row
     # if top player, then must be top row
-    true
+    player_turn = get_player_turn(state, player_id)
+
+    is_player_turn?(state, player_id) &&
+      is_coord_open?(state, create_coord) &&
+
+
   end
 
   # TODO unit test me!

@@ -344,8 +344,13 @@ defmodule GameServer.DaraDots.Board do
     end)
   end
 
+  # TODO left off we need to know who the attempting player is
+  def legal_runner_placement?(%Board{} = board, %Coordinate{} = coord, facing) do
+  end
+
   defp place_runner(%Board{} = board, %Coordinate{} = coord, facing) do
     with {:ok, new_runner} <- RunnerPiece.new(coord, facing) do
+      # TODO can a player place where a linker is?
       if node_has_runner?(board, coord) do
         board
       else
