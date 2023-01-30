@@ -142,7 +142,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
   @impl GenServer
   def handle_cast({:select_piece, player_id, piece}, state) do
     if is_player_turn?(state, player_id) &&
-      is_player_piece?(state, player_id, piece) do
+         is_player_piece?(state, player_id, piece) do
       {:noreply, %{state | selected_piece: piece}}
     else
       {:noreply, state}
@@ -286,22 +286,24 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     state
   end
 
-  # TODO could probably do this better by moving atomic legality checks into the board
-  # and then just check player_id turn here && check legality with the board
+  # The is_legal_move? functions should take in a board since they will operate on
+  # temporary boards. They should take in a board, use the action tuple to find
+  # which legality to check, and then check it using the Board module.
   def is_legal_move?(
         state,
         player_id,
         {:place_runner, player_id, create_coord}
       ) do
-    # coord is open
-    # if bot player, then must be bot row
-    # if top player, then must be top row
+    # I think that it is best for all rules validation to happen in the
+    # board module. Because there will be non-official, temporary boards
+    # for pending actions. So the changes to those boards and how to check
+    # will be all self contained in that module and data structure.
+    # The Data Dots game module will handle converting messages to actions,
+    # storing pending moves, and converting player_ids into positional player
+    # references for the Board module.
     player_turn = get_player_turn(state, player_id)
 
-    is_player_turn?(state, player_id) &&
-      is_coord_open?(state, create_coord) &&
-
-
+    Board.is_legal_runner_placement?(state.board, player_turn, create_coord)
   end
 
   # TODO unit test me!
@@ -312,6 +314,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
       ) do
     player_turn = get_player_turn(state, player_id)
 
+    # TODO see comment in board, all rules validation should be in Board
     is_coord_open?(state, dest_coord) &&
       is_players_piece?(state, player_id, selected_piece) &&
       Board.is_legal_move_coord?(state.board, player_turn, selected_piece, dest_coord)
@@ -346,6 +349,7 @@ defmodule GameServer.DaraDots.DaraDotsGame do
     end
   end
 
+  # TODO consider removing these since validation will all happen in the Board
   # These two functions are used because we need to convert
   # the player_id into the player turn used by the board
   def is_player_turn?(state, player_id) do

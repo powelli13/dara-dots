@@ -294,17 +294,26 @@ defmodule GameServer.DaraDots.Board do
   end
 
   # Allow for placement of Runners
-  def place_runner(%Board{} = board, %Coordinate{row: 1} = coord) do
+  def place_runner(%Board{} = board, player, %Coordinate{row: 1} = coord) do
     # TODO need is legal move checks for these
     # should check player turn
     # player should only place in their home row
     # TODO need placement markers on both home rows
     # node should be open
-    place_runner(board, coord, :up)
+    if is_legal_runner_placement?(board, player, coord) do
+      place_runner(board, coord, :up)
+    else
+      # TODO need some kind of state management for illegal moves
+      board
+    end
   end
 
-  def place_runner(%Board{} = board, %Coordinate{row: 5} = coord) do
-    place_runner(board, coord, :down)
+  def place_runner(%Board{} = board, player, %Coordinate{row: 5} = coord) do
+    if is_legal_runner_placement?(board, player, coord) do
+      place_runner(board, coord, :down)
+    else
+      board
+    end
   end
 
   # If an invalid row is given then do nothing
@@ -344,27 +353,37 @@ defmodule GameServer.DaraDots.Board do
     end)
   end
 
-  # TODO left off we need to know who the attempting player is
-  def legal_runner_placement?(%Board{} = board, %Coordinate{} = coord, facing) do
+  def is_legal_runner_placement?(%Board{} = board, :top_player, %Coordinate{} = coord) do
+    if !node_has_runner?(board, coord) &&
+         coord.row == 5 do
+      true
+    else
+      false
+    end
   end
 
+  def is_legal_runner_placement?(%Board{} = board, :bot_player, %Coordinate{} = coord) do
+    if !node_has_runner?(board, coord) &&
+         coord.row == 1 do
+      true
+    else
+      false
+    end
+  end
+
+  # TODO this breaks things because the player param was added above
   defp place_runner(%Board{} = board, %Coordinate{} = coord, facing) do
     with {:ok, new_runner} <- RunnerPiece.new(coord, facing) do
-      # TODO can a player place where a linker is?
-      if node_has_runner?(board, coord) do
+      %Board{
         board
-      else
-        %Board{
-          board
-          | runner_pieces:
-              Map.put(
-                board.runner_pieces,
-                board.runner_timer,
-                new_runner
-              ),
-            runner_timer: board.runner_timer + 1
-        }
-      end
+        | runner_pieces:
+            Map.put(
+              board.runner_pieces,
+              board.runner_timer,
+              new_runner
+            ),
+          runner_timer: board.runner_timer + 1
+      }
     end
   end
 
