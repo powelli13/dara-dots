@@ -294,7 +294,7 @@ defmodule GameServer.DaraDots.Board do
   end
 
   # Allow for placement of Runners
-  def place_runner(%Board{} = board, player, %Coordinate{row: 1} = coord) do
+  def place_runner_for_player(%Board{} = board, player, %Coordinate{row: 1} = coord) do
     # TODO need is legal move checks for these
     # should check player turn
     # player should only place in their home row
@@ -308,7 +308,7 @@ defmodule GameServer.DaraDots.Board do
     end
   end
 
-  def place_runner(%Board{} = board, player, %Coordinate{row: 5} = coord) do
+  def place_runner_for_player(%Board{} = board, player, %Coordinate{row: 5} = coord) do
     if is_legal_runner_placement?(board, player, coord) do
       place_runner(board, coord, :down)
     else
