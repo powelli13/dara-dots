@@ -14,6 +14,16 @@ defmodule GameServer.DaraDots.BoardTest do
     end
   end
 
+  # TODO left off need to update this to place_runner_for_player, which should have turn checking
+  test "placed runner should appear in runner_pieces" do
+    with {:ok, board} <- Board.new_test(),
+         {:ok, coord} <- Coordinate.new(5, 1) do
+      placed_board = Board.place_runner(board, coord)
+
+      assert length(Map.to_list(placed_board.runner_pieces)) == 1
+    end
+  end
+
   test "placed runner should face down given last row" do
     with {:ok, board} <- Board.new_test(),
          {:ok, coord} <- Coordinate.new(5, 1) do

@@ -318,6 +318,7 @@ defmodule GameServer.DaraDots.Board do
 
   # If an invalid row is given then do nothing
   def place_runner(%Board{} = board, _coord) do
+    IO.puts "doing nothing"
     board
   end
 
