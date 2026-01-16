@@ -24,6 +24,8 @@ defmodule GameServer.DaraDots.Board do
     dot_coords: MapSet.new()
   ]
 
+  # TODO work on this app
+
   def new() do
     # These are only for initial visual testing
     new_board = create_empty_board()
